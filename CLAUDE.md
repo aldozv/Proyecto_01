@@ -44,6 +44,10 @@ Resumen de las tablas ya mapeadas:
 
 Direccion: `PE Dir Centro Orient`. Gerencias conocidas dentro de esta direccion: Tarapoto, Huanuco Tma, Pucallpa, Chanchamayo, Iquitos.
 
+## Reglas de negocio validadas por el usuario
+
+- **Categoria Agua:** excluir siempre la marca **San Carlos** de los analisis (`and d.marca <> 'San Carlos'` o filtrar post-query). Regla vigente desde 2026-08-15, aplica a futuro sin volver a confirmar.
+
 ## Mantener este archivo vivo
 
 Este documento (y `BITACORA_TABLAS.md`) deben ir aprendiendo del contexto que se vaya dando en las
