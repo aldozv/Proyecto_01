@@ -46,7 +46,7 @@ Direccion: `PE Dir Centro Orient`. Gerencias conocidas dentro de esta direccion:
 
 ## Reglas de negocio validadas por el usuario
 
-- **Categoria Agua:** excluir siempre la marca **San Carlos** de los analisis (`and d.marca <> 'San Carlos'` o filtrar post-query). Regla vigente desde 2026-08-15, aplica a futuro sin volver a confirmar.
+- **Categoria Agua:** excluir siempre la marca **San Mateo** de los analisis (`and d.marca <> 'San Mateo'` o filtrar post-query). Regla vigente desde 2026-08-15, aplica a futuro sin volver a confirmar.
 
 ## Mantener este archivo vivo
 
