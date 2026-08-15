@@ -1,8 +1,6 @@
--- AGREGAR PORTE (agregado por anomes, sin detalle de documento/fecha/semana)
+-- AGREGAR PORTE (agregado por anomes, sin detalle de cliente/documento/fecha/semana)
 
 select
-a.cliente_id as codigo,
-c.nombre,
 a.direccion,
 c.gerencia,
 c.centro,

@@ -1,9 +1,9 @@
--- Dimensionamiento: cuantas filas devolveria el agregado por anomes (antes de traer el detalle)
+-- Dimensionamiento: cuantas filas devolveria el agregado por anomes sin detalle de cliente
 
 select count(*) as filas_estimadas
 from (
   select
-  a.cliente_id, a.direccion, c.gerencia, c.centro,
+  a.direccion, c.gerencia, c.centro,
   c.unidad_negocio_revenue_volumen_meta, a.unidad_negocio_revenue_1yp,
   a.agrupador, a.estratificacion,
   d.marca, d.marca_gpa, d.pack, a.material_id,
