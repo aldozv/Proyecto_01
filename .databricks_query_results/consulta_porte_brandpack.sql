@@ -19,10 +19,13 @@ sum(a.caja_equivalente) as CE,
 sum(a.gsi) as GSI,
 sum(a.excise) as EXCISE,
 sum(a.descuento) as DSCTO,
+sum(a.porte) as PORTE,
 sum(a.nr) as NR,
 sum(a.gsi)/sum(a.caja_fisica) as PTR_Base,
 sum(a.descuento)/sum(a.caja_fisica) as Dscto_CF,
-sum(a.gsi)/sum(a.caja_fisica)+sum(a.descuento)/sum(a.caja_fisica) as PTR_Final
+sum(a.porte)/sum(a.caja_fisica) as Porte_CF,
+sum(a.gsi)/sum(a.caja_fisica)+sum(a.descuento)/sum(a.caja_fisica) as PTR_Final,
+sum(a.gsi)/sum(a.caja_fisica)+sum(a.descuento)/sum(a.caja_fisica)+sum(a.porte)/sum(a.caja_fisica) as Facturacion_Final
 
 from slv_maz_dataexperience_peru_dm.dm_venta a
 left join slv_maz_dataexperience_peru_dm.dm_cliente c on c.cliente_id = a.cliente_id
