@@ -33,7 +33,11 @@ El script:
 1. Envia la consulta a `POST /api/2.0/sql/statements` con `disposition=INLINE` y `wait_timeout=50s`.
 2. Si no termina en ese lapso, hace polling a `GET /api/2.0/sql/statements/{statement_id}` cada 2s (hasta ~2 min).
 3. Guarda la respuesta JSON completa en `.databricks_query_results/result_<timestamp>.json`.
-4. Imprime en stdout la ruta de ese archivo (todo lo demas va a stderr).
+4. Si el resultado viene dividido en multiples chunks (`manifest.total_chunk_count > 1`, pasa con
+   resultados grandes, decenas de miles de filas en adelante), descarga cada chunk adicional y lo
+   guarda como `result_<timestamp>_chunk1.json`, `_chunk2.json`, etc. — el archivo principal solo
+   trae el chunk 0. Hay que sumar las filas de todos los archivos para tener el resultado completo.
+5. Imprime en stdout la ruta del archivo principal (todo lo demas va a stderr).
 
 ## Guardrails de volumetria (obligatorios)
 
@@ -57,8 +61,14 @@ Ademas de lo que bloquea el script, aplicar siempre estas practicas antes de cor
 ## Como leer el resultado
 
 El JSON guardado trae:
-- `manifest.schema.columns[]` — nombres/tipos de columna, en orden.
+- `manifest.schema.columns[]` — nombres/tipos de columna, en orden (solo en el archivo principal).
 - `result.data_array[]` — filas, cada una como array de strings en el mismo orden que las columnas.
+- `manifest.total_row_count` — total real de filas del resultado completo (util para validar que no
+  falto ningun chunk: debe igualar la suma de `data_array` del archivo principal + todos los `_chunkN`).
+
+Si existen archivos `_chunk1.json`, `_chunk2.json`, etc. junto al resultado principal, cada uno trae
+su propio `data_array` (mismas columnas, mismo orden) — hay que concatenarlos con el del archivo
+principal antes de analizar, no ignorarlos.
 
 Despues de ejecutar el script, lee el archivo JSON resultante (Read tool) y arma una tabla legible
 para el usuario combinando `manifest.schema.columns[].name` con `result.data_array`. No asumas
