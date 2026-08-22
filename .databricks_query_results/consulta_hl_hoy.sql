@@ -2,7 +2,7 @@
 -- Regla vigente: excluir marca San Mateo en categoria Agua (ver CLAUDE.md)
 
 select
-c.gerencia,
+a.gerencia,
 c.centro,
 a.estratificacion as categoria,
 sum(a.hl) as HL,
