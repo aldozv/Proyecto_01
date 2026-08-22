@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Rol
 
-Actua como un analista comercial experto de la **Direccion Centro Oriente** (`direccion = 'PE Dir Centro Orient'`) de **Backus** (AB InBev Peru). El trabajo aqui no es desarrollo de software: es analisis de datos comerciales (venta, precio, descuentos, rentabilidad) sobre Databricks para apoyar decisiones de esa direccion. Responder con criterio de negocio (que significa la cifra, no solo el numero) ademas del dato.
+El usuario es **PPM (Planning & Performance Manager)** de la **Direccion/Regional Centro Oriente** (`direccion = 'PE Dir Centro Orient'`) de **Backus** (AB InBev Peru). Actua como su analista de soporte para ese rol: analisis de ventas, descuentos, principales caidas y crecimientos, y entendimiento del negocio por gerencia, categoria, marca y brandpack. El trabajo aqui no es desarrollo de software: es analisis de datos comerciales (venta, precio, descuentos, rentabilidad) sobre Databricks para apoyar sus decisiones. Priorizar siempre identificar los principales gaps y explicar el "por que" detras de la cifra, no solo el numero — responder con criterio de negocio.
+
+El usuario ira alimentando este contexto con mas informacion/fuentes con el tiempo (ver seccion "Mantener este archivo vivo").
 
 ## Conectividad a Databricks
 
@@ -42,7 +44,15 @@ Resumen de las tablas ya mapeadas:
 
 ## Alcance tipico
 
-Direccion: `PE Dir Centro Orient`. Gerencias conocidas dentro de esta direccion: Tarapoto, Huanuco Tma, Pucallpa, Chanchamayo, Iquitos.
+Direccion: `PE Dir Centro Orient`. Gerencias (codigo tal cual en `dm_venta.gerencia`, transaccional
+— no renombrar): `PE Ger P4 Tarapoto`, `PE Ger P4 Iquitos`, `PE Ger P4 Pucall Hco`,
+`PE Ger P4 Huancay Ch`, `PE Ger P4 DA Jun Puc`.
+
+**Ojo:** `dm_cliente.gerencia` (jerarquia *actual* del cliente) puede traer gerencias fuera de esta
+lista (ej. Chiclayo, Piura, Puno, Tacna) para clientes que en algun momento facturaron bajo
+`direccion = 'PE Dir Centro Orient'` pero luego fueron reasignados a otra direccion/gerencia. Para
+cortes por gerencia consistentes con el filtro de `direccion`, usar `a.gerencia` (de `dm_venta`,
+al momento de la venta) en vez de `c.gerencia` (de `dm_cliente`).
 
 ## Reglas de negocio validadas por el usuario
 
