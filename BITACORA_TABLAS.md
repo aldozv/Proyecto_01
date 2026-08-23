@@ -122,6 +122,50 @@ siempre usar backticks en el SQL.
 
 ---
 
+## `slv_maz_salesdata_salesdatadata_adb.pe_portfolio_hm_brand_distribution` — Hecho de Brand Distribution
+
+**Que es:** tabla pre-calculada del KPI **Brand Distribution** (ver definicion en `CLAUDE.md` →
+"KPIs propios de Backus") a grano cliente-material-mes. Trae el flag `flag_brand_distro` (int):
+sumarlo agrupado por gerencia/marca/mes/etc. da directamente la metrica — validado corriendo la
+consulta con un mes de datos (`sum(flag_brand_distro)` da valores del orden de cientos por
+combinacion marca/gerencia, consistente con la definicion de la capacitacion). Catalogo:
+`brewdat_uc_mazana_dev` (mismo catalogo que `dm_venta`, database distinta).
+
+**Particionado:** por `mes`.
+
+**Campos:** `mes`, `direccion`, `gerencia`, `fecha_venta` (date), `tipo` (ej. `SELLIN`), `cliente_id`,
+`material_id`, `hl` (decimal), `flag_brand_distro` (int), `marca_tarea`, `marca_offer`,
+`flag_comparable` (int).
+
+**Llaves de join:** `material_id` → `pe_portfolio_material.material_id` (ver tabla siguiente —
+catalogo distinto).
+
+**Nota:** no tiene columna `indicadores_comerciales` (esa es propia de `dm_venta`/`dm_cliente`) —
+no asumir ese filtro aca.
+
+**Metadata:** creada 2024-12-10, owner `lizbeth.leon@gmodelo.com.mx`, formato Delta, tabla EXTERNAL.
+
+---
+
+## `gld_maz_sales_portfolio_pe.pe_portfolio_material` — Maestro de material para portfolio/Brand Distribution
+
+**Que es:** maestro de producto usado para analisis de portfolio (marca, pack, categoria de
+innovacion, etc.), usado junto con la tabla de Brand Distribution de arriba. **Ojo: vive en un
+catalogo distinto** — `brewdat_uc_maz_scus_weu_sales_dev_ds` (no `brewdat_uc_mazana_dev`) — no
+confundir con `dm_material`, que es otro maestro de producto separado.
+
+**Llave de negocio:** `material_id`.
+
+**Campos utiles:** `brand`, `brand_detailed`, `pack`, `package`, `brand_pack`,
+`brand_pack_detailed`, `brand_pack_pop`, `category`, `item_category`, `brand_pack_smdc`/`smdc2`,
+`category_growth`, `mission_name`, `estratificacion`, `brand_category`, `category_inno`,
+`flag_inno`, `category_mktp`, `flag_activacion`, `flag_comparable`, `flg_activo_bees`.
+
+**Metadata:** creada 2025-08-04, owner `brewdat-gb-it-p-superuser-s-w`, formato Delta, tabla
+MANAGED.
+
+---
+
 ## Pendiente de confirmar (no asumir, preguntar al usuario o validar con datos)
 
 - Si `dm_cliente` es historica por `mes` o snapshot unico (afecta si hace falta filtrar por mes

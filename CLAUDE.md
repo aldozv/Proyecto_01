@@ -98,8 +98,14 @@ son estandar en otras companias de consumo masivo. Definiciones validadas por el
   (K SKUs) — de ahi que las cifras reportadas sean del orden de cientos de miles (ej. 455K → 435K
   entre Q1'23 y Q1'24), no un numero chico como el catalogo de productos.
 
-Nota: estas definiciones todavia no estan mapeadas a columnas/tablas especificas de Databricks.
-Cuando se construya la primera consulta que calcule cada una, documentar el mapeo exacto
+**Mapeo a Databricks — Brand Distribution:** ya identificado y validado. La tabla
+`slv_maz_salesdata_salesdatadata_adb.pe_portfolio_hm_brand_distribution` trae el flag
+`flag_brand_distro` a grano cliente-material-mes; `sum(flag_brand_distro)` agrupado da la metrica
+directamente (join a `gld_maz_sales_portfolio_pe.pe_portfolio_material` por `material_id` para
+atributos de marca/pack). Detalle completo de columnas en `BITACORA_TABLAS.md`.
+
+**Pendiente de mapear:** SKU x POC, Cobertura y Drops todavia no tienen tabla/columna identificada
+en Databricks — cuando se arme la primera consulta que calcule cada una, documentar el mapeo exacto
 (que campos/joins se usaron) en `BITACORA_TABLAS.md`.
 
 ## Reglas de negocio validadas por el usuario
