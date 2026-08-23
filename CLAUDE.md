@@ -4,7 +4,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Rol
 
-El usuario es **PPM (Planning & Performance Manager)** de la **Direccion/Regional Centro Oriente** (`direccion = 'PE Dir Centro Orient'`) de **Backus** (AB InBev Peru). Actua como su analista de soporte para ese rol: analisis de ventas, descuentos, principales caidas y crecimientos, y entendimiento del negocio por gerencia, categoria, marca y brandpack. El trabajo aqui no es desarrollo de software: es analisis de datos comerciales (venta, precio, descuentos, rentabilidad) sobre Databricks para apoyar sus decisiones. Priorizar siempre identificar los principales gaps y explicar el "por que" detras de la cifra, no solo el numero — responder con criterio de negocio.
+El usuario es **PPM (Planning & Performance Manager)** de la **Direccion/Regional Centro Oriente** (`direccion = 'PE Dir Centro Orient'`) de **Backus** (AB InBev Peru). Equivalente al rol de **Revenue Growth Management (RGM) regional** en otras companias. Actua como su analista de soporte para ese rol: analisis de ventas, descuentos, principales caidas y crecimientos, y entendimiento del negocio por gerencia, categoria, marca y brandpack. El trabajo aqui no es desarrollo de software: es analisis de datos comerciales (venta, precio, descuentos, rentabilidad) sobre Databricks para apoyar sus decisiones. Priorizar siempre identificar los principales gaps y explicar el "por que" detras de la cifra, no solo el numero — responder con criterio de negocio.
+
+**A quien reporta / con quien comparte:** reporta al **Director de Ventas Regional**, y comparte informacion con los **Gerentes de Venta** (sus pares, uno por gerencia). El formato habitual de entrega es tipo **dashboard con highlights** — priorizar hallazgos accionables y resumidos por sobre tablas extensas.
+
+**Estilo de analisis que prefiere:**
+- Analisis descriptivos de la data (entender que esta pasando antes de saltar a conclusiones).
+- Explorar correlaciones entre variables (ej. entre metricas de venta, descuentos, stock, etc.).
+- Ir incorporando fuentes/inputs adicionales de a poco (ej. stocks) para enriquecer el analisis — no busca todo de una vez.
+- Analisis predictivos de ventas y de demanda cuando aplique (mas alla de lo descriptivo/historico).
+
+**Palancas y responsabilidades:** ademas del analisis, el rol incluye **accionar descuentos en SKUs/productos puntuales** para impulsar venta (mover palancas de precio), y analizar **canales de venta** (horizontal y vertical).
+
+**Temas del negocio a cubrir** (se iran trabajando de a uno, no todos a la vez): ventas, descuentos, coberturas, **SKU x POC** (cantidad de SKUs distintos que compra cada punto de venta), **drops** (cantidad de cajas fisicas/paquetes que compra un POC cada vez que compra), comportamientos de compra.
+
+**Objetivo final del analisis:** proponer **acciones cuantificables**, moviendo palancas de precio, para alcanzar objetivos de venta por canal, gerencia, categoria, y a nivel regional.
 
 El usuario ira alimentando este contexto con mas informacion/fuentes con el tiempo (ver seccion "Mantener este archivo vivo").
 
@@ -53,6 +67,40 @@ lista (ej. Chiclayo, Piura, Puno, Tacna) para clientes que en algun momento fact
 `direccion = 'PE Dir Centro Orient'` pero luego fueron reasignados a otra direccion/gerencia. Para
 cortes por gerencia consistentes con el filtro de `direccion`, usar `a.gerencia` (de `dm_venta`,
 al momento de la venta) en vez de `c.gerencia` (de `dm_cliente`).
+
+## KPIs propios de Backus (no comunes en otras empresas de consumo masivo)
+
+Backus (mayor cervecera del Peru, AB InBev) maneja KPIs especificos de la industria/compania que no
+son estandar en otras companias de consumo masivo. Definiciones validadas por el usuario:
+
+- **SKU x POC**: cantidad de SKUs (productos) **distintos** que un cliente (POC) compra en un rango
+  de tiempo determinado (dia, semana, mes) — cuenta variedad, no volumen. Ejemplo: en julio el
+  cliente Pepito compro 1 caja Pilsen Callao 630, 10 cajas Cristal 650 y 100 six-packs Mike's
+  Limonada 355 → SKU x POC = **3** (3 productos distintos, sin importar cuanto compro de cada uno).
+
+- **Cobertura**: si un cliente compra **al menos 1 vez** cierto SKU/producto/categoria/marca en un
+  rango de tiempo, cuenta como 1 cobertura de esa categoria — es binario (compro o no), no suma
+  SKUs distintos dentro de la categoria. Ejemplo (mismo Pepito): Pilsen Callao 630 + Cristal 650 son
+  ambos cerveza → 1 cobertura de cerveza (no 2, aunque sean 2 SKUs distintos). Mike's es RTD
+  (Ready To Drink) → 1 cobertura de RTD, categoria aparte.
+
+- **Drops**: cantidad de cajas fisicas/paquetes que un POC compra **cada vez que compra** (por
+  visita/pedido) — no confundir con SKU x POC (variedad) ni con volumen total del periodo.
+
+- **Brand Distribution**: la **suma, para todos los clientes, del SKU x POC de cada uno** en un
+  periodo de tiempo — es decir, la cantidad total de combinaciones distintas cliente-SKU compradas
+  (no el conteo de SKUs del catalogo, ni `SKU x POC x Coberturas` como se penso inicialmente —
+  esa hipotesis quedo descartada). Confirmado con foto de capacitacion interna de Backus
+  (2026-08-23). Ejemplo de la capacitacion: Luis compro en marzo 3 Six Packs PC473, 1 Caja PC630,
+  1 Caja CSq Dorada 620 y 400 Six Packs de Golden 473 → 4 SKUs distintos = su "Total Distribution"
+  individual fue **4** ese mes. El "Brand Distribution Total" que se reporta a nivel
+  region/compania es la suma de ese valor para todos los clientes, tipicamente expresado en miles
+  (K SKUs) — de ahi que las cifras reportadas sean del orden de cientos de miles (ej. 455K → 435K
+  entre Q1'23 y Q1'24), no un numero chico como el catalogo de productos.
+
+Nota: estas definiciones todavia no estan mapeadas a columnas/tablas especificas de Databricks.
+Cuando se construya la primera consulta que calcule cada una, documentar el mapeo exacto
+(que campos/joins se usaron) en `BITACORA_TABLAS.md`.
 
 ## Reglas de negocio validadas por el usuario
 
