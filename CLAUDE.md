@@ -108,6 +108,27 @@ son estandar en otras companias de consumo masivo. Definiciones validadas por el
   — **sumar numerador y denominador, no promediar `pct_uptime_brand_pack` fila por fila** (da un
   resultado distinto si los grupos no tienen el mismo peso).
 
+- **Stock SAP** ("stock en piso"): cantidad de **cajas fisicas de stock** disponibles por material
+  x Centro de Distribucion (CD), directo de SAP (fuente transaccional, replicada a Databricks).
+  Reproduce la cascada de disponibilidad de la transaccion SAP `ZSMGEN_STOCK_DISP`:
+  `Stock Disp (libre utilizacion) → -entregas pendientes → Total Disponible → -pedidos abiertos
+  → Disponible Final → -reservas → CalDisFinal` (el mas conservador, descuenta compromisos
+  futuros). Query base recibida de Data Engineering Peru (Javier) el 2026-07-09, a pedido del
+  usuario — ver `consultas/Query_Stocks_SAP.sql` (muy bien documentada, con la mecanica completa
+  en los comentarios del archivo).
+  **ADVERTENCIAS CRITICAS antes de usar estos numeros** (no son opcionales, condicionan si el dato
+  sirve para la pregunta que se esta respondiendo):
+  - **No es tiempo real** — es una foto de **inicio de dia** (el batch SAP→Databricks corre en la
+    manana; MARD ~10:01am Peru, MCHB ~1pm). El stock fisico si cuadra a esa hora, pero
+    pedidos/entregas se acumulan durante el dia — un caso validado en el query mostro una
+    diferencia de **~1000x** entre "pedidos" de esta consulta vs. SAP en vivo el mismo dia (28 CA
+    vs 27,191 CA). `Disponible_Final`/`CalDisFinal` son **referenciales de inicio de dia**, no ATP
+    en tiempo real.
+  - **Alcance de almacenes**: por defecto la consulta suma TODOS los almacenes del centro; la
+    transaccion SAP real (`ZSMGEN_STOCK_DISP`) usa solo un subconjunto (~`IQ01` Prod. Terminados)
+    — pendiente confirmar el set exacto con logistica antes de comparar 1 a 1 contra SAP.
+  Mapeo a Databricks: catalogo `brewdat_uc_maz_prod` (replica SAP PR3) — ver `BITACORA_TABLAS.md`.
+
 - **Brand Distribution**: la **suma, para todos los clientes, del SKU x POC de cada uno** en un
   periodo de tiempo — es decir, la cantidad total de combinaciones distintas cliente-SKU compradas
   (no el conteo de SKUs del catalogo, ni `SKU x POC x Coberturas` como se penso inicialmente —

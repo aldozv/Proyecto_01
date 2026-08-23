@@ -217,6 +217,59 @@ de creacion/owner expuestos por `DESCRIBE EXTENDED` en este tipo de tabla).
 
 ---
 
+## Catalogo `brewdat_uc_maz_prod` — Replica SAP PR3 (fuente del KPI Stock SAP)
+
+**Que es:** catalogo distinto a `brewdat_uc_mazana_dev` (venta/cliente) y a
+`brewdat_uc_maz_scus_weu_sales_dev_ds` (portfolio material) — aca vive la **replica cruda de
+tablas SAP** (prefijo `copecac_*`, via CDC/Change Data Capture desde SAP PR3). Query base
+recibida de Data Engineering Peru (Javier) el 2026-07-09 — ver
+`consultas/Query_Stocks_SAP.sql` para la mecanica completa (esta muy bien comentada, no
+reinventar). Reconstruye la cascada de disponibilidad de la transaccion SAP `ZSMGEN_STOCK_DISP`
+(ver definicion del KPI **Stock SAP** en `CLAUDE.md` — incluye advertencias criticas de frescura
+y alcance de almacenes que hay que leer antes de usar estos numeros).
+
+**Convenciones que aplican a TODAS las tablas `copecac_*`:**
+- `op_ind <> 'D'` — excluir siempre el borrado logico del CDC.
+- `matnr` (material SAP) viene como string con ceros a la izquierda — castear a `INT` para joins.
+- Dos tipos de tabla:
+  - **Estado-vigente** (`copecac_marm`, `copecac_mara`, `copecac_makt`, `copecac_mchb`): se puede
+    sumar/agrupar directo.
+  - **CDC append-log** (`copecac_vbbe`, `copecac_resb`): traen el historial completo de cambios,
+    no solo el estado actual — hay que reconstruir el vigente con
+    `ROW_NUMBER() OVER (PARTITION BY <PK> ORDER BY target_apply_ts DESC, header__change_seq DESC)`,
+    quedarse con `rn = 1` y `op_ind IN ('I','U')`.
+
+**Tablas usadas en la cascada de stock:**
+- `slv_maz_masterdata_sap_pr3.copecac_marm` — conversion de unidades. `umrez` (unidades base por
+  caja) con `meinh = 'UMV'`. Join por `matnr`.
+- `slv_maz_masterdata_sap_pr3.copecac_mara` — maestro de material. `mtart` (tipo; `FERT` = producto
+  terminado — cerveza/bebidas), `volum` (volumen unitario, para HL), `normt`.
+- `slv_maz_masterdata_sap_pr3.copecac_makt` — descripcion del material. `maktx`, filtrar
+  `spras = 'S'` (español).
+- `slv_maz_supply_sap_pr3.copecac_mchb` — **stock fisico** (libre utilizacion) por lote,
+  material x centro (`werks`). Campo `clabs`. **Estado-vigente.**
+- `slv_maz_sales_sap_pr3.copecac_vbbe` — requerimientos SD abiertos (entregas y pedidos).
+  `vbtyp='J'` = entregas en curso, `vbtyp='C'` = pedidos de venta abiertos. **CDC, 653M filas —
+  SIEMPRE prefiltrar `werks` exacto por performance**, nunca correr sin filtro de centro.
+- `slv_maz_supply_sap_pr3.copecac_resb` — reservas abiertas. Normalmente vacio en CDs de producto
+  terminado (es de componentes de produccion) — `StockReser` sale 0 en la mayoria de casos.
+
+**Grano:** material (`matnr`) x centro (`werks`).
+
+**Unidades:** unidad base (botella) → cajas (`CA`) via `/marm.umrez`. `HL = cajas * (umrez * volum
+/ 100000)`.
+
+**Codigos de centro relevantes para Centro Oriente:** mismo dominio `BK##`/`SJ##` que
+`dm_cliente.centro_id` y la tabla de quiebres de stock (ver arriba) — para alcance nacional el
+patron es `werks LIKE 'BK%' OR werks LIKE 'SJ%' OR werks LIKE 'AH%'`.
+
+**Pendiente de confirmar (ver tambien advertencias del KPI en `CLAUDE.md`):**
+- Set exacto de almacenes (`lgort`) que usa la Z de SAP para "Stock Disp" (~`IQ01`) — el query por
+  defecto suma todos los almacenes del centro salvo que se descomente el filtro `lgort`.
+- Mapeo `vbtyp` `C`/`J` pendiente de validar contra una foto SAP del mismo instante.
+
+---
+
 ## Pendiente de confirmar (no asumir, preguntar al usuario o validar con datos)
 
 - Si `dm_cliente` es historica por `mes` o snapshot unico (afecta si hace falta filtrar por mes
