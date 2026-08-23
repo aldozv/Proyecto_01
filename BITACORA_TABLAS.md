@@ -168,8 +168,10 @@ MANAGED.
 
 ## `dev_onep_fact_critical_items_summary_24h_brand_pack_gold` — Quiebres de stock (OOS) por brand_pack/CD
 
-**Que es:** hecho de **quiebres de stock (Out of Stock)** a nivel brand_pack + Centro de
-Distribucion (CD) + dia. Fuente del KPI de **stock/uptime** — primer input de este tipo que se
+**Que es:** hecho de **quiebres de stock (Out of Stock) en BEES** (app B2C de Backus para clientes
+directos/POCs) a nivel brand_pack + Centro de Distribucion (CD) + dia. Mide cuantas horas el SKU
+estuvo "apagado" (no disponible para pedido) en BEES por falta de stock. Fuente del KPI
+**SKU Uptime** (ver `CLAUDE.md` → "KPIs propios de Backus") — primer input de este tipo que se
 incorpora al analisis (ver "Estilo de analisis que prefiere" en `CLAUDE.md`: ir sumando fuentes
 como stocks de a poco). Columnas ya vienen documentadas con `comment` en Databricks (poco comun,
 aprovechar esos comentarios en vez de adivinar).

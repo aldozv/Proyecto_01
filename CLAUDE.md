@@ -88,13 +88,16 @@ son estandar en otras companias de consumo masivo. Definiciones validadas por el
 - **Drops**: cantidad de cajas fisicas/paquetes que un POC compra **cada vez que compra** (por
   visita/pedido) — no confundir con SKU x POC (variedad) ni con volumen total del periodo.
 
-- **SKU Uptime** (KPI de la Liga Logistica, "Excelencia Comercial"): mide la disponibilidad de
-  los SKUs en BEES (app de pedidos), para minimizar roturas de stock. Formula:
+- **SKU Uptime** (KPI de la Liga Logistica, "Excelencia Comercial"): mide **cuantas horas el SKU
+  estuvo "apagado" (no disponible) en BEES por falta de stock** — el foco del KPI es la rotura
+  (horas apagadas), aunque se reporte como % de disponibilidad. **BEES es la app B2C de Backus**,
+  usada por los clientes directos (POCs) para hacer sus pedidos — el KPI mide la experiencia de
+  compra de ese cliente final, no un canal interno/mayorista. Formula:
   `Horas disponibles de SKUs en BEES / Horas disponibles en el mes`, donde el numerador es la
-  sumatoria de horas que cada SKU estuvo "prendido" (disponible) por CD, y el denominador es
-  `24h x #dias del mes x #SKUs x #CDs`. Ejemplo de la capacitacion: 2 CDs, 30 dias, 3 SKUs →
-  denominador 4,320h; con 2,000+2,160=4,160h disponibles → **96%**. Confirmado con foto de
-  capacitacion interna (2026-08-23).
+  sumatoria de horas que cada SKU estuvo "prendido" (disponible, i.e. NO apagado) por CD, y el
+  denominador es `24h x #dias del mes x #SKUs x #CDs`. Ejemplo de la capacitacion: 2 CDs, 30 dias,
+  3 SKUs → denominador 4,320h; con 2,000+2,160=4,160h disponibles → **96%** (equivale a 160h
+  "apagadas" ese mes). Confirmado con foto de capacitacion interna (2026-08-23).
   **Ojo con el scope:** se considera todo el portafolio Backus, pero **el listado exacto de SKUs a
   medir cada mes lo define el equipo de Planning a inicio de mes** — no es "todo lo que hay en la
   tabla", es un input externo mensual que hay que conseguir aparte (no derivable solo de los
