@@ -166,6 +166,55 @@ MANAGED.
 
 ---
 
+## `dev_onep_fact_critical_items_summary_24h_brand_pack_gold` — Quiebres de stock (OOS) por brand_pack/CD
+
+**Que es:** hecho de **quiebres de stock (Out of Stock)** a nivel brand_pack + Centro de
+Distribucion (CD) + dia. Fuente del KPI de **stock/uptime** — primer input de este tipo que se
+incorpora al analisis (ver "Estilo de analisis que prefiere" en `CLAUDE.md`: ir sumando fuentes
+como stocks de a poco). Columnas ya vienen documentadas con `comment` en Databricks (poco comun,
+aprovechar esos comentarios en vez de adivinar).
+
+**Ojo — se accede por ruta de Volume, no `catalogo.schema.tabla`:**
+```sql
+select ... from delta.`/Volumes/brewdat_uc_mazana_dev/slv_maz_dataexperience_peru_data/workspace/growth/dev_onep_fact_critical_items_summary_24h_brand_pack_gold`
+```
+
+**Particionado:** por `mes` (formato `YYYYMM`).
+
+**Grano:** `mes` + `out_of_stock_date` + `centro_id` + `brand_pack`.
+
+**Campos:**
+- `mes` (string) — mes del evento, `YYYYMM`.
+- `out_of_stock_date` (date) — fecha calendario del evento de quiebre.
+- `centro_id` (string) — codigo del Centro de Distribucion (CD), formato `BK##`/`SJ##` (ej. `BK31`,
+  `SJ90`). **Cruza con `dm_cliente.centro_id`** (mismo formato/dominio, confirmado con datos —
+  ojo, no es `dm_cliente.centro`, que trae el nombre tipo `CD Huánuco` y es un campo distinto).
+  **No hay relacion 1:1 con gerencia**: un mismo CD reparte a varias gerencias (ej. `SJ97`/CD
+  Pucallpa reparte a las 4 gerencias de Centro Oriente) — se puede filtrar esta tabla a la lista de
+  centros que sirven a una direccion/region, pero **no se puede atribuir un quiebre a una sola
+  gerencia** con esta tabla sola.
+- `brand_pack` (string) — marca + presentacion (ej. `Cristal 620 RB`).
+- `activo_en_cd` (int) — 1 si al menos un SKU del brand_pack esta activo en el CD.
+- `cant_skus_brand_pack` (int) — cantidad de SKUs distintos del brand_pack en el CD/dia.
+- `horas_disponibles` (double) — ventana de disponibilidad, siempre 24.
+- `horas_oos_brand_pack` (double) — horas OOS a nivel brand_pack (con logica de sustitucion).
+- `horas_prendidas_brand_pack` (double) — horas sin quiebre (`24 - horas_oos`).
+- `pct_horas_oos_brand_pack` (double, 0-1) — % de horas en quiebre.
+- `pct_uptime_brand_pack` (double, 0-1) — % de tiempo disponible ("Uptime").
+- `hl_so_brand_pack` (double) — **volumen estimado perdido (HL) por el quiebre** — conecta el
+  quiebre directo con venta perdida, muy relevante para el objetivo de acciones cuantificables.
+- `hl_pv_promedio_bp` (double) — promedio de HL/hora a nivel brand_pack (ultimos 6 meses).
+- `flag_preventa_dia` (int) — 1 si hubo preventa del brand_pack ese dia (ultimos 6 meses).
+- `max_length_of_time_days` (int) — maxima duracion de evento OOS en el grupo (dias).
+- `skus_en_quiebre` (bigint) — cantidad de SKUs distintos con evento OOS valido en el dia.
+- `fecha_proceso_dbks` (string) — timestamp de ejecucion del ETL.
+- `skus_brand_pack_list` / `skus_oos_list` (string) — listas de SKUs (separadas por coma).
+
+**Metadata:** catalogo `brewdat_uc_mazana_dev`, formato Delta, tabla MANAGED via Volume (sin fecha
+de creacion/owner expuestos por `DESCRIBE EXTENDED` en este tipo de tabla).
+
+---
+
 ## Pendiente de confirmar (no asumir, preguntar al usuario o validar con datos)
 
 - Si `dm_cliente` es historica por `mes` o snapshot unico (afecta si hace falta filtrar por mes

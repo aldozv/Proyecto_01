@@ -30,7 +30,8 @@ Usar el skill `databricks-query` (`.claude/skills/databricks-query/SKILL.md`) pa
 bash .claude/skills/databricks-query/scripts/run_query.sh --file consulta.sql
 ```
 
-Resultados y los `.sql` ejecutados quedan en `.databricks_query_results/`.
+Resultados y los `.sql` ejecutados por el skill quedan en `.databricks_query_results/`. Las
+consultas SQL "finales"/curadas (para reejecutar o auditar despues) se guardan en `consultas/`.
 
 ## Guardrails obligatorios en toda consulta
 
@@ -86,6 +87,23 @@ son estandar en otras companias de consumo masivo. Definiciones validadas por el
 
 - **Drops**: cantidad de cajas fisicas/paquetes que un POC compra **cada vez que compra** (por
   visita/pedido) — no confundir con SKU x POC (variedad) ni con volumen total del periodo.
+
+- **SKU Uptime** (KPI de la Liga Logistica, "Excelencia Comercial"): mide la disponibilidad de
+  los SKUs en BEES (app de pedidos), para minimizar roturas de stock. Formula:
+  `Horas disponibles de SKUs en BEES / Horas disponibles en el mes`, donde el numerador es la
+  sumatoria de horas que cada SKU estuvo "prendido" (disponible) por CD, y el denominador es
+  `24h x #dias del mes x #SKUs x #CDs`. Ejemplo de la capacitacion: 2 CDs, 30 dias, 3 SKUs →
+  denominador 4,320h; con 2,000+2,160=4,160h disponibles → **96%**. Confirmado con foto de
+  capacitacion interna (2026-08-23).
+  **Ojo con el scope:** se considera todo el portafolio Backus, pero **el listado exacto de SKUs a
+  medir cada mes lo define el equipo de Planning a inicio de mes** — no es "todo lo que hay en la
+  tabla", es un input externo mensual que hay que conseguir aparte (no derivable solo de los
+  datos).
+  **Mapeo a Databricks:** misma tabla que `Brand Distribution` de stock/quiebres —
+  `dev_onep_fact_critical_items_summary_24h_brand_pack_gold` (ver `BITACORA_TABLAS.md`). Se calcula
+  como `SUM(horas_prendidas_brand_pack) / SUM(horas_disponibles)` sobre el scope de fechas/SKUs/CDs
+  — **sumar numerador y denominador, no promediar `pct_uptime_brand_pack` fila por fila** (da un
+  resultado distinto si los grupos no tienen el mismo peso).
 
 - **Brand Distribution**: la **suma, para todos los clientes, del SKU x POC de cada uno** en un
   periodo de tiempo — es decir, la cantidad total de combinaciones distintas cliente-SKU compradas
