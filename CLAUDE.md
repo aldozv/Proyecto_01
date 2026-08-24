@@ -146,7 +146,12 @@ son estandar en otras companias de consumo masivo. Definiciones validadas por el
 directamente (join a `gld_maz_sales_portfolio_pe.pe_portfolio_material` por `material_id` para
 atributos de marca/pack). Detalle completo de columnas en `BITACORA_TABLAS.md`.
 
-**Pendiente de mapear:** SKU x POC, Cobertura y Drops todavia no tienen tabla/columna identificada
+**Mapeo a Databricks — Drops:** ya identificado. La vista
+`slv_maz_dataexperience_peru_revenue.revenue_dev_vw_rev_maestro_drops_brandpack` trae el resultado
+de Drops ya calculado a grano cliente-brandpack (ver `consultas/Query_Drops.txt`), filtrar por
+`direccion`. Pendiente documentar el detalle de columnas en `BITACORA_TABLAS.md`.
+
+**Pendiente de mapear:** SKU x POC y Cobertura todavia no tienen tabla/columna identificada
 en Databricks — cuando se arme la primera consulta que calcule cada una, documentar el mapeo exacto
 (que campos/joins se usaron) en `BITACORA_TABLAS.md`.
 
