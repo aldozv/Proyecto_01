@@ -144,5 +144,22 @@ if [ "$STATE" != "SUCCEEDED" ]; then
   exit 1
 fi
 
+# Si el resultado viene dividido en varios chunks, Databricks solo devuelve el
+# primero inline; hay que pedir los siguientes por separado (uno por archivo,
+# sin depender de jq/python para mergear JSON).
+TOTAL_CHUNKS="$(printf '%s' "$RESPONSE" | grep -oE '"total_chunk_count"[[:space:]]*:[[:space:]]*[0-9]+' | grep -oE '[0-9]+$')"
+if [ -n "$TOTAL_CHUNKS" ] && [ "$TOTAL_CHUNKS" -gt 1 ]; then
+  echo "Resultado dividido en $TOTAL_CHUNKS chunks, descargando los restantes..." >&2
+  BASE_NAME="${RESULT_FILE%.json}"
+  CHUNK_IDX=1
+  while [ "$CHUNK_IDX" -lt "$TOTAL_CHUNKS" ]; do
+    CHUNK_FILE="${BASE_NAME}_chunk${CHUNK_IDX}.json"
+    curl -sS -X GET "$HOST/api/2.0/sql/statements/$STATEMENT_ID/result/chunks/$CHUNK_IDX" \
+      -H "Authorization: Bearer $DATABRICKS_TOKEN" > "$CHUNK_FILE"
+    echo "Chunk $CHUNK_IDX guardado en: $CHUNK_FILE" >&2
+    CHUNK_IDX=$((CHUNK_IDX + 1))
+  done
+fi
+
 echo "OK. Resultado guardado en: $RESULT_FILE" >&2
 echo "$RESULT_FILE"

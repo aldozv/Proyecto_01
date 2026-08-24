@@ -1,0 +1,1 @@
+{"statement_id":"01f1987e-76ab-13c7-9a79-d611ef730574","status":{"state":"FAILED","error":{"error_code":"BAD_REQUEST","message":"Inline byte limit exceeded. Statements executed with disposition=INLINE can have a result size of at most 26214400 bytes. Please execute the statement with disposition=EXTERNAL_LINKS if you want to download the full result."}}}

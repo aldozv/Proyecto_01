@@ -1,0 +1,1 @@
+SELECT * FROM brewdat_uc_mazana_dev.slv_maz_salesdata_salesdatadata_adb.pe_promo_adherenciadiaria
