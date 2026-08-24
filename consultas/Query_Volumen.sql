@@ -38,4 +38,5 @@ where a.fecha_venta between '2025-01-01' and '2026-12-31'
 and a.direccion = 'PE Dir Centro Orient'
 and a.estratificacion in ('Cervezas', 'Licores', 'Ready To Drink', 'Gaseosas', 'Agua', 'Maltas')
 and a.indicadores_comerciales= 1
+and not (a.estratificacion = 'Agua' and d.marca = 'San Mateo')
 group by all
