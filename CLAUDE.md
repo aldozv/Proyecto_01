@@ -31,7 +31,7 @@ bash .claude/skills/databricks-query/scripts/run_query.sh --file consulta.sql
 ```
 
 Resultados y los `.sql` ejecutados por el skill quedan en `.databricks_query_results/`. Las
-consultas SQL "finales"/curadas (para reejecutar o auditar despues) se guardan en `consultas/`.
+consultas SQL "finales"/curadas (para reejecutar o auditar despues) se guardan en `querys/`.
 
 ## Guardrails obligatorios en toda consulta
 
@@ -114,7 +114,7 @@ son estandar en otras companias de consumo masivo. Definiciones validadas por el
   `Stock Disp (libre utilizacion) → -entregas pendientes → Total Disponible → -pedidos abiertos
   → Disponible Final → -reservas → CalDisFinal` (el mas conservador, descuenta compromisos
   futuros). Query base recibida de Data Engineering Peru (Javier) el 2026-07-09, a pedido del
-  usuario — ver `consultas/Query_Stocks_SAP.sql` (muy bien documentada, con la mecanica completa
+  usuario — ver `querys/Query_Stocks_SAP.sql` (muy bien documentada, con la mecanica completa
   en los comentarios del archivo).
   **ADVERTENCIAS CRITICAS antes de usar estos numeros** (no son opcionales, condicionan si el dato
   sirve para la pregunta que se esta respondiendo):
@@ -148,7 +148,7 @@ atributos de marca/pack). Detalle completo de columnas en `BITACORA_TABLAS.md`.
 
 **Mapeo a Databricks — Drops:** ya identificado. La vista
 `slv_maz_dataexperience_peru_revenue.revenue_dev_vw_rev_maestro_drops_brandpack` trae el resultado
-de Drops ya calculado a grano cliente-brandpack (ver `consultas/Query_Drops.txt`), filtrar por
+de Drops ya calculado a grano cliente-brandpack (ver `querys/Query_Drops.sql`), filtrar por
 `direccion`. Pendiente documentar el detalle de columnas en `BITACORA_TABLAS.md`.
 
 **Pendiente de mapear:** SKU x POC y Cobertura todavia no tienen tabla/columna identificada

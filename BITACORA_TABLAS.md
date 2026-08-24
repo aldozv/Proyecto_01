@@ -223,7 +223,7 @@ de creacion/owner expuestos por `DESCRIBE EXTENDED` en este tipo de tabla).
 `brewdat_uc_maz_scus_weu_sales_dev_ds` (portfolio material) — aca vive la **replica cruda de
 tablas SAP** (prefijo `copecac_*`, via CDC/Change Data Capture desde SAP PR3). Query base
 recibida de Data Engineering Peru (Javier) el 2026-07-09 — ver
-`consultas/Query_Stocks_SAP.sql` para la mecanica completa (esta muy bien comentada, no
+`querys/Query_Stocks_SAP.sql` para la mecanica completa (esta muy bien comentada, no
 reinventar). Reconstruye la cascada de disponibilidad de la transaccion SAP `ZSMGEN_STOCK_DISP`
 (ver definicion del KPI **Stock SAP** en `CLAUDE.md` — incluye advertencias criticas de frescura
 y alcance de almacenes que hay que leer antes de usar estos numeros).
