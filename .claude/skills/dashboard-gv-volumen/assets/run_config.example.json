@@ -1,0 +1,50 @@
+{
+  "direccion_label": "Dirección Centro Oriente",
+  "eyebrow_text": "Dirección Centro Oriente · Volumen (HL)",
+  "page_title_tag": "Centro Oriente Volumen",
+  "page_title_default": "Ventas por Gerencia — Centro Oriente",
+  "year_min": 2025,
+  "year_max": 2026,
+  "latest_month": 8,
+  "latest_month_is_partial": true,
+  "footer_scope_note": "Incluye las 4 gerencias geográficas de Centro Oriente + DA Jun Puc (Distribuidor Autorizado, canal 100% DAs que abastece de varios CD en distintas regiones — no es una zona geográfica como las otras 4). El filtro Gerencia del toolbar es multi-select: con todas marcadas ves el total de la Dirección; desmarcá para quedarte con una o varias gerencias puntuales.",
+  "gerencias": [
+    {
+      "code": "PE Ger P4 Pucall Hco",
+      "label": "Pucallpa",
+      "cd_list": ["CD Pucallpa", "CD Huánuco", "CD Tingo María"],
+      "cd_note": "CD Pucallpa, CD Huánuco, CD Tingo María."
+    },
+    {
+      "code": "PE Ger P4 Tarapoto",
+      "label": "Tarapoto",
+      "cd_list": ["CD Tarapoto", "CD Yurimaguas", "CD Moyobamba", "CD Pucallpa"],
+      "cd_note": "CD Tarapoto, CD Yurimaguas, CD Moyobamba, y CD Pucallpa (este último concentra un bloque de clientes canal DAs -- Distribuidores Autorizados -- que factura bajo Tarapoto pero está abastecido/asignado desde CD Pucallpa; confirmado con el usuario 2026-08-27, se incluye deliberadamente para no perder ese volumen)."
+    },
+    {
+      "code": "PE Ger P4 Iquitos",
+      "label": "Iquitos",
+      "cd_list": ["CD Iquitos"],
+      "cd_note": "CD Iquitos (único CD real de esta gerencia)."
+    },
+    {
+      "code": "PE Ger P4 Huancay Ch",
+      "label": "Huancayo Ch",
+      "cd_list": ["CD Huancayo", "CD Chanchamayo", "CD Satipo", "CD Huancavelica"],
+      "cd_note": "CD Huancayo, CD Chanchamayo, CD Satipo, CD Huancavelica."
+    },
+    {
+      "code": "PE Ger P4 DA Jun Puc",
+      "label": "DA Jun Puc",
+      "cd_list": ["CD Pucallpa", "CD San Benedicto I (Ate)", "CD Satipo", "CD Huánuco", "CD Huancayo", "CD Huancavelica"],
+      "cd_note": "CD Pucallpa, CD San Benedicto I (Ate), CD Satipo, CD Huánuco, CD Huancayo, CD Huancavelica -- todos incluidos (no se excluye ninguno como \"marginal\"): DA Jun Puc es una gerencia de canal (Distribuidor Autorizado, 100% canal DAs), no una zona geográfica como las otras 4, así que abastecerse de varios CD en distintas regiones es su operación normal, no ruido."
+    }
+  ],
+  "raw_files": {
+    "RAW_GERENCIA": "resultados/gerencia_mensual.json",
+    "RAW_BASE": "resultados/base_cd_categoria_mensual.json",
+    "RAW_CANAL": "resultados/canal_cd_categoria_mensual.json",
+    "RAW_MARCA": "resultados/marca_cd_categoria_mensual.json",
+    "RAW_FORMATO": "resultados/formato_cd_categoria_mensual.json"
+  }
+}

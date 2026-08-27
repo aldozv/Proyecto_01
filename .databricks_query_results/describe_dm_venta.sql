@@ -1,0 +1,1 @@
+DESCRIBE TABLE EXTENDED brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_venta

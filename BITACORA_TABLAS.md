@@ -35,11 +35,28 @@ aprox.). Para agregados de negocio normalmente se agrupa por `cliente_id`, `mate
 - `clase_venta` — tipo de documento SAP. Valores conocidos: `ZPP1` preventa flujo1, `ZPP3` pedido
   de venta, `ZPO1`/`ZPO3` obsequio, `ZPO6` preventa-canje, `ZPO7` venta-canje, `ZPPV`/`ZPOB` pedido
   de oficina, `ZPP5` EDI, `ZPD1/ZPD3/ZPD5/ZPD6`/`BKNC`/`ZPDF`/`ZPDB` notas de credito.
-- `direccion` / `gerencia` — jerarquia territorial **al momento de la venta**. Ojo: tambien existen
-  `direccion_historia`/`gerencia_historia` y `direccion_venta`/`gerencia_venta` — no estan
-  confirmados los criterios exactos de diferencia entre estas tres variantes; validar con el
-  usuario antes de asumir cual usar si el analisis compara periodos donde el cliente pudo haber
-  cambiado de territorio.
+- `direccion` / `gerencia` — jerarquia territorial **vigente/actual, aplicada tambien de forma
+  retroactiva al historico**. Tambien existen `direccion_historia`/`gerencia_historia` y
+  `direccion_venta`/`gerencia_venta`, que preservan la jerarquia **tal como era al momento real de
+  la venta** (antes de reestructuraciones). **Confirmado por el usuario (2026-08-27) — hubo una
+  reestructuracion de gerencias a inicios de 2026:** la direccion `PE Dir Oriente` paso a llamarse
+  **`PE Dir Centro Orient`** y **sumo la GV Huancayo** (antes `PE Ger P3 Huancayo`, ahora
+  `PE Ger P4 Huancay Ch`), que pertenecia a la direccion `PE Dir Centro Sur` — esta ultima paso a
+  llamarse **`PE Dir Sur`**. Esto explica el ejemplo validado con datos: para una venta real de
+  202501 (antes de la reestructuracion) del cliente 11564439, `direccion`/`gerencia` muestran la
+  jerarquia **nueva** (`PE Dir Centro Orient` / `PE Ger P4 Huancay Ch`) mientras que
+  `direccion_historia`/`gerencia_historia` y `direccion_venta`/`gerencia_venta` muestran la
+  jerarquia **como era en ese momento** (`PE Dir Centro Sur` / `PE Ger P3 Huancayo`) — ambas
+  variantes coincidieron entre si en ese caso, pero no esta confirmado que siempre sea asi.
+  Tambien explica por que `direccion_historia` dejo de poblarse desde 202601 (mes en que entro en
+  vigencia la nueva estructura: ya no hay "historia" distinta que preservar para ventas nuevas) y
+  por que la divergencia entre `direccion` y las otras dos variantes desaparecio desde ese mes
+  (~27-30% de filas distintas en 2023-2025, 0 en 202601/202608).
+  **Implicancia practica:** para comparar series historicas con la jerarquia territorial vigente
+  (ej. "todo lo que hoy es Centro Oriente, incluyendo Huancayo, aunque en su momento fuera Centro
+  Sur"), usar `direccion`/`gerencia`. Para reconstruir como se veian los resultados **en el momento
+  real** de cada periodo (ej. reportar Centro Sur tal como era antes de perder Huancayo), usar
+  `direccion_historia`/`gerencia_historia` o `direccion_venta`/`gerencia_venta`.
 
 **Campos que solemos usar:** `cliente_id`, `direccion`, `gerencia`, `centro` (via `dm_cliente`),
 `material_id`, `fecha_venta`, `mes`/`anomes`, `semana`, `semana_dia`, `estratificacion`,
@@ -56,14 +73,30 @@ Regla observada en la query original: `NR = GSI + EXCISE + DSCTO` (descuento ya 
 
 ## `slv_maz_dataexperience_peru_dm.dm_cliente` — Maestro de cliente
 
-**Que es:** Maestro/atributos de cliente. ~1,151,927 filas (~137 MB). Primer campo es `mes`, lo
-que sugiere que podria ser una foto mensual — **pendiente confirmar si hay multiples filas por
-`cliente_id` (una por mes) o si es snapshot unico**; si es historica, filtrar por el `mes` que
-corresponda para no duplicar al hacer join con `dm_venta`.
+**Que es:** Maestro/atributos de cliente. ~1,151,927 filas (~137 MB). **Confirmado con datos
+(2026-08-27): es un snapshot UNICO, no historico** — el campo `mes` trae un solo valor en toda la
+tabla (`202608`, el mes vigente al momento de la consulta), no una fila por cliente por mes. Por lo
+tanto join a `dm_venta` por `cliente_id` trae siempre la ficha **actual** del cliente (CD, canal,
+gerencia, etc.), sin importar el mes historico de la venta — no hace falta (ni es posible) filtrar
+`dm_cliente.mes` para "alinear" con el mes de `dm_venta`. Ojo con este punto en analisis
+multi-anio: un cliente que cambio de CD/canal/gerencia en el periodo aparece siempre bajo su
+clasificacion actual, incluso para ventas historicas.
 
 **Llave de negocio:** `cliente_id`.
 
-**Campos que solemos usar:** `nombre`, `gerencia`, `centro`, `unidad_negocio_revenue_volumen_meta`.
+**Campos que solemos usar:** `nombre`, `gerencia`, `centro`/`centro_id` (CD — `dm_venta` NO trae
+centro/CD directamente, solo se obtiene via join a `dm_cliente`), `unidad_negocio_revenue_volumen_meta`
+(canal "meta", ver mapeo abajo).
+
+**Mapeo `unidad_negocio_revenue_volumen_meta` → canales PPM (validado con datos, gerencia
+Pucallpa):** este es el campo al que el usuario se refiere informalmente como "unidad_negocio_meta"
+para su clasificacion de canales. Valores observados y su equivalencia con la nomenclatura del rol
+(ver CLAUDE.md → "Rol"): `DSD OFF`, `DSD ON`, `Mayoristas` (= WHL), `Eventos` (= EVE),
+`Key Accounts` (= KA), `DAs` (= DAS), y un residual `High End` (no forma parte de los 6 canales
+que maneja el usuario, volumen marginal). **No confundir con `dm_venta.unidad_negocio_venta`**
+(u `unidad_negocio`/`unidad_negocio_revenue`), que es un campo distinto con otro dominio de valores
+(`Off Premise`, `On Premise`, `Mayoristas y Eventos`, `Key Accounts`, `Consumidor`, `DAs`) — no sirve
+para este mapeo de canal.
 
 **Otros campos utiles para segmentacion/analisis:**
 - Jerarquia comercial **actual** del cliente: `direccion`, `director`, `gerencia`, `gerente`,
@@ -117,6 +150,14 @@ banderas de innovacion (`Innovacion`, `Innovation`, `Innovation_1/2`, `Delivery`
 
 **Nota:** varios nombres de columna llevan espacios/parentesis (ej. `` `Agrupador (Sku)` ``) —
 siempre usar backticks en el SQL.
+
+**Campo `pack` (formato):** usado como "Formato" en el dashboard GV Volumen. Join
+`dm_venta.material_id = revenue_maestro_sku.sku`. **Cobertura validada 2026-08-27** para las 4
+gerencias de Centro Oriente (excl. estratificaciones fuera de alcance, San Mateo excluido):
+**100% de las filas matchean** (0 HL en "Sin mapear") sobre 32 meses de historia — la carga
+manual esta al dia para este alcance. Cardinalidad manejable: 20-24 valores distintos de `pack`
+por gerencia (~22 en total). Revalidar esta cobertura si se corre para un periodo/alcance nuevo
+y aparece volumen relevante sin mapear.
 
 **Metadata:** creada 2025-02-05, owner `gen_maz_pe_win053@gmodelo.com.mx`, formato Delta.
 
@@ -301,16 +342,14 @@ gerencia X + marca Y"); no confirmado el mecanismo exacto de expansion segmento�
 | `X` | 13.0M | 69,973 | 0% | 100% | ~0% |
 | `N` | 17,854 | 2,644 | 0% | 0% | 0% |
 
-- **`R` = Registrada/Activa — confirmado**: el 81% de sus filas caen dentro del rango
-  `desde ≤ hoy ≤ hasta`; el resto son vigencias recien vencidas que el sistema aun no reclasifico.
-- **`D` y `X` = ambos "finalizados"** (100% de sus filas con `hasta` < hoy), pero **no esta
-  confirmada la diferencia exacta entre ambos** — hipotesis sin validar: `D` podria ser
-  "Dada de baja" (cancelada antes de tiempo) vs. `X` "Expirada" (vencio naturalmente por fecha).
-  Pista indirecta: `D` tiene ~2,746 filas/promo en promedio vs. ~186 filas/promo en `X` (3x mas
-  promos distintas para menos volumen), sugiriendo que no son solo un corte temporal sino que
-  involucran una logica de expansion cliente/segmento distinta.
-- **`N`** — volumen minimo, aparece solo en el mes mas reciente (202608). Hipotesis sin validar:
-  "Nueva" (creada, aun sin activar).
+**Confirmado por el usuario (2026-08-27):**
+- **`N` = Nuevo** (creada, aun sin activar) — volumen minimo, aparece solo en el mes mas reciente.
+- **`R` = Liberado (Activo)** — consistente con el 81% de sus filas dentro del rango
+  `desde ≤ hoy ≤ hasta`.
+- **`D` = "a borrar"/dar de baja** (cancelada antes de tiempo).
+- **`X` = promocion antigua** (vencio/quedo obsoleta). Pista indirecta que sigue siendo util:
+  `D` tiene ~2,746 filas/promo en promedio vs. ~186 filas/promo en `X` (3x mas promos distintas
+  para menos volumen).
 
 **Metadata:** creada 2025-02-05, owner `javier.armando.diaz@gmodelo.com.mx`, formato Delta.
 
@@ -399,9 +438,10 @@ tiempo.**
 - `hl`, `gsi`, `dscto`, `cf`, `nr` — venta real de esa fila (mismos nombres/logica que `dm_venta`).
 - `promo_venta` — codigo de la promo efectivamente aplicada en la venta (comparar contra
   `promocion_id` para detectar adherencia real vs. solo elegibilidad).
-- `flag_venta`, `flag_linea`, `flag_promo` — banderas binarias; **significado exacto de cada una
-  aun no confirmado con el usuario** (candidatas: hubo venta ese dia / esa linea especifica tuvo
-  venta / el cliente era elegible para la promo — no asumir sin validar).
+- `flag_venta`, `flag_linea`, `flag_promo` — banderas binarias. **Confirmado por el usuario
+  (2026-08-27):** `flag_venta` = el cliente compro el SKU, con o sin promo/descuento aplicado.
+  `flag_promo` = el cliente tiene la promo/descuento activo (elegibilidad/vigencia, no
+  necesariamente que la haya usado). `flag_linea` — **pendiente, el usuario confirma luego**.
 - `centro`, `canal`, `gerencia`, `direccion`, `marca`, `brand_pack`, `listado` (nombre de campana,
   mismo concepto que `revenue_maestro_etiquetas.listado`).
 - **Campos de Drops** (conectan esta tabla con el KPI Drops, ver `CLAUDE.md`): `drop_avg_l3m`
@@ -422,18 +462,47 @@ y `pe_promo_adherenciadiaria`).
 
 ---
 
+## CD reales por gerencia — Direccion Centro Oriente (validado con el usuario, 2026-08-27)
+
+`dm_cliente.centro` puede traer, para clientes de una gerencia dada, CD que en realidad
+pertenecen a otra gerencia o son ruido de reasignaciones — **no asumir la lista de CD de una
+gerencia solo mirando el volumen**, confirmarla con el usuario (ver metodologia en
+`explorar_centros.sql` del skill `dashboard-gv-volumen`). Listas ya confirmadas:
+
+| Gerencia (`dm_venta.gerencia`) | CD confirmados | Notas |
+|---|---|---|
+| `PE Ger P4 Pucall Hco` (Pucallpa) | CD Pucallpa, CD Huánuco, CD Tingo María | Se excluyen Iquitos/Yurimaguas/Rimac/sin-CD (volumen marginal, <1%). |
+| `PE Ger P4 Tarapoto` (Tarapoto) | CD Tarapoto, CD Yurimaguas, CD Moyobamba, **CD Pucallpa** | **CD Pucallpa aporta ~25K HL/mes** (no marginal, ~47% del volumen "geografico" de Tarapoto) — **100% concentrado en canal `DAs`** (confirmado por query 2026-08-27): son Distribuidores Autorizados que facturan bajo gerencia Tarapoto pero cuya ficha de cliente los tiene abastecidos/asignados desde CD Pucallpa. Se incluye deliberadamente en la lista (decision del usuario) para no perder ese volumen en las vistas filtradas por CD. Quedan afuera CD San Benedicto I (Ate), CD Motupe, CD Chiclayo (~9% del volumen real, si son marginales/de paso). |
+| `PE Ger P4 Iquitos` (Iquitos) | CD Iquitos | Unico CD real; el cruce CD Pucallpa+DAs que existe en Tarapoto es aqui puramente ruido (1 fila, 0 HL). |
+| `PE Ger P4 Huancay Ch` (Huancayo/Chanchamayo) | CD Huancayo, CD Chanchamayo, CD Satipo, CD Huancavelica | Se excluyen Trujillo/Juliaca/Arequipa/Callao/Chiclayo/Cusco/Cono Sur/Rimac/HUB LURIN MKP (todos volumen residual). |
+| `PE Ger P4 DA Jun Puc` | CD Pucallpa, CD San Benedicto I (Ate), CD Satipo, CD Huánuco, CD Huancayo, CD Huancavelica (**todos** los CD que aparecen, sin curar/excluir ninguno) | Confirmado por el usuario: "DA" = Distribuidor Autorizado, 100% canal `DAs` — no es una gerencia geografica como las otras 4, asi que sus CD saltan por varias regiones del pais (incl. uno en Ate/Lima) **como operacion normal, no como ruido**. A diferencia de las gerencias geograficas (donde se curan/excluyen CD marginales), aca se incluyen todos. Agregada al dashboard multi-gerencia el 2026-08-27 (inicialmente se habia dejado afuera del primer run mientras se validaba el patron). |
+
+**Patron general observado:** el canal `DAs` (Distribuidores Autorizados) parece no respetar la
+geografia de CD tan limpiamente como los demas canales — los DAs se abastecen del CD mas
+grande/cercano sin importar bajo que gerencia comercial facturan. Si aparece un CD "raro" con
+volumen no trivial al armar el dashboard de una gerencia nueva, **revisar primero si esta
+concentrado en canal DAs** antes de asumir que es puro error de datos (ver metodologia: filtrar
+por ese CD + esa gerencia, agrupar por canal).
+
+**Cuidado con nombres de CD compartidos entre gerencias al combinar varias a la vez:** un mismo
+nombre de CD puede estar curado-incluido en el `cd_list` de una gerencia y curado-excluido en el
+de otra (ej. `CD San Benedicto I (Ate)` esta incluido para DA Jun Puc pero excluido para
+Tarapoto). El dashboard multi-gerencia soluciona esto agregando cada gerencia solo contra su
+**propio** `cd_list`, nunca contra la lista compartida que se ve en el filtro de Centro del
+toolbar (ver `references/reglas_negocio.md` del skill `dashboard-gv-volumen` para el detalle de
+un bug real que este descuido causo, ya corregido).
+
+---
+
 ## Pendiente de confirmar (no asumir, preguntar al usuario o validar con datos)
 
-- Si `dm_cliente` es historica por `mes` o snapshot unico (afecta si hace falta filtrar por mes
-  al unir con `dm_venta` para no duplicar filas).
-- Diferencia exacta entre `direccion`/`gerencia` (de `dm_venta`, al momento de venta),
-  `direccion_historia`/`gerencia_historia` y `direccion_venta`/`gerencia_venta`.
-- Que significa exactamente `porte` en `dm_venta` (la query original lo menciona como pendiente
-  de agregar) y como se relaciona con `PTR_Final` calculado en las consultas propias.
-- Diferencia exacta entre `estado` `D` (Dada de baja?) y `X` (Expirada?) en `dm_promocion` /
-  `pe_promo_adherenciadiaria` — ambos son "finalizados" por fecha pero con perfiles de volumen muy
-  distintos (ver seccion `dm_promocion`). Que significa `estado = 'N'` (Nueva?, volumen minimo).
-- Significado exacto de `flag_venta`, `flag_linea`, `flag_promo` en `pe_promo_adherenciadiaria`.
+- Si `direccion_historia`/`gerencia_historia` y `direccion_venta`/`gerencia_venta` **siempre**
+  coinciden entre si (solo validado en 1 caso) — de no coincidir, falta entender que distingue a
+  cada una.
+- Formula exacta de **CE/CEQ (Caja Equivalente)** — confirmado que es "una operacion interna" de
+  estandarizacion entre formatos, pero sin la formula precisa (ver `CLAUDE.md` → nomenclatura).
+- Significado exacto de `flag_linea` en `pe_promo_adherenciadiaria` (`flag_venta` y `flag_promo`
+  ya confirmados, ver seccion de esa tabla arriba).
 - Mecanismo de expansion de las promos "masivas" (campos `*_masivo` en `dm_promocion`) hacia
   clientes individuales — no confirmado como se traduce un criterio masivo (ej. gerencia+marca) en
   las filas cliente x material que trae la tabla.

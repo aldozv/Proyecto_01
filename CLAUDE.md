@@ -67,7 +67,17 @@ Direccion: `PE Dir Centro Orient`. Gerencias (codigo tal cual en `dm_venta.geren
 lista (ej. Chiclayo, Piura, Puno, Tacna) para clientes que en algun momento facturaron bajo
 `direccion = 'PE Dir Centro Orient'` pero luego fueron reasignados a otra direccion/gerencia. Para
 cortes por gerencia consistentes con el filtro de `direccion`, usar `a.gerencia` (de `dm_venta`,
-al momento de la venta) en vez de `c.gerencia` (de `dm_cliente`).
+jerarquia vigente aplicada tambien al historico) en vez de `c.gerencia` (de `dm_cliente`).
+
+**Reestructuracion de gerencias (inicios de 2026):** la direccion `PE Dir Oriente` paso a llamarse
+**`PE Dir Centro Orient`** y sumo la GV Huancayo (antes `PE Ger P3 Huancayo` bajo la direccion
+`PE Dir Centro Sur`, ahora `PE Ger P4 Huancay Ch` — es la GV listada arriba como
+`PE Ger P4 Huancay Ch`). La direccion `PE Dir Centro Sur` paso a llamarse **`PE Dir Sur`** tras
+perder esa GV. En `dm_venta`, los campos `direccion`/`gerencia` reflejan la jerarquia **nueva**
+incluso para ventas historicas (antes de la reestructuracion); `direccion_historia`/
+`gerencia_historia` y `direccion_venta`/`gerencia_venta` preservan la jerarquia **como era en el
+momento real de la venta** (detalle completo y como usarlos en `BITACORA_TABLAS.md` →
+`dm_venta`).
 
 ## KPIs propios de Backus (no comunes en otras empresas de consumo masivo)
 
@@ -154,6 +164,53 @@ de Drops ya calculado a grano cliente-brandpack (ver `querys/Query_Drops.sql`), 
 **Pendiente de mapear:** SKU x POC y Cobertura todavia no tienen tabla/columna identificada
 en Databricks — cuando se arme la primera consulta que calcule cada una, documentar el mapeo exacto
 (que campos/joins se usaron) en `BITACORA_TABLAS.md`.
+
+## Nomenclatura y siglas del negocio
+
+Definiciones validadas por el usuario (2026-08-27):
+
+- **PTR (Price To Retail):** precio al que Backus vende a sus clientes directos con codigo
+  (bodegas, minimercados, licorerias, mayoristas, etc.). No existe como campo unico en `dm_venta`
+  con ese nombre exacto — por eso las consultas propias calculan **`PTR_Final`** como campo
+  derivado.
+- **PTC (Price To Consumer):** precio al que el cliente de Backus (el POC) le vende al consumidor
+  final.
+- **VIC (Variable Industrial Cost):** linea del P&L — costo de **producir** el producto.
+- **VLC (Variable Logistic Cost):** linea del P&L — costo de **entregar** el producto.
+- **Porte:** interes que Backus cobra al cliente por venderle a credito (no al contado). Tasas
+  sobre el precio final de factura: **7 dias → 2.05%**, **14 dias → 3.15%**.
+- **KKAA (Key Accounts):** cuentas clave — es uno de los canales (ver mapeo
+  `unidad_negocio_revenue_volumen_meta` en `BITACORA_TABLAS.md` → `dm_cliente`). Los campos
+  `kkaa_kam`/`kkaa_cadena`/`kkaa_manager`/`kkaa_coordinador` de `dm_cliente` son la estructura de
+  gestion de este canal.
+- **OBPPC (Occasion, Brand, Package, Price, Channel):** framework/estrategia de Revenue Growth
+  Management — no es un campo de negocio suelto, es la logica detras de campos como
+  `Price_Segment_OBPPC`, `obppc_stage`, `obppc_cluster`.
+- **BEES:** app de Backus para que los clientes (POCs) hagan sus pedidos.
+- **CD (Centro de Distribucion) / Centro:** almacen fisico establecido en una zona/localidad. **Un
+  CD puede abastecer a mas de una GV** (relacion no es 1:1) — ver ejemplo en `BITACORA_TABLAS.md`
+  (CD Pucallpa/`SJ97` reparte a las 4 GV de Centro Oriente).
+- **GV (Gerencia de Ventas)** = `gerencia`. La Regional Centro Oriente tiene **5 GV**. Una GV puede
+  recibir de 1 o mas CD.
+- **HL (Hectolitro):** unidad de medida de volumen de Backus, **1 HL = 100 litros**. La conversion
+  caja→HL varia por SKU/formato. Ejemplo confirmado (Cristal 650 x12): `0.650 L/botella x 12
+  botellas/caja = 7.8 L/caja` → `7.8 / 100 = 0.078 HL/caja`.
+- **CA / CF (Caja Fisica):** unidad de empaque del producto — varia por SKU (ej. cervezas de mayor
+  litraje como Cristal 650, Pilsen 630, San Juan 620, Cusqueña 620 vienen en caja de 12 unidades;
+  latas en six-packs de 6 unidades).
+- **CE / CEQ (Caja Equivalente):** operacion interna de estandarizacion de volumen entre distintos
+  formatos de caja fisica (formula exacta aun no validada — tratar como pendiente si un analisis
+  depende de la formula precisa).
+- **Nomenclatura de SKU:** el nombre de material suele seguir el patron `Marca + Mililitraje x
+  Unidades por caja fisica`, ej. `Cristal 650 x12`, `Pilsen 630 x12`.
+
+## Procesos de negocio
+
+- **Ciclo de un pedido de venta** (preventa → pedido → facturacion): primero se hace la
+  **preventa** (1 a 7 dias antes de la entrega); el **pedido** es cuando ya se le asigna camion y
+  fecha de entrega en el sistema; la **facturacion** es cuando el producto ya fue entregado y el
+  cliente pago. Ver `clase_venta` en `dm_venta` (`BITACORA_TABLAS.md`) para los codigos SAP de cada
+  etapa/tipo de documento.
 
 ## Reglas de negocio validadas por el usuario
 
