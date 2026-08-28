@@ -499,8 +499,6 @@ un bug real que este descuido causo, ya corregido).
 - Si `direccion_historia`/`gerencia_historia` y `direccion_venta`/`gerencia_venta` **siempre**
   coinciden entre si (solo validado en 1 caso) — de no coincidir, falta entender que distingue a
   cada una.
-- Formula exacta de **CE/CEQ (Caja Equivalente)** — confirmado que es "una operacion interna" de
-  estandarizacion entre formatos, pero sin la formula precisa (ver `CLAUDE.md` → nomenclatura).
 - Significado exacto de `flag_linea` en `pe_promo_adherenciadiaria` (`flag_venta` y `flag_promo`
   ya confirmados, ver seccion de esa tabla arriba).
 - Mecanismo de expansion de las promos "masivas" (campos `*_masivo` en `dm_promocion`) hacia

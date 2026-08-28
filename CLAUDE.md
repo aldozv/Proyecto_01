@@ -198,9 +198,9 @@ Definiciones validadas por el usuario (2026-08-27):
 - **CA / CF (Caja Fisica):** unidad de empaque del producto — varia por SKU (ej. cervezas de mayor
   litraje como Cristal 650, Pilsen 630, San Juan 620, Cusqueña 620 vienen en caja de 12 unidades;
   latas en six-packs de 6 unidades).
-- **CE / CEQ (Caja Equivalente):** operacion interna de estandarizacion de volumen entre distintos
-  formatos de caja fisica (formula exacta aun no validada — tratar como pendiente si un analisis
-  depende de la formula precisa).
+- **CE / CEQ (Caja Equivalente):** metrica interna que "unifica" el volumen de todos los SKUs a un
+  solo estandar de caja, independientemente del formato fisico real. Formula confirmada por el
+  usuario (2026-08-28): `CE = HL x 13.44086022` (factor de conversion fijo).
 - **Nomenclatura de SKU:** el nombre de material suele seguir el patron `Marca + Mililitraje x
   Unidades por caja fisica`, ej. `Cristal 650 x12`, `Pilsen 630 x12`.
 
