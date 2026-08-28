@@ -47,7 +47,10 @@ aprox.). Para agregados de negocio normalmente se agrupa por `cliente_id`, `mate
   jerarquia **nueva** (`PE Dir Centro Orient` / `PE Ger P4 Huancay Ch`) mientras que
   `direccion_historia`/`gerencia_historia` y `direccion_venta`/`gerencia_venta` muestran la
   jerarquia **como era en ese momento** (`PE Dir Centro Sur` / `PE Ger P3 Huancayo`) — ambas
-  variantes coincidieron entre si en ese caso, pero no esta confirmado que siempre sea asi.
+  variantes coincidieron entre si en ese caso, pero **el usuario confirmo (2026-08-28) que
+  `direccion_historia`/`gerencia_historia` y `direccion_venta`/`gerencia_venta` NO siempre
+  coinciden entre si** — queda pendiente identificar un caso concreto de divergencia para entender
+  que distingue a cada una (ver seccion "Pendiente de confirmar").
   Tambien explica por que `direccion_historia` dejo de poblarse desde 202601 (mes en que entro en
   vigencia la nueva estructura: ya no hay "historia" distinta que preservar para ventas nuevas) y
   por que la divergencia entre `direccion` y las otras dos variantes desaparecio desde ese mes
@@ -496,9 +499,10 @@ un bug real que este descuido causo, ya corregido).
 
 ## Pendiente de confirmar (no asumir, preguntar al usuario o validar con datos)
 
-- Si `direccion_historia`/`gerencia_historia` y `direccion_venta`/`gerencia_venta` **siempre**
-  coinciden entre si (solo validado en 1 caso) — de no coincidir, falta entender que distingue a
-  cada una.
+- **Confirmado por el usuario (2026-08-28): `direccion_historia`/`gerencia_historia` y
+  `direccion_venta`/`gerencia_venta` NO siempre coinciden entre si** (en el unico caso validado
+  hasta ahora si coincidieron, pero no es la regla general) — falta un caso concreto de divergencia
+  para entender que distingue a cada una y cuando usar una u otra.
 - Significado exacto de `flag_linea` en `pe_promo_adherenciadiaria` (`flag_venta` y `flag_promo`
   ya confirmados, ver seccion de esa tabla arriba).
 - Mecanismo de expansion de las promos "masivas" (campos `*_masivo` en `dm_promocion`) hacia
