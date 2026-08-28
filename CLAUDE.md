@@ -77,7 +77,10 @@ perder esa GV. En `dm_venta`, los campos `direccion`/`gerencia` reflejan la jera
 incluso para ventas historicas (antes de la reestructuracion); `direccion_historia`/
 `gerencia_historia` y `direccion_venta`/`gerencia_venta` preservan la jerarquia **como era en el
 momento real de la venta** (detalle completo y como usarlos en `BITACORA_TABLAS.md` →
-`dm_venta`).
+`dm_venta`). **Convencion de uso (confirmado por el usuario, 2026-08-28):** por defecto usar
+`direccion`/`gerencia` (jerarquia vigente) en los analisis — **no usar los campos `_historia` a
+menos que la consulta sea especificamente sobre como se veia la estructura de ventas en el pasado**
+(ej. reconstruir un reporte tal como se habria visto antes de la reestructuracion).
 
 ## KPIs propios de Backus (no comunes en otras empresas de consumo masivo)
 
