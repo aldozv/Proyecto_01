@@ -63,6 +63,26 @@ Direccion: `PE Dir Centro Orient`. Gerencias (codigo tal cual en `dm_venta.geren
 — no renombrar): `PE Ger P4 Tarapoto`, `PE Ger P4 Iquitos`, `PE Ger P4 Pucall Hco`,
 `PE Ger P4 Huancay Ch`, `PE Ger P4 DA Jun Puc`.
 
+**CDs (Centros de Distribucion) de Centro Oriente — lista confirmada por el usuario 2026-08-31:**
+`BK31` (San Benedicto I/Ate), `BK43` (Huancavelica), `BK68` (Huancayo), `SJ01` (Planta San Juan,
+ver nota abajo — NO es CD), `SJ86` (Satipo), `SJ87` (Chanchamayo), `SJ90` (Huánuco), `SJ91`
+(Iquitos), `SJ92` (Moyobamba), `SJ93` (Tingo María), `SJ94` (Tarapoto), `SJ95` (Yurimaguas),
+`SJ97` (CD Pucallpa). Usar esta lista (via `dm_cliente.centro_id`) para acotar tablas que solo
+tienen grano de CD y no de direccion/gerencia (ej. quiebres de stock OOS, Stock SAP).
+**Excluidos** de un universo inicial de 22 codigos que traía la query original: `BK34`, `BK36`,
+`BK46`, `BK49`, `BK60`, `BK77`, `BK79`, `BK80` (no son CDs de la operacion de Centro Oriente —
+`BK60` = "HUB LURIN MKP", almacen de Marketplace en Lima; los otros 7 son de otras regionales) y
+`BK71` (Chanchamayo, codigo legado sin actividad real desde 2017, reemplazado por `SJ87`).
+
+**`SJ01` no es un CD, es Planta San Juan** (confirmado por el usuario 2026-08-31) — ubicada en el
+mismo sitio fisico que `SJ97`/CD Pucallpa, pero es la **planta de produccion**, no el centro de
+distribucion. Aparece en `dm_cliente.centro_id` con clientes activos propios (466, altas hasta
+ago'26) pero conceptualmente es un sitio distinto a un CD. Se mantiene en la lista de scope de
+Centro Oriente por ahora (sigue siendo parte de la operacion en Pucallpa), pero **tenerlo presente
+al interpretar resultados por CD** — mezclar metricas de una planta con las de un CD de reparto
+puede no ser comparable segun el analisis (ej. quiebres de stock en BEES es un concepto de CD/
+reparto a POC, no de planta).
+
 **Ojo:** `dm_cliente.gerencia` (jerarquia *actual* del cliente) puede traer gerencias fuera de esta
 lista (ej. Chiclayo, Piura, Puno, Tacna) para clientes que en algun momento facturaron bajo
 `direccion = 'PE Dir Centro Orient'` pero luego fueron reasignados a otra direccion/gerencia. Para
@@ -180,8 +200,20 @@ Definiciones validadas por el usuario (2026-08-27):
   final.
 - **VIC (Variable Industrial Cost):** linea del P&L — costo de **producir** el producto.
 - **VLC (Variable Logistic Cost):** linea del P&L — costo de **entregar** el producto.
-- **Porte:** interes que Backus cobra al cliente por venderle a credito (no al contado). Tasas
-  sobre el precio final de factura: **7 dias → 2.05%**, **14 dias → 3.15%**.
+- **Porte:** interes que Backus cobra al cliente por venderle a credito (no al contado), sobre el
+  valor de la factura. **La tasa varia segun canal/unidad de negocio y dias de credito** (tabla
+  confirmada por el usuario, 2026-08-29 — reemplaza una version anterior simplificada):
+
+  | Dias de credito | DSD OFF / DSD ON / High End | Mayoristas (WHL) / Eventos (EVE) |
+  |---|---|---|
+  | 7 dias | 2.00% | 0.75% |
+  | 14 dias | 3.75% | 1.50% |
+  | 21 dias | 4.00% | 3.00% |
+  | 28 dias | 5.00% | — (no definido) |
+
+  Canales identificados por `unidad_negocio_revenue_volumen_meta` en `dm_cliente` (ver mapeo en
+  `BITACORA_TABLAS.md`). Pendiente: tasa para KKAA y DAs (no cubiertos en esta tabla), y si 28 dias
+  aplica o no a Mayoristas/Eventos.
 - **KKAA (Key Accounts):** cuentas clave — es uno de los canales (ver mapeo
   `unidad_negocio_revenue_volumen_meta` en `BITACORA_TABLAS.md` → `dm_cliente`). Los campos
   `kkaa_kam`/`kkaa_cadena`/`kkaa_manager`/`kkaa_coordinador` de `dm_cliente` son la estructura de
@@ -201,11 +233,26 @@ Definiciones validadas por el usuario (2026-08-27):
 - **CA / CF (Caja Fisica):** unidad de empaque del producto — varia por SKU (ej. cervezas de mayor
   litraje como Cristal 650, Pilsen 630, San Juan 620, Cusqueña 620 vienen en caja de 12 unidades;
   latas en six-packs de 6 unidades).
-- **CE / CEQ (Caja Equivalente):** metrica interna que "unifica" el volumen de todos los SKUs a un
-  solo estandar de caja, independientemente del formato fisico real. Formula confirmada por el
-  usuario (2026-08-28): `CE = HL x 13.44086022` (factor de conversion fijo).
+- **CE / CEQ (Caja Equivalente):** factor fijo para convertir de **hectolitros (HL) a cajas
+  equivalentes (CEQ)**, independientemente del formato fisico real del SKU — asi se puede comparar/
+  sumar volumen entre SKUs de distinto formato bajo un mismo estandar de caja. Formula confirmada
+  por el usuario (2026-08-28, actualizada 2026-08-29): `CEQ = HL x 13.44086022`. Ejemplo: 1 HL de
+  CR650 (Cristal 650) equivale a 13.44086022 CEQ.
 - **Nomenclatura de SKU:** el nombre de material suele seguir el patron `Marca + Mililitraje x
   Unidades por caja fisica`, ej. `Cristal 650 x12`, `Pilsen 630 x12`.
+- **YTD (Year To Date/Day):** avance del año **a mes cerrado** (no incluye el mes en curso, aunque
+  ya tenga dias facturados). Ejemplo confirmado (2026-08-29): el YTD 2026 al 29.08.26 es lo
+  facturado del **01.01.26 al 31.07.26** (excluye agosto, que aun no cierra).
+- **YTG (Year To Go):** los meses **completos** que faltan por facturar en lo que resta del año, en
+  el mismo corte a mes cerrado. Ejemplo: YTG 2026 al 29.08.26 es lo que se facturara del **01.08.26
+  al 31.12.26** (incluye agosto completo, a diferencia del YTD que lo excluye).
+- **MTD (Month To Date/Day):** avance del mes actual, **a dia -1** (el ultimo dia con facturacion y
+  entrega ya cerradas, no el dia de hoy — hoy aun esta en curso). Ejemplo: MTD agosto 2026 al
+  29.08.26 es lo facturado del **01.08.26 al 28.08.26**.
+- **MTG (Month To Go):** los dias que faltan por facturar en lo que resta del mes actual, **desde
+  hoy** (no desde dia -1). Ejemplo: MTG agosto 2026 al 29.08.26 es lo que se facturara del **29.08.26
+  al 31.08.26** — el dia de hoy (29.08) arranca el MTG, justo el dia siguiente a donde corta el MTD
+  (28.08), sin superposicion entre ambos.
 
 ## Procesos de negocio
 
@@ -218,6 +265,15 @@ Definiciones validadas por el usuario (2026-08-27):
 ## Reglas de negocio validadas por el usuario
 
 - **Categoria Agua:** excluir siempre la marca **San Mateo** de los analisis (`and d.marca <> 'San Mateo'` o filtrar post-query). Regla vigente desde 2026-08-15, aplica a futuro sin volver a confirmar.
+- **Alcance de categorias para Brand Distribution:** filtrar siempre
+  `m.estratificacion in ('Cervezas', 'Licores', 'Ready To Drink')` (join a
+  `gld_maz_sales_portfolio_pe.pe_portfolio_material`) al calcular el KPI Brand Distribution sobre
+  `pe_portfolio_hm_brand_distribution`. Sin este filtro el numero queda inflado: en una validacion
+  puntual (Centro Oriente, jul'25, SELLIN) el 23% del total eran productos **Marketplace** (terceros
+  vendidos via BEES: galletas, cafe, atunes, jabon, etc. — no son portafolio Backus) y otro ~19%
+  eran NABs (Gaseosas/Agua/Maltas, no alcoholicas). Regla confirmada por el usuario 2026-08-31,
+  aplica a futuro sin volver a confirmar salvo que el analisis pida explicitamente otro alcance
+  (ej. medir actividad total de BEES incluyendo Marketplace).
 
 ## Mantener este archivo vivo
 

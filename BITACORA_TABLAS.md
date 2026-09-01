@@ -177,15 +177,29 @@ combinacion marca/gerencia, consistente con la definicion de la capacitacion). C
 
 **Particionado:** por `mes`.
 
-**Campos:** `mes`, `direccion`, `gerencia`, `fecha_venta` (date), `tipo` (ej. `SELLIN`), `cliente_id`,
-`material_id`, `hl` (decimal), `flag_brand_distro` (int), `marca_tarea`, `marca_offer`,
-`flag_comparable` (int).
+**Campos:** `mes`, `direccion`, `gerencia`, `fecha_venta` (date), `tipo` (`SELLIN` o `SELLOUT`,
+confirmado 2026-08-31 corriendo `group by tipo`), `cliente_id`, `material_id`, `hl` (decimal),
+`flag_brand_distro` (int), `marca_tarea`, `marca_offer`, `flag_comparable` (int).
+
+**SELLIN vs SELLOUT:** `SELLIN` = lo que Backus vende al POC (universo mas grande, ~2x SELLOUT en
+volumen de Brand Distribution). `SELLOUT` = lo que el POC vende al consumidor final (universo mas
+chico, probablemente clientes con dato de venta al consumidor disponible, ej. moderno/KKAA) —
+pendiente confirmar el criterio exacto de que clientes reportan SELLOUT. Ambos usan el mismo
+`flag_brand_distro`, filtrar por `tipo` segun cual de las dos vistas se necesite.
 
 **Llaves de join:** `material_id` → `pe_portfolio_material.material_id` (ver tabla siguiente —
 catalogo distinto).
 
 **Nota:** no tiene columna `indicadores_comerciales` (esa es propia de `dm_venta`/`dm_cliente`) —
 no asumir ese filtro aca.
+
+**ALERTA calidad de dato (detectada 2026-08-31):** la columna `hl` para `tipo = 'SELLOUT'` salta
+~10x a partir de `mes = '202503'` (ej. Direccion Centro Oriente: ~50K HL/mes hasta feb'25, salta a
+400K-600K HL/mes desde mar'25 en adelante) mientras `flag_brand_distro` se mantiene estable/
+consistente en toda la serie. Sospecha de cambio de unidad o de fuente en el calculo de `hl` para
+SELLOUT a partir de esa fecha. **No usar `sum(hl)` de SELLOUT para analisis de volumen sin
+investigar esto primero** — `flag_brand_distro` (la metrica de Brand Distribution en si) no parece
+afectado.
 
 **Metadata:** creada 2024-12-10, owner `lizbeth.leon@gmodelo.com.mx`, formato Delta, tabla EXTERNAL.
 
@@ -259,6 +273,28 @@ select ... from delta.`/Volumes/brewdat_uc_mazana_dev/slv_maz_dataexperience_per
 **Metadata:** catalogo `brewdat_uc_mazana_dev`, formato Delta, tabla MANAGED via Volume (sin fecha
 de creacion/owner expuestos por `DESCRIBE EXTENDED` en este tipo de tabla).
 
+**Filtrar por categoria (Cervezas/Licores/RTD, alcance de negocio confirmado 2026-08-31):**
+esta tabla no tiene `material_id`, solo `brand_pack` (marca + sub-marca/sabor + presentacion, ej.
+`Cusqueña Malta 310 NRB`). Un join EXACTO de `brand_pack` contra
+`pe_portfolio_material.brand_pack` **falla para ~36 valores** (validado ago'26, Centro Oriente):
+sub-marcas/sabores que no existen como `brand_pack` en el maestro (`Cusqueña Malta/Trigo/Dorada/
+Cero/Quinua`), `Mikes` sin apostrofe vs `Mike's` en el maestro, formatos nuevos (`KEGS`). Se
+resuelve haciendo el join por **prefijo de `brand`** (marca base, sin sub-marca/sabor/presentacion)
+contra la lista de marcas Cervezas/Licores/RTD del maestro (`v.brand_pack ilike concat(brand,'%')`,
++ variante sin apostrofe) — valida que no genere fan-out (claves `mes+fecha+centro+brand_pack`
+unicas) antes de confiar en el agregado. Deja solo 18 `brand_pack` sin matchear, todos de
+categorias fuera de alcance (`Guaraná`/`Viva` = Gaseosas, `Maltin Power` = Malta) salvo `P.Fresh`
+(pendiente de aclarar, volumen bajo). Query de referencia:
+`querys/Query_Sku_Uptime.sql`.
+
+**Ojo con el % Uptime resultante:** incluso con el filtro de categoria bien hecho, el % uptime
+ponderado (`sum(horas_prendidas)/sum(24h)`) sobre TODO `activo_en_cd=1` de Cervezas+Licores+RTD da
+~41% (ago'26, Centro Oriente) — muy por debajo del ~96% del ejemplo de la capacitacion del KPI
+SKU Uptime. Esto confirma que el scope de `activo_en_cd=1` sigue siendo mas amplio que el listado
+oficial de SKUs que el equipo de Planning define a inicio de mes para medir el KPI (ver definicion
+en `CLAUDE.md` — ese listado sigue sin conseguirse, es un input externo mensual, no derivable de
+esta tabla sola). No reportar el ~41% como el KPI oficial de SKU Uptime sin esa aclaracion.
+
 ---
 
 ## Catalogo `brewdat_uc_maz_prod` — Replica SAP PR3 (fuente del KPI Stock SAP)
@@ -311,6 +347,28 @@ patron es `werks LIKE 'BK%' OR werks LIKE 'SJ%' OR werks LIKE 'AH%'`.
 - Set exacto de almacenes (`lgort`) que usa la Z de SAP para "Stock Disp" (~`IQ01`) — el query por
   defecto suma todos los almacenes del centro salvo que se descomente el filtro `lgort`.
 - Mapeo `vbtyp` `C`/`J` pendiente de validar contra una foto SAP del mismo instante.
+
+**TRAMPA confirmada (2026-08-31):** el filtro `lgort IN ('IQ01','IQ24')` que trae `Query_Stocks_SAP.sql`
+en la CTE `stock` **esta activo por defecto** (no comentado, a pesar de que el comentario de arriba
+en el archivo dice "por defecto TODOS") — son codigos de almacen **especificos de Iquitos/SJ91**
+(el centro por defecto del archivo). Al reusar la query para OTRO centro (probado con BK80/Cusco)
+sin sacar ese filtro, devuelve **0 filas silenciosamente** (no error) porque ese centro no tiene
+almacenes con esos codigos. **Sacar ese filtro de `lgort` al cambiar de centro**, salvo que se
+confirmen los codigos de almacen equivalentes para el centro nuevo.
+
+**ALERTA de confiabilidad en `CalDisFinal` (detectada 2026-08-31, sin resolver):** validado para
+2 centros muy distintos en performance de OOS — Iquitos/SJ91 (14.7% uptime, el peor de Centro
+Oriente) y Cusco/BK80 (69.5% uptime, el mejor) — **en ambos, practicamente el 100% de los
+materiales Backus dan `CalDisFinal = 0`** (44/44 en Iquitos, 82/84 en Cusco), incluso con
+`Stock_Disp` (stock fisico) sano/alto (ej. Pilsen Callao 1000ml en Cusco: 42,627 cajas fisicas,
+`CalDisFinal` = 0 igual). Como el mismo patron aparece en el CD con mejor Y el de peor uptime,
+**`CalDisFinal` no esta explicando diferencias reales de disponibilidad entre CDs — probablemente
+es un artefacto de como se reconstruye el estado "abierto" de `VBBE`/`RESB`** (tablas CDC), no
+un reflejo de que el stock este genuinamente 100% comprometido. Ademas contradice la unica
+validacion previa documentada arriba (pedidos subestimados 28 CA vs 27,191 CA reales — si algo,
+`CalDisFinal` deberia verse mejor de lo real, no en cero). **No usar `CalDisFinal`/`Disponible_Final`
+para explicar gaps de uptime/OOS entre CDs sin validar antes con Data Engineering (Javier, autor
+original) — `Stock_Disp` (stock fisico crudo) si parece confiable y se puede usar solo.**
 
 ---
 
@@ -442,9 +500,13 @@ tiempo.**
 - `promo_venta` — codigo de la promo efectivamente aplicada en la venta (comparar contra
   `promocion_id` para detectar adherencia real vs. solo elegibilidad).
 - `flag_venta`, `flag_linea`, `flag_promo` — banderas binarias. **Confirmado por el usuario
-  (2026-08-27):** `flag_venta` = el cliente compro el SKU, con o sin promo/descuento aplicado.
-  `flag_promo` = el cliente tiene la promo/descuento activo (elegibilidad/vigencia, no
-  necesariamente que la haya usado). `flag_linea` — **pendiente, el usuario confirma luego**.
+  (2026-08-29, version final):**
+  - `flag_venta` = el cliente compro el SKU especifico de la promo (con o sin descuento aplicado).
+  - `flag_linea` = el cliente compro algo de la misma **familia** del SKU de la promo, entendiendo
+    "familia" como la misma `estratificacion` del SKU de la promo (no necesariamente el mismo SKU).
+  - `flag_promo` = el cliente compro el SKU **y ademas se adhirio a la promo** (adherirse = compro
+    la promo, es decir efectivamente se le aplico el descuento/mecanica) — mas estricto que
+    `flag_venta`, que no exige que la promo se haya usado.
 - `centro`, `canal`, `gerencia`, `direccion`, `marca`, `brand_pack`, `listado` (nombre de campana,
   mismo concepto que `revenue_maestro_etiquetas.listado`).
 - **Campos de Drops** (conectan esta tabla con el KPI Drops, ver `CLAUDE.md`): `drop_avg_l3m`
@@ -503,8 +565,6 @@ un bug real que este descuido causo, ya corregido).
   `direccion_venta`/`gerencia_venta` NO siempre coinciden entre si** (en el unico caso validado
   hasta ahora si coincidieron, pero no es la regla general) — falta un caso concreto de divergencia
   para entender que distingue a cada una y cuando usar una u otra.
-- Significado exacto de `flag_linea` en `pe_promo_adherenciadiaria` (`flag_venta` y `flag_promo`
-  ya confirmados, ver seccion de esa tabla arriba).
 - Mecanismo de expansion de las promos "masivas" (campos `*_masivo` en `dm_promocion`) hacia
   clientes individuales — no confirmado como se traduce un criterio masivo (ej. gerencia+marca) en
   las filas cliente x material que trae la tabla.
