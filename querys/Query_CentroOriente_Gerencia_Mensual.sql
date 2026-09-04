@@ -7,7 +7,7 @@ SELECT
   CAST(SUBSTR(v.mes,5,2) AS INT) AS mes_num,
   SUM(v.hl) AS hl
 FROM brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_venta v
-WHERE v.mes BETWEEN '202401' AND '202608'
+WHERE v.mes BETWEEN '202401' AND '202609'
   AND v.gerencia IN ('PE Ger P4 Tarapoto','PE Ger P4 Iquitos','PE Ger P4 Pucall Hco','PE Ger P4 Huancay Ch','PE Ger P4 DA Jun Puc')
   AND v.indicadores_comerciales = 1
   AND v.estratificacion IN ('Cervezas','Licores','Ready To Drink','Gaseosas','Agua','Maltas')

@@ -55,7 +55,7 @@ import argparse
 import json
 import os
 
-RAW_KEYS = ["RAW_GERENCIA", "RAW_BASE", "RAW_CANAL", "RAW_MARCA", "RAW_FORMATO"]
+RAW_KEYS = ["RAW_GERENCIA", "RAW_BASE", "RAW_CANAL", "RAW_MARCA", "RAW_FORMATO", "RAW_PACK", "RAW_MARCAFORMATO"]
 
 TEXT_KEYS = [
     "eyebrow_text", "page_title_tag", "page_title_default", "footer_scope_note",
@@ -73,7 +73,10 @@ def load_data_array(json_path):
             chunk_path = f"{base}_chunk{i}{ext}"
             with open(chunk_path, encoding="utf-8") as f:
                 chunk = json.load(f)
-            rows += chunk["result"]["data_array"]
+            # los archivos _chunkN.json que guarda run_query.sh son el objeto de chunk "pelado"
+            # (chunk_index/row_offset/row_count/data_array), NO envueltos en {"result": {...}}
+            # como el archivo principal -- distinto del payload de la statement completa.
+            rows += chunk["data_array"]
     return rows
 
 
@@ -118,6 +121,10 @@ def main():
     )
     cd_dims_js = json.dumps({g["code"]: g["cd_list"] for g in gerencias}, ensure_ascii=False)
     cd_note_js = json.dumps({g["code"]: g["cd_note"] for g in gerencias}, ensure_ascii=False)
+    # orden de exhibicion de CD en el toolbar y en "Por Centro de Distribucion" -- opcional; si
+    # no se define en el config, cae al orden de aparicion (union de cd_list por gerencia, en el
+    # orden de GERENCIA_LIST) que ya tenia el template antes de este placeholder.
+    cd_order_js = json.dumps(cfg.get("cd_order", []), ensure_ascii=False)
 
     direccion_label_js = json.dumps(cfg["direccion_label"], ensure_ascii=False)
 
@@ -125,6 +132,7 @@ def main():
         ("{{GERENCIA_LIST_JS}}", gerencia_list_js),
         ("{{CD_DIMS_JS}}", cd_dims_js),
         ("{{CD_NOTE_JS}}", cd_note_js),
+        ("{{CD_ORDER_JS}}", cd_order_js),
         ("{{DIRECCION_LABEL}}", direccion_label_js),
     ):
         if placeholder not in html:

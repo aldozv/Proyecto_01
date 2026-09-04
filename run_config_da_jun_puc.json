@@ -1,0 +1,31 @@
+{
+  "direccion_label": "DA Jun Puc",
+  "eyebrow_text": "Gerencia PE Ger P4 DA Jun Puc · Volumen (HL)",
+  "page_title_tag": "DA Jun Puc Volumen",
+  "page_title_default": "Volumen — DA Jun Puc",
+  "year_min": 2026,
+  "year_max": 2026,
+  "latest_month": 9,
+  "latest_month_is_partial": true,
+  "footer_scope_note": "Gerencia PE Ger P4 DA Jun Puc (Distribuidor Autorizado, canal 100% DAs). La sección \"Por Canal\" del dashboard general de Centro Oriente se reemplazó acá por \"Por Cliente\" (nombre real, códigos duplicados del mismo distribuidor unificados) porque el canal es siempre DAs y no aporta. Excepción: el cliente Ucayali Beer S.A.C. (CD Satipo) se reasignó 100% a DA Jun Puc para todo el histórico mostrado -- en dm_venta.gerencia aparece como Huancay Ch hasta 202603 y recién como DA Jun Puc desde 202604 (reclasificación real del cliente), pero su ficha vigente en dm_cliente ya lo marca como DA Jun Puc. Datos actualizados al 2026-09-03.",
+  "cd_order": [
+    "CD Pucallpa", "CD San Benedicto I (Ate)", "CD Satipo", "CD Huánuco", "CD Huancayo", "CD Huancavelica"
+  ],
+  "gerencias": [
+    {
+      "code": "PE Ger P4 DA Jun Puc",
+      "label": "DA Jun Puc",
+      "cd_list": ["CD Pucallpa", "CD San Benedicto I (Ate)", "CD Satipo", "CD Huánuco", "CD Huancayo", "CD Huancavelica"],
+      "cd_note": "CD Pucallpa, CD San Benedicto I (Ate), CD Satipo, CD Huánuco, CD Huancayo, CD Huancavelica -- todos incluidos (no se excluye ninguno como \"marginal\"): DA Jun Puc es una gerencia de canal (Distribuidor Autorizado, 100% canal DAs), no una zona geográfica, así que abastecerse de varios CD en distintas regiones es su operación normal, no ruido."
+    }
+  ],
+  "raw_files": {
+    "RAW_GERENCIA": "C:/Users/aldoz/OneDrive/Claudio/.databricks_query_results/result_20260903_172017.json",
+    "RAW_BASE": "C:/Users/aldoz/OneDrive/Claudio/.databricks_query_results/result_20260903_172028.json",
+    "RAW_CLIENTE": "C:/Users/aldoz/OneDrive/Claudio/.databricks_query_results/result_20260903_172040.json",
+    "RAW_MARCA": "C:/Users/aldoz/OneDrive/Claudio/.databricks_query_results/result_20260903_172053.json",
+    "RAW_FORMATO": "C:/Users/aldoz/OneDrive/Claudio/.databricks_query_results/result_20260903_172106.json",
+    "RAW_PACK": "C:/Users/aldoz/OneDrive/Claudio/.databricks_query_results/result_20260903_172120.json",
+    "RAW_MARCAFORMATO": "C:/Users/aldoz/OneDrive/Claudio/.databricks_query_results/result_20260903_172133.json"
+  }
+}

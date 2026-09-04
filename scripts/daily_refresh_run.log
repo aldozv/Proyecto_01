@@ -1,0 +1,14 @@
+﻿
+===== 2026-09-02 08:44:15: arrancando refresh =====
+Ambos son archivos no versionados (untracked), así que no hay nada que commitear salvo que el usuario lo pida explícitamente.
+
+Refresh diario completado para el dashboard de Volumen (HL) de Centro Oriente:
+
+- **Último mes con datos:** sigue siendo agosto 2026 (`202608`) — septiembre aún no tiene facturación en `dm_venta`.
+- Re-ejecuté las 7 queries curadas (`querys/Query_CentroOriente_*`) con el mismo alcance ya confirmado (5 gerencias, `cd_list` por gerencia sin cambios).
+- Reinyecté los datos en `centro_oriente_dashboard.html` y corrí `verify_dashboard.js`: **todos los checks OK, 0 discrepancias**, y las diferencias headline-vs-curado por gerencia siguen en rango normal (0.00%–0.03%), sin señales de un CD "canal DAs" nuevo colándose.
+- Actualicé `run_config.json` con los nuevos archivos crudos y la fecha del footer (`Datos actualizados al 2026-09-02`).
+- No hay tool de publicación tipo Artifact disponible en este entorno automatizado; el dashboard actualizado queda como archivo local en `centro_oriente_dashboard.html`.
+2026-09-02 08:47:55: terminado, exit code 0
+
+===== 2026-09-03 10:28:33: arrancando refresh =====

@@ -184,6 +184,20 @@ atributos de marca/pack). Detalle completo de columnas en `BITACORA_TABLAS.md`.
 de Drops ya calculado a grano cliente-brandpack (ver `querys/Query_Drops.sql`), filtrar por
 `direccion`. Pendiente documentar el detalle de columnas en `BITACORA_TABLAS.md`.
 
+- **Mix**: metrica que se mide **solo a nivel de volumen** (en cualquiera de sus unidades — HL, CA,
+  CEQ), nunca en soles/NR. Es el volumen de un corte especifico (SKU, marca, brand_pack, etc.)
+  dividido entre el **volumen total de Beer+Rtds** del mismo alcance (region/gerencia/canal/periodo).
+  **"Beer" (como categoria de negocio) = Cervezas + Licores** (confirmado por el usuario,
+  2026-08-29 — no es solo `estratificacion = 'Cervezas'`), por lo tanto Beer+Rtds en `dm_venta`
+  equivale a `estratificacion IN ('Cervezas', 'Licores', 'Ready To Drink')` — el mismo alcance de 3
+  categorias ya usado para Brand Distribution (ver regla de negocio abajo), asi que **no hay
+  conflicto entre ambos KPIs**. Ejemplo confirmado por el usuario (2026-08-29): Mix de PC630
+  (Pilsen Callao 630) en la regional en agosto, con volumen PC630 = 120 y volumen total Beer+Rtds =
+  1200 → **Mix = 120/1200 = 10%**.
+  **Mapeo a Databricks:** directamente desde `dm_venta` (no requiere tabla especial) —
+  numerador = `SUM(hl)` (o `caja_fisica`/`caja_equivalente`) filtrado al corte deseado, denominador
+  = `SUM(hl)` del mismo alcance con `estratificacion IN ('Cervezas', 'Licores', 'Ready To Drink')`.
+
 **Pendiente de mapear:** SKU x POC y Cobertura todavia no tienen tabla/columna identificada
 en Databricks — cuando se arme la primera consulta que calcule cada una, documentar el mapeo exacto
 (que campos/joins se usaron) en `BITACORA_TABLAS.md`.
@@ -222,11 +236,25 @@ Definiciones validadas por el usuario (2026-08-27):
   Management — no es un campo de negocio suelto, es la logica detras de campos como
   `Price_Segment_OBPPC`, `obppc_stage`, `obppc_cluster`.
 - **BEES:** app de Backus para que los clientes (POCs) hagan sus pedidos.
-- **CD (Centro de Distribucion) / Centro:** almacen fisico establecido en una zona/localidad. **Un
-  CD puede abastecer a mas de una GV** (relacion no es 1:1) — ver ejemplo en `BITACORA_TABLAS.md`
-  (CD Pucallpa/`SJ97` reparte a las 4 GV de Centro Oriente).
+- **CD (Centro de Distribucion) / Centro:** almacen fisico establecido en una zona/localidad. Por
+  registro de clientes en `dm_cliente.centro_id`, **un CD puede tener clientes de mas de una GV**
+  (relacion no es 1:1) — ver ejemplo en `BITACORA_TABLAS.md` (CD Pucallpa/`SJ97` tiene clientes
+  registrados de las 4 GV de Centro Oriente). **Pero por volumen real de Brand Distribution
+  (confirmado 2026-09-02, `querys/Query_Brand_Distribution_CD_Gerencia_Dominante.sql`), casi todos
+  los CD estan dominados por una sola GV (>98% del volumen)** — la mezcla de GV que aparece en
+  `dm_cliente` es sobre todo clientes reasignados/de bajisimo volumen, no reparto real. Mapeo CD →
+  GV dominante usado para filtros de UI (ej. artifact "Evolución de Brand Distribution"):
+  - **Pucall Hco:** `SJ90` (Huánuco), `SJ93` (Tingo María), `SJ97` (Pucallpa)
+  - **Huancay Ch:** `BK43` (Huancavelica), `BK68` (Huancayo), `SJ86` (Satipo), `SJ87` (Chanchamayo)
+  - **Iquitos:** `SJ91` (Iquitos)
+  - **Tarapoto:** `BK31` (San Benedicto I), `SJ92` (Moyobamba), `SJ94` (Tarapoto), `SJ95` (Yurimaguas)
+  - **DA Jun Puc:** ninguno — es canal distribuidor, no opera CD propio (0% de volumen en todos).
 - **GV (Gerencia de Ventas)** = `gerencia`. La Regional Centro Oriente tiene **5 GV**. Una GV puede
   recibir de 1 o mas CD.
+- **Beer (categoria de negocio):** **Cervezas + Licores** (`estratificacion IN ('Cervezas',
+  'Licores')`) — no es solo cerveza pese al nombre. Confirmado por el usuario (2026-08-29) al
+  definir el KPI **Mix** (ver "KPIs propios de Backus"). Relevante tambien para los cortes por
+  categoria "Beer/Rtds/Nabs" del dashboard de GV Volumen (`.claude/skills/dashboard-gv-volumen/`).
 - **HL (Hectolitro):** unidad de medida de volumen de Backus, **1 HL = 100 litros**. La conversion
   caja→HL varia por SKU/formato. Ejemplo confirmado (Cristal 650 x12): `0.650 L/botella x 12
   botellas/caja = 7.8 L/caja` → `7.8 / 100 = 0.078 HL/caja`.
@@ -265,6 +293,14 @@ Definiciones validadas por el usuario (2026-08-27):
 ## Reglas de negocio validadas por el usuario
 
 - **Categoria Agua:** excluir siempre la marca **San Mateo** de los analisis (`and d.marca <> 'San Mateo'` o filtrar post-query). Regla vigente desde 2026-08-15, aplica a futuro sin volver a confirmar.
+- **Base de volumen para reportes ejecutivos/dashboards (resumen YTD, mensual, por gerencia/canal/CD):
+  usar Beer+Rtds** (`estratificacion IN ('Cervezas','Licores','Ready To Drink')`), **no
+  Beer+Rtds+Nabs.** Nabs (Gaseosas+Agua+Maltas) queda fuera de todos los totales/crecimientos — se
+  puede mostrar aparte como referencia (no sumado) si aporta contexto. Coincide con el alcance ya
+  usado para Brand Distribution y con el denominador del KPI Mix (ver abajo). Regla confirmada por
+  el usuario 2026-09-03 al pedir el reporte YTD de volumen de Centro Oriente. Cada vez que se
+  mencione un crecimiento, aclarar explicitamente que es "en Beer+Rtds" y acompañarlo del nominal en
+  HL/khl entre parentesis (ej. "crece en Beer+Rtds +2,4% (+43,3 mil HL)"), no solo el %.
 - **Alcance de categorias para Brand Distribution:** filtrar siempre
   `m.estratificacion in ('Cervezas', 'Licores', 'Ready To Drink')` (join a
   `gld_maz_sales_portfolio_pe.pe_portfolio_material`) al calcular el KPI Brand Distribution sobre
@@ -274,6 +310,18 @@ Definiciones validadas por el usuario (2026-08-27):
   eran NABs (Gaseosas/Agua/Maltas, no alcoholicas). Regla confirmada por el usuario 2026-08-31,
   aplica a futuro sin volver a confirmar salvo que el analisis pida explicitamente otro alcance
   (ej. medir actividad total de BEES incluyendo Marketplace).
+- **Que tipo (SELLIN/SELLOUT) mide Brand Distribution en cada gerencia:** no es un simple
+  SELLIN+SELLOUT parejo en todas las GV — depende de que dato reporta cada una (confirmado por el
+  usuario 2026-08-31, coincide con el patron observado de SELLOUT=0 en dos GV y SELLIN casi nulo
+  en otra):
+  - **Pucall Hco (Pucallpa) y Huancay Ch (Huancayo):** solo **SELLIN**.
+  - **Iquitos y Tarapoto:** **SELLIN + SELLOUT**.
+  - **DA Jun Puc:** solo **SELLOUT**.
+  El "Total" oficial de Brand Distribution por gerencia se arma aplicando esta regla por GV, no
+  sumando SELLIN+SELLOUT en las 5 por igual. A nivel Direccion (todas las GV juntas) el total
+  tambien debe construirse gerencia por gerencia con esta logica, no sumando el total SELLIN
+  Direccion + total SELLOUT Direccion sin filtrar. Query de referencia:
+  `querys/Query_Brand_Distribution_Gerencia_Agosto.sql`.
 
 ## Mantener este archivo vivo
 

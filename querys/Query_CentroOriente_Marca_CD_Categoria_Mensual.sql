@@ -1,4 +1,13 @@
--- CD x Categoria x Marca mensual, por gerencia. Alimenta la seccion "Por Marca".
+-- CD x Categoria x Canal x Marca mensual, por gerencia. Alimenta la seccion "Por Marca" y el
+-- filtro global de Canal.
+-- Normalizacion de marca (maestro trae duplicados/variantes de escritura, confirmado con el
+-- usuario 2026-08-31):
+--   "golden"/"Golden"                              -> "Golden"
+--   Mikes H Fresa/Lemon/Maracuya/Arandano/Apple/Mango Hot (cualquier capitalizacion) -> "Mikes"
+--   "Cristal (Peru)"                                -> "Cristal" (OJO: "Cristalina" es otra marca, no tocar)
+--   Cualquier "Cusqueña ..." (Trigo/Malta/Negra/Quinua/Doble Malta/Red Lager/Cero Trigo/etc.) -> "Cusqueña"
+--   Cualquier "Corona ..." o "Coronita ..." (Extra/Cero/Tropical)                -> "Corona"
+--   "Pilsen Callao Fresh"                           -> "Pilsen Callao" (OJO: "Pilsen Fresh" y "Pilsen Trujillo" son otras marcas, no tocar)
 SELECT
   v.gerencia,
   CAST(SUBSTR(v.mes,1,4) AS INT) AS anio,
@@ -9,17 +18,26 @@ SELECT
     WHEN v.estratificacion = 'Ready To Drink' THEN 'Rtds'
     WHEN v.estratificacion IN ('Gaseosas','Agua','Maltas') THEN 'Nabs'
   END AS categoria_grupo,
-  v.marca,
+  COALESCE(c.unidad_negocio_revenue_volumen_meta, 'Sin clasificar') AS canal_meta,
+  CASE
+    WHEN UPPER(v.marca) LIKE 'MIKES%' THEN 'Mikes'
+    WHEN UPPER(v.marca) = 'GOLDEN' THEN 'Golden'
+    WHEN UPPER(v.marca) = 'CRISTAL (PERU)' THEN 'Cristal'
+    WHEN UPPER(v.marca) LIKE 'CUSQUEÑA%' THEN 'Cusqueña'
+    WHEN UPPER(v.marca) LIKE 'CORONA%' OR UPPER(v.marca) LIKE 'CORONITA%' THEN 'Corona'
+    WHEN UPPER(v.marca) = 'PILSEN CALLAO FRESH' THEN 'Pilsen Callao'
+    ELSE v.marca
+  END AS marca,
   SUM(v.hl) AS hl
 FROM brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_venta v
 INNER JOIN brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_cliente c
   ON v.cliente_id = c.cliente_id
-WHERE v.mes BETWEEN '202401' AND '202608'
+WHERE v.mes BETWEEN '202401' AND '202609'
   AND v.gerencia IN ('PE Ger P4 Tarapoto','PE Ger P4 Iquitos','PE Ger P4 Pucall Hco','PE Ger P4 Huancay Ch','PE Ger P4 DA Jun Puc')
   AND v.indicadores_comerciales = 1
   AND v.estratificacion IN ('Cervezas','Licores','Ready To Drink','Gaseosas','Agua','Maltas')
   AND NOT (v.estratificacion = 'Agua' AND v.marca = 'San Mateo')
-  AND c.centro IN ('CD Pucallpa','CD Huánuco','CD Tingo María','CD Tarapoto','CD Yurimaguas','CD Moyobamba','CD Iquitos','CD Huancayo','CD Chanchamayo','CD Satipo','CD Huancavelica','CD San Benedicto I (Ate)')
+  AND c.centro IN ('CD Pucallpa','CD Huánuco','CD Tingo María','CD Tarapoto','CD Yurimaguas','CD Moyobamba','CD Iquitos','CD Huancayo','CD Chanchamayo','CD Satipo','CD Huancavelica','CD San Benedicto I (Ate)','CD Motupe','CD Chiclayo')
 GROUP BY
   v.gerencia, CAST(SUBSTR(v.mes,1,4) AS INT), CAST(SUBSTR(v.mes,5,2) AS INT), c.centro,
   CASE
@@ -27,5 +45,14 @@ GROUP BY
     WHEN v.estratificacion = 'Ready To Drink' THEN 'Rtds'
     WHEN v.estratificacion IN ('Gaseosas','Agua','Maltas') THEN 'Nabs'
   END,
-  v.marca
-ORDER BY v.gerencia, anio, mes_num, centro, categoria_grupo, marca
+  COALESCE(c.unidad_negocio_revenue_volumen_meta, 'Sin clasificar'),
+  CASE
+    WHEN UPPER(v.marca) LIKE 'MIKES%' THEN 'Mikes'
+    WHEN UPPER(v.marca) = 'GOLDEN' THEN 'Golden'
+    WHEN UPPER(v.marca) = 'CRISTAL (PERU)' THEN 'Cristal'
+    WHEN UPPER(v.marca) LIKE 'CUSQUEÑA%' THEN 'Cusqueña'
+    WHEN UPPER(v.marca) LIKE 'CORONA%' OR UPPER(v.marca) LIKE 'CORONITA%' THEN 'Corona'
+    WHEN UPPER(v.marca) = 'PILSEN CALLAO FRESH' THEN 'Pilsen Callao'
+    ELSE v.marca
+  END
+ORDER BY v.gerencia, anio, mes_num, centro, categoria_grupo, canal_meta, marca

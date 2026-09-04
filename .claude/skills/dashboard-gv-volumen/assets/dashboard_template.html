@@ -23,6 +23,12 @@
     --font-display:'Fraunces', ui-serif, Georgia, serif;
     --font-body:'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
     --font-mono:'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --ger-total:#3A332A;
+    --ger-dajunpuc:#A6567E;
+    --ger-huancay:#C1652E;
+    --ger-iquitos:#3F8F5D;
+    --ger-pucallpa:#3E6FA6;
+    --ger-tarapoto:#AB8A2C;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
@@ -30,6 +36,8 @@
       --ink-faint:#A89C8222; --accent:#E7A94E; --accent-strong:#F2C078; --accent-soft:#E7A94E22;
       --positive:#4FAE79; --positive-soft:#4FAE7922; --negative:#E17272; --negative-soft:#E1727222;
       --border:#3A3222; --border-strong:#4A4128; --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+      --ger-total:#D8D0BC; --ger-dajunpuc:#E28FB0; --ger-huancay:#F0925A; --ger-iquitos:#6FC694;
+      --ger-pucallpa:#7FAEE0; --ger-tarapoto:#E0C066;
     }
   }
   :root[data-theme="dark"]{
@@ -37,6 +45,8 @@
     --ink-faint:#A89C8222; --accent:#E7A94E; --accent-strong:#F2C078; --accent-soft:#E7A94E22;
     --positive:#4FAE79; --positive-soft:#4FAE7922; --negative:#E17272; --negative-soft:#E1727222;
     --border:#3A3222; --border-strong:#4A4128; --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+    --ger-total:#D8D0BC; --ger-dajunpuc:#E28FB0; --ger-huancay:#F0925A; --ger-iquitos:#6FC694;
+    --ger-pucallpa:#7FAEE0; --ger-tarapoto:#E0C066;
   }
   *{ box-sizing:border-box; }
   html,body{ margin:0; padding:0; }
@@ -66,23 +76,9 @@
   .segset button:not(.active):hover{ color:var(--ink); }
   .segset.multi button.active::before{ content:"\2713\a0"; }
   .segset.multi button:not(.active){ opacity:0.65; }
+  .segset .dot{ width:8px; height:8px; border-radius:50%; background:var(--dot, var(--ink-muted)); display:inline-block; margin-right:6px; vertical-align:middle; flex:none; }
   .toolbar .label{ font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-muted); font-weight:600; margin-right:6px; }
   .toolbar .grp{ display:flex; align-items:center; flex-wrap:wrap; gap:6px; }
-
-  .highlights{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; }
-  .kpi{ background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px 18px; display:flex; flex-direction:column; gap:6px; box-shadow:var(--shadow); }
-  .kpi .k-label{ font-size:11.5px; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-muted); font-weight:600; }
-  .kpi .k-value{ font-family:var(--font-display); font-size:28px; font-weight:600; letter-spacing:-0.01em; }
-  .kpi .k-sub{ font-size:12px; color:var(--ink-muted); font-variant-numeric:tabular-nums; }
-  .pill{ display:inline-flex; align-items:center; gap:4px; font-family:var(--font-mono); font-weight:600; font-size:12px; padding:2px 7px; border-radius:999px; }
-  .pill.pos{ background:var(--positive-soft); color:var(--positive); }
-  .pill.neg{ background:var(--negative-soft); color:var(--negative); }
-  .pill.flat{ background:var(--ink-faint); color:var(--ink-muted); }
-
-  .narrative{ background:var(--surface-2); border:1px solid var(--border); border-radius:14px; padding:16px 18px; font-size:13.5px; color:var(--ink); display:flex; flex-direction:column; gap:8px; }
-  .narrative h3{ margin:0; font-family:var(--font-display); font-size:16px; font-weight:600; }
-  .narrative ul{ margin:0; padding-left:18px; display:flex; flex-direction:column; gap:5px; }
-  .narrative li::marker{ color:var(--accent-strong); }
 
   section.card{ background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:18px 18px 8px; box-shadow:var(--shadow); scroll-margin-top:80px; }
   section.card > .head{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:4px; }
@@ -128,44 +124,45 @@
   <header class="page">
     <span class="eyebrow">{{EYEBROW_TEXT}}</span>
     <h1 id="page-title">{{PAGE_TITLE_DEFAULT}}</h1>
-    <p class="sub">Volumen (<b>HL</b>), {{YEAR_MIN}}&ndash;{{YEAR_MAX}}, comparado contra mismo periodo del a&ntilde;o anterior (LY). Categor&iacute;as: <b>Beer</b> (Cervezas + Licores), <b>Rtds</b> (Ready To Drink), <b>Nabs</b> (Gaseosas + Agua + Maltas &mdash; excluye marca San Mateo). Elegi una gerencia en el toolbar para ver su detalle.</p>
+    <p class="sub">Volumen (<b>HL</b>), <span id="year-range"></span>, comparado contra mismo periodo del a&ntilde;o anterior (LY). Categor&iacute;as: <b>Beer</b> (Cervezas + Licores), <b>Rtds</b> (Ready To Drink), <b>Nabs</b> (Gaseosas + Agua + Maltas &mdash; excluye marca San Mateo). Elegi una gerencia en el toolbar para ver su detalle.</p>
   </header>
 
-  <div class="highlights" id="highlights"></div>
-  <div class="narrative" id="narrative"></div>
-
   <div class="toolbar">
-    <div class="grp"><span class="label">Gerencia (multi)</span>
-      <div class="segset multi" id="seg-gerencia"></div>
-    </div>
     <div class="grp"><span class="label">Periodo</span>
       <div class="segset" id="seg-period">
         <button data-v="month" class="active">Mensual</button>
         <button data-v="quarter">Trimestral</button>
         <button data-v="year">Anual</button>
+        <button data-v="ytd">YTD</button>
       </div>
     </div>
-    <div class="grp"><span class="label">Categor&iacute;a (multi)</span>
+    <div class="grp"><span class="label">Categor&iacute;a</span>
       <div class="segset multi" id="seg-cat">
         <button data-v="Beer" class="active">Beer</button>
         <button data-v="Rtds" class="active">Rtds</button>
         <button data-v="Nabs" class="active">Nabs</button>
       </div>
     </div>
-    <div class="grp"><span class="label">Centro (multi)</span>
-      <div class="segset multi" id="seg-centro"></div>
+    <div class="grp"><span class="label">Canal</span>
+      <div class="segset multi" id="seg-canal"></div>
+    </div>
+    <div class="grp"><span class="label">Gerencia</span>
+      <div class="segset" id="seg-gerencia"></div>
+    </div>
+    <div class="grp"><span class="label">CD</span>
+      <div class="segset" id="seg-centro"></div>
     </div>
   </div>
 
   <section class="card" id="sec-total">
     <div class="head"><h2>Total Gerencia</h2><span class="meta" id="meta-total"></span></div>
-    <p class="note">Los filtros <b>Categor&iacute;a</b> y <b>Centro</b> del toolbar son multi-select (no excluyentes) y recalculan TODAS las secciones de abajo (Total, Categor&iacute;a, CD, Canal, Marca, Formato) considerando solo lo marcado. Los KPI de arriba (resumen ejecutivo) no se ven afectados por estos filtros, siempre muestran la gerencia completa sin restricci&oacute;n de CD.</p>
+    <p class="note"><b>Categor&iacute;a</b> y <b>Canal</b> son multi-select (no excluyentes). <b>Gerencia</b> y <b>CD</b> son de selecci&oacute;n &uacute;nica y est&aacute;n vinculados entre s&iacute;: elegir un CD selecciona autom&aacute;ticamente su gerencia, y elegir una gerencia acota el CD y el Canal disponibles. Todo recalcula TODAS las secciones de abajo (Total, Categor&iacute;a, CD, Canal, Marca, Pack, Formato, Marca &times; Formato).</p>
     <div class="tblwrap"><table class="data" id="tbl-total"></table></div>
   </section>
 
   <section class="card" id="sec-cat">
     <div class="head"><h2>Por categor&iacute;a</h2><span class="meta" id="meta-cat"></span></div>
-    <p class="note">Beer + Rtds + Nabs y Beer + Rtds son filas combinadas de referencia (en curs&iacute;va, no suman aparte al Total). Beer = Cervezas + Licores &middot; Rtds = Ready To Drink &middot; Nabs = Gaseosas + Agua + Maltas (sin San Mateo).</p>
+    <p class="note">Beer + Rtds es una fila combinada de referencia (en curs&iacute;va, no suma aparte al Total). Beer = Cervezas + Licores &middot; Rtds = Ready To Drink &middot; Nabs = Gaseosas + Agua + Maltas (sin San Mateo).</p>
     <div class="tblwrap"><table class="data" id="tbl-cat"></table></div>
   </section>
 
@@ -187,10 +184,22 @@
     <div class="tblwrap"><table class="data" id="tbl-marca"></table></div>
   </section>
 
+  <section class="card" id="sec-pack">
+    <div class="head"><h2>Por Pack</h2><span class="meta" id="meta-pack"></span></div>
+    <p class="note">Campo <code>pack_xxx</code> de <code>revenue_maestro_sku</code> (join por <code>material_id</code> = <code>sku</code>) &mdash; agrupaci&oacute;n m&aacute;s gruesa que Formato: envase + rango de mililitraje redondeado (ej. &ldquo;RB 6XX&rdquo;, &ldquo;CAN XXX&rdquo;, &ldquo;NRB 3XX&rdquo;) en vez del formato exacto. Carga manual, cobertura validada 100% para este alcance el 2026-09-01 &mdash; revalidar si aparece volumen relevante como &ldquo;Sin mapear&rdquo;. Mismo criterio de orden fijo que Marca y Formato.</p>
+    <div class="tblwrap"><table class="data" id="tbl-pack"></table></div>
+  </section>
+
   <section class="card" id="sec-formato">
     <div class="head"><h2>Por Formato</h2><span class="meta" id="meta-formato"></span></div>
     <p class="note">Campo <code>pack</code> de <code>revenue_maestro_sku</code> (join por <code>material_id</code> = <code>sku</code>; carga manual, cobertura validada 100% para este alcance el 2026-08-27 &mdash; revalidar si aparece volumen relevante como &ldquo;Sin mapear&rdquo;). Mismo criterio de orden fijo que Marca.</p>
     <div class="tblwrap"><table class="data" id="tbl-formato"></table></div>
+  </section>
+
+  <section class="card" id="sec-marcaformato">
+    <div class="head"><h2>Por Marca &times; Formato</h2><span class="meta" id="meta-marcaformato"></span></div>
+    <p class="note">Cruce de <b>Marca</b> (<code>dm_venta.marca</code>, normalizada) y <b>Formato</b> (<code>pack</code> de <code>revenue_maestro_sku</code>) &mdash; cada fila es una combinaci&oacute;n real marca+formato con volumen. Orden fijo por volumen (de mayor a menor), calculado igual que Marca/Formato/Pack.</p>
+    <div class="tblwrap"><table class="data" id="tbl-marcaformato"></table></div>
   </section>
 
   <footer class="page">
@@ -209,8 +218,42 @@ const DIRECCION_LABEL = {{DIRECCION_LABEL}};
 const GERENCIA_LIST = {{GERENCIA_LIST_JS}};
 const GERENCIA_LABEL = {}; GERENCIA_LIST.forEach(g=>{ GERENCIA_LABEL[g.code]=g.label; });
 
+// color por gerencia para el punto del filtro Gerencia/CD (estilo radio, alineado con el
+// artifact "Evolucion de Brand Distribution") -- indexado por codigo transaccional, no por
+// posicion, para no depender del orden de GERENCIA_LIST.
+const GERENCIA_COLOR = {
+  "PE Ger P4 DA Jun Puc": "var(--ger-dajunpuc)",
+  "PE Ger P4 Huancay Ch": "var(--ger-huancay)",
+  "PE Ger P4 Iquitos": "var(--ger-iquitos)",
+  "PE Ger P4 Pucall Hco": "var(--ger-pucallpa)",
+  "PE Ger P4 Tarapoto": "var(--ger-tarapoto)",
+};
+
 const CD_DIMS = {{CD_DIMS_JS}};
 const CD_NOTE = {{CD_NOTE_JS}};
+const CD_ORDER = {{CD_ORDER_JS}};
+
+// mapeo CD -> gerencia DOMINANTE (1:1, no confundir con CD_DIMS que es el cd_list CURADO por
+// gerencia, muchos-a-muchos -- ver reglas_negocio.md). Mismo criterio ">98% del volumen real"
+// ya documentado/usado en CLAUDE.md para el artifact "Evolucion de Brand Distribution". Se usa
+// SOLO para resolver a que gerencia saltar cuando se elige un CD desde fuera de su alcance
+// actual (ver onCentroSetChange) -- nunca para filtrar/sumar datos.
+const CD_DOMINANT_GERENCIA = {
+  "CD Huancayo": "PE Ger P4 Huancay Ch",
+  "CD Huancavelica": "PE Ger P4 Huancay Ch",
+  "CD Chanchamayo": "PE Ger P4 Huancay Ch",
+  "CD Satipo": "PE Ger P4 Huancay Ch",
+  "CD Iquitos": "PE Ger P4 Iquitos",
+  "CD Pucallpa": "PE Ger P4 Pucall Hco",
+  "CD Huánuco": "PE Ger P4 Pucall Hco",
+  "CD Tingo María": "PE Ger P4 Pucall Hco",
+  "CD Tarapoto": "PE Ger P4 Tarapoto",
+  "CD Yurimaguas": "PE Ger P4 Tarapoto",
+  "CD Moyobamba": "PE Ger P4 Tarapoto",
+  "CD San Benedicto I (Ate)": "PE Ger P4 Tarapoto",
+  "CD Motupe": "PE Ger P4 Tarapoto",
+  "CD Chiclayo": "PE Ger P4 Tarapoto",
+};
 
 const CAT_ORDER = ["Beer","Rtds","Nabs"];
 
@@ -223,6 +266,8 @@ const RAW_BASE = {{RAW_BASE}};
 const RAW_CANAL = {{RAW_CANAL}};
 const RAW_MARCA = {{RAW_MARCA}};
 const RAW_FORMATO = {{RAW_FORMATO}};
+const RAW_PACK = {{RAW_PACK}};
+const RAW_MARCAFORMATO = {{RAW_MARCAFORMATO}};
 
 // ---------- indexing ----------
 // fila = [gerencia, anio, mes, ...dims, hl]; key = gerencia + "|" + dims.join("|")
@@ -241,25 +286,40 @@ function indexN(raw, nExtraDims, hlIdx){
 }
 
 const IDX_GERENCIA = indexN(RAW_GERENCIA, 0, 3);
-const IDX_BASE = indexN(RAW_BASE, 2, 5);
-const IDX_CANAL = indexN(RAW_CANAL, 3, 6);
-const IDX_MARCA = indexN(RAW_MARCA, 3, 6);
-const IDX_FORMATO = indexN(RAW_FORMATO, 3, 6);
+// A partir de la version con filtro global de Canal, TODOS los indices de detalle (menos
+// GERENCIA, que es el headline sin CD ni canal) llevan `canal` como dimension propia, siempre
+// en la posicion 3 de la key (gerencia|centro|categoria|canal|...detalle...). Esto permite que
+// el filtro de Canal recalcule TODAS las secciones igual que Categoria/Centro.
+const IDX_BASE = indexN(RAW_BASE, 3, 6);          // gerencia|centro|categoria|canal
+const IDX_CANAL = indexN(RAW_CANAL, 3, 6);        // gerencia|centro|categoria|canal (igual forma que BASE)
+const IDX_MARCA = indexN(RAW_MARCA, 4, 7);        // gerencia|centro|categoria|canal|marca
+const IDX_FORMATO = indexN(RAW_FORMATO, 4, 7);    // gerencia|centro|categoria|canal|formato
+const IDX_PACK = indexN(RAW_PACK, 4, 7);          // gerencia|centro|categoria|canal|pack_xxx
+// fila = [gerencia, anio, mes, centro, categoria, canal, marca, formato, hl] -- 2 dims de
+// "valor" (marca+formato) en vez de 1; sumDim/computeSortedComboDims tratan "marca|formato"
+// como un unico dimVal compuesto (ver mas abajo).
+const IDX_MARCAFORMATO = indexN(RAW_MARCAFORMATO, 5, 8);
 
-// fold "High End" (canal residual, volumen marginal) dentro de "DSD ON"
-for(const key of Object.keys(IDX_CANAL)){
-  if(!key.endsWith("|High End")) continue;
-  const baseKey = key.slice(0, -("|High End".length)) + "|DSD ON";
-  if(!IDX_CANAL[baseKey]) IDX_CANAL[baseKey] = {};
-  const src = IDX_CANAL[key];
-  for(const y of Object.keys(src)){
-    if(!IDX_CANAL[baseKey][y]) IDX_CANAL[baseKey][y] = {};
-    for(const m of Object.keys(src[y])){
-      IDX_CANAL[baseKey][y][m] = (IDX_CANAL[baseKey][y][m] || 0) + src[y][m];
+// fold "High End" (canal residual, volumen marginal) dentro de "DSD ON" -- generico para
+// cualquier indice cuya key tenga el canal en la posicion 3 (gerencia|centro|categoria|canal|...).
+function foldHighEndCanal(idx){
+  for(const key of Object.keys(idx)){
+    const parts = key.split("|");
+    if(parts[3] !== "High End") continue;
+    parts[3] = "DSD ON";
+    const baseKey = parts.join("|");
+    if(!idx[baseKey]) idx[baseKey] = {};
+    const src = idx[key];
+    for(const y of Object.keys(src)){
+      if(!idx[baseKey][y]) idx[baseKey][y] = {};
+      for(const m of Object.keys(src[y])){
+        idx[baseKey][y][m] = (idx[baseKey][y][m] || 0) + src[y][m];
+      }
     }
+    delete idx[key];
   }
-  delete IDX_CANAL[key];
 }
+[IDX_BASE, IDX_CANAL, IDX_MARCA, IDX_FORMATO, IDX_PACK, IDX_MARCAFORMATO].forEach(foldHighEndCanal);
 
 // ---------- periodos ----------
 function inBounds(y,m){
@@ -281,23 +341,32 @@ function buildQuarterPeriods(){
   const out=[];
   for(let y=YEAR_MIN;y<=YEAR_MAX;y++){
     for(let q=1;q<=4;q++){
-      const ms=[(q-1)*3+1,(q-1)*3+2,(q-1)*3+3].filter(m=>inBounds(y,m));
+      const qMonths=[(q-1)*3+1,(q-1)*3+2,(q-1)*3+3];
+      const ms=qMonths.filter(m=>inBounds(y,m));
       if(ms.length===0) continue;
-      out.push({ key:`${y}-Q${q}`, label:`Q${q}'${String(y).slice(2)}`, months:ms.map(m=>[y,m]), priorMonths:ms.map(m=>[y-1,m]), complete:ms.length===3 });
+      // ms.length===3 solo dice que los 3 meses del trimestre entraron en el rango mostrado --
+      // si el ULTIMO de esos meses es el mes en curso (parcial), el trimestre todavia no cerro.
+      const endsOnPartialLatest = y===YEAR_MAX && LATEST_MONTH_IS_PARTIAL && qMonths.includes(LATEST_MONTH);
+      out.push({ key:`${y}-Q${q}`, label:`Q${q}'${String(y).slice(2)}`, months:ms.map(m=>[y,m]), priorMonths:ms.map(m=>[y-1,m]), complete:ms.length===3 && !endsOnPartialLatest });
     }
   }
   return out;
 }
+// YTD = avance del anio a MES CERRADO (no incluye el mes en curso, aunque ya tenga dias
+// facturados -- ver CLAUDE.md "Nomenclatura y siglas del negocio"). Mensual/Trimestral SI
+// muestran el mes en curso (LATEST_MONTH) como columna propia; el resumen Anual/YTD no.
+const YTD_MAX_MONTH = LATEST_MONTH_IS_PARTIAL ? LATEST_MONTH-1 : LATEST_MONTH;
 function buildYearPeriods(){
   const out=[];
   for(let y=YEAR_MIN;y<=YEAR_MAX;y++){
-    const maxM = y===YEAR_MAX?LATEST_MONTH:12;
+    const maxM = y===YEAR_MAX?YTD_MAX_MONTH:12;
     const ms=[]; for(let m=1;m<=maxM;m++) ms.push(m);
     out.push({ key:`${y}`, label:maxM<12?`${y} YTD`:`${y}`, months:ms.map(m=>[y,m]), priorMonths:ms.map(m=>[y-1,m]), complete:maxM===12 });
   }
   return out;
 }
-const PERIODS = { month:buildMonthPeriods(), quarter:buildQuarterPeriods(), year:buildYearPeriods() };
+const YEAR_PERIODS = buildYearPeriods();
+const PERIODS = { month:buildMonthPeriods(), quarter:buildQuarterPeriods(), year:YEAR_PERIODS, ytd:[YEAR_PERIODS[YEAR_PERIODS.length-1]] };
 function lastCompleteQuarter(){
   const complete = PERIODS.quarter.filter(p=>p.complete);
   return complete[complete.length-1];
@@ -319,24 +388,43 @@ function sumMonths(bucket, months){
 // este filtro, un CD deliberadamente excluido para una gerencia (ej. San Benedicto/Ate en
 // Tarapoto) se colaria de vuelta si esa misma sigla de CD es real para otra gerencia
 // seleccionada a la vez (ej. DA Jun Puc).
-function sumBase(gerCodes, centros, categorias, months){
+function sumBase(gerCodes, centros, categorias, canales, months){
   let total=0;
   for(const g of gerCodes){
     const validCd = CD_DIMS[g];
     for(const c of centros){
       if(!validCd.includes(c)) continue;
-      for(const cat of categorias) total += sumMonths(IDX_BASE[`${g}|${c}|${cat}`], months);
+      for(const cat of categorias)
+        for(const canal of canales)
+          total += sumMonths(IDX_BASE[`${g}|${c}|${cat}|${canal}`], months);
     }
   }
   return total;
 }
-function sumDim(idx, gerCodes, centros, categorias, dimVal, months){
+function sumDim(idx, gerCodes, centros, categorias, canales, dimVal, months){
   let total=0;
   for(const g of gerCodes){
     const validCd = CD_DIMS[g];
     for(const c of centros){
       if(!validCd.includes(c)) continue;
-      for(const cat of categorias) total += sumMonths(idx[`${g}|${c}|${cat}|${dimVal}`], months);
+      for(const cat of categorias)
+        for(const canal of canales)
+          total += sumMonths(idx[`${g}|${c}|${cat}|${canal}|${dimVal}`], months);
+    }
+  }
+  return total;
+}
+// Solo para la seccion "Por Canal": cada fila YA ES un canal especifico (no una seleccion a
+// sumar), asi que se busca directo en IDX_CANAL sin loopear sobre `canales` -- a diferencia de
+// sumBase/sumDim, que reciben un ARRAY de canales porque estan sumando la seleccion del filtro
+// global para una sola celda/fila de otra dimension.
+function sumCanalRow(gerCodes, centros, categorias, canal, months){
+  let total=0;
+  for(const g of gerCodes){
+    const validCd = CD_DIMS[g];
+    for(const c of centros){
+      if(!validCd.includes(c)) continue;
+      for(const cat of categorias) total += sumMonths(IDX_CANAL[`${g}|${c}|${cat}|${canal}`], months);
     }
   }
   return total;
@@ -356,22 +444,43 @@ function signClass(v){ if(v>0) return "pos"; if(v<0) return "neg"; return "flat"
 // ---------- dims dinamicas por gerencia (categoria) ----------
 function buildCatDims(selectedCats){
   const dims=[];
-  if(selectedCats.has("Beer")&&selectedCats.has("Rtds")&&selectedCats.has("Nabs")) dims.push("Beer + Rtds + Nabs");
   if(selectedCats.has("Beer")&&selectedCats.has("Rtds")) dims.push("Beer + Rtds");
   for(const c of CAT_ORDER){ if(selectedCats.has(c)) dims.push(c); }
   return dims;
 }
-function catValue(gerCodes, centros, dim, months){
-  if(dim==="Beer + Rtds + Nabs") return sumBase(gerCodes, centros, ["Beer","Rtds","Nabs"], months);
-  if(dim==="Beer + Rtds") return sumBase(gerCodes, centros, ["Beer","Rtds"], months);
-  return sumBase(gerCodes, centros, [dim], months);
+function catValue(gerCodes, centros, canales, dim, months){
+  if(dim==="Beer + Rtds") return sumBase(gerCodes, centros, ["Beer","Rtds"], canales, months);
+  return sumBase(gerCodes, centros, [dim], canales, months);
 }
 
 // union de CD de un set de gerencias, deduplicada, en el orden de GERENCIA_LIST/CD_DIMS
 function unionCdDims(gerCodes){
-  const seen = new Set(), out = [];
-  for(const g of gerCodes){ for(const c of CD_DIMS[g]){ if(!seen.has(c)){ seen.add(c); out.push(c); } } }
-  return out;
+  const seen = new Set();
+  for(const g of gerCodes){ for(const c of CD_DIMS[g]){ seen.add(c); } }
+  // orden de exhibicion fijo (CD_ORDER, confirmado por el usuario) -- cualquier CD que no este
+  // en CD_ORDER (ej. uno nuevo agregado sin actualizar la lista) cae al final, en el orden en
+  // que aparecio, para no perderlo de la vista.
+  const ordered = CD_ORDER.filter(c=>seen.has(c));
+  for(const c of seen){ if(!ordered.includes(c)) ordered.push(c); }
+  return ordered;
+}
+
+// canales con volumen real (en algun mes del rango mostrado) para un set de gerencias -- mismo
+// criterio que CD: el toolbar de Canal solo debe ofrecer canales que existen de verdad para la
+// gerencia elegida (ej. DA Jun Puc es 100% canal DAs, no tiene sentido ofrecerle WHL/EVE/KA).
+function computeAvailableCanales(gerCodes){
+  const allCd = unionCdDims(gerCodes), allCat = CAT_ORDER;
+  const allDisplayedMonths = PERIODS.month.map(p=>p.months[0]);
+  return CANAL_DIMS.filter(ch => sumCanalRow(gerCodes, allCd, allCat, ch, allDisplayedMonths) > 0.001);
+}
+
+// CD es de seleccion unica: `state.centros` vacio = sin CD puntual elegido = ver el agregado de
+// TODOS los CD de la gerencia actual (equivalente a "Todos" sin necesitar un boton explicito).
+// Con exactamente 1 elegido, se acota a ese solo CD. Todo el resto del codigo (renderAll,
+// metaLabel, sumBase/sumDim) pasa por esta funcion en vez de leer `state.centros` directo.
+function activeCentros(gerCodes){
+  const all = unionCdDims(gerCodes);
+  return state.centros.size ? all.filter(c=>state.centros.has(c)) : all;
 }
 
 // orden fijo de marca/formato para un set de gerencias (calculado al cambiar la seleccion de
@@ -382,24 +491,60 @@ function computeSortedDims(idx, gerCodes){
   for(const key of Object.keys(idx)){
     if(!prefixes.some(p=>key.startsWith(p))) continue;
     const parts = key.split("|");
-    vals.add(parts[3]);
+    vals.add(parts[4]); // parts[3] es el canal; el dimVal (marca/formato/pack) va despues
   }
-  const allCd = unionCdDims(gerCodes), allCat = CAT_ORDER;
+  const allCd = unionCdDims(gerCodes), allCat = CAT_ORDER, allCanales = CANAL_DIMS;
   const refPeriod = PERIODS.year[PERIODS.year.length-1];
-  const totals = [...vals].map(v => ({ v, hl: sumDim(idx, gerCodes, allCd, allCat, v, refPeriod.months) }));
-  totals.sort((a,b)=>b.hl-a.hl);
-  return totals.map(t=>t.v);
+  const allDisplayedMonths = PERIODS.month.map(p=>p.months[0]);
+  const totals = [...vals].map(v => ({
+    v,
+    hlRef: sumDim(idx, gerCodes, allCd, allCat, allCanales, v, refPeriod.months),
+    hlDisplayed: sumDim(idx, gerCodes, allCd, allCat, allCanales, v, allDisplayedMonths),
+  }));
+  // se excluyen dims sin volumen real en NINGUN mes del rango mostrado (0 o negativo -- ruido
+  // de devoluciones/notas de credito, o valores que solo tenian data fuera de YEAR_MIN..YEAR_MAX):
+  // no aportan informacion y solo ensucian la tabla. El orden sigue basandose en el ultimo
+  // periodo (mas relevante para el usuario), no en el total historico completo.
+  const withData = totals.filter(t => t.hlDisplayed > 0.001);
+  withData.sort((a,b)=>b.hlRef-a.hlRef);
+  return withData.map(t=>t.v);
+}
+
+// como computeSortedDims, pero para un dimVal COMPUESTO de 2 dims (ej. "marca|formato") en vez
+// de 1 -- toma todo lo que sigue a gerencia|centro|categoria|canal en la key como un solo valor.
+function computeSortedComboDims(idx, gerCodes){
+  const vals = new Set();
+  const prefixes = gerCodes.map(g=>g+"|");
+  for(const key of Object.keys(idx)){
+    if(!prefixes.some(p=>key.startsWith(p))) continue;
+    const parts = key.split("|");
+    vals.add(parts.slice(4).join("|")); // parts[3] es el canal
+  }
+  const allCd = unionCdDims(gerCodes), allCat = CAT_ORDER, allCanales = CANAL_DIMS;
+  const refPeriod = PERIODS.year[PERIODS.year.length-1];
+  const allDisplayedMonths = PERIODS.month.map(p=>p.months[0]);
+  const totals = [...vals].map(v => ({
+    v,
+    hlRef: sumDim(idx, gerCodes, allCd, allCat, allCanales, v, refPeriod.months),
+    hlDisplayed: sumDim(idx, gerCodes, allCd, allCat, allCanales, v, allDisplayedMonths),
+  }));
+  const withData = totals.filter(t => t.hlDisplayed > 0.001);
+  withData.sort((a,b)=>b.hlRef-a.hlRef);
+  return withData.map(t=>t.v);
 }
 
 // ---------- estado ----------
 const ALL_GERENCIA_CODES = GERENCIA_LIST.map(g=>g.code);
 const state = {
   period: "month",
-  gerencias: new Set(ALL_GERENCIA_CODES), // todas seleccionadas por defecto = vista de Direccion
+  gerencias: new Set(ALL_GERENCIA_CODES), // todas seleccionadas por defecto = "Total Direccion"
   categories: new Set(CAT_ORDER),
-  centros: new Set(unionCdDims(ALL_GERENCIA_CODES)),
+  canales: new Set(computeAvailableCanales(ALL_GERENCIA_CODES)),
+  centros: new Set(), // vacio = sin CD puntual elegido = agregado de todos los CD de la gerencia (ver activeCentros)
   marcaOrder: [],
   formatoOrder: [],
+  packOrder: [],
+  marcaFormatoOrder: [],
 };
 
 function selectedGerLabel(){
@@ -412,8 +557,9 @@ function selectedGerLabel(){
 function renderSection(tableEl, opts){
   const periods = PERIODS[state.period];
   const gerCodes = opts.gerCodes;
-  const centros = [...state.centros];
+  const centros = activeCentros(gerCodes);
   const cats = CAT_ORDER.filter(c=>state.categories.has(c));
+  const canales = [...state.canales];
 
   let thead = `<tr><th class="rowhead">${opts.rowLabel}</th>`;
   for(const p of periods) thead += `<th>${p.label}${!p.complete?'<span class="badge">parcial</span>':''}</th>`;
@@ -436,8 +582,8 @@ function renderSection(tableEl, opts){
 
   let totalRow = `<tr class="total"><td class="rowhead">Total</td>`;
   periods.forEach(p=>{
-    const cur = sumBase(gerCodes, centros, cats, p.months);
-    const prior = sumBase(gerCodes, centros, cats, p.priorMonths);
+    const cur = sumBase(gerCodes, centros, cats, canales, p.months);
+    const prior = sumBase(gerCodes, centros, cats, canales, p.priorMonths);
     const gv = growth(cur,prior); const nom = cur-prior;
     totalRow += `<td><span class="cell-val">${fmtHl(cur)}</span><span class="cell-delta ${pctClass(gv)}">${fmtPct(gv)}</span><span class="cell-delta-nom ${signClass(nom)}">${fmtNomHl(nom)}</span></td>`;
   });
@@ -447,63 +593,81 @@ function renderSection(tableEl, opts){
 }
 
 function metaLabel(){
-  const per = {month:"vista mensual",quarter:"vista trimestral",year:"vista anual"}[state.period];
+  const per = {month:"vista mensual",quarter:"vista trimestral",year:"vista anual",ytd:"vista YTD"}[state.period];
   const cats = CAT_ORDER.filter(c=>state.categories.has(c));
   const catTxt = cats.length===3 ? "todas" : cats.join(" + ");
-  const cdAll = unionCdDims([...state.gerencias]);
-  const cdSel = cdAll.filter(c=>state.centros.has(c));
-  const cdTxt = cdSel.length===cdAll.length ? "todos" : cdSel.length + "/" + cdAll.length;
-  return `${selectedGerLabel()} &middot; ${per} &middot; categor&iacute;as: ${catTxt} &middot; CD: ${cdTxt} &middot; volumen en HL, variaci&oacute;n % y nominal vs. mismo periodo LY debajo de cada valor`;
+  const canalSel = CANAL_DIMS.filter(c=>state.canales.has(c));
+  const canalTxt = canalSel.length===CANAL_DIMS.length ? "todos" : canalSel.length + "/" + CANAL_DIMS.length;
+  const cdTxt = state.centros.size ? [...state.centros][0] : "todos";
+  return `${selectedGerLabel()} &middot; ${per} &middot; categor&iacute;as: ${catTxt} &middot; canal: ${canalTxt} &middot; CD: ${cdTxt} &middot; volumen en HL, variaci&oacute;n % y nominal vs. mismo periodo LY debajo de cada valor`;
 }
 
 function renderAll(){
-  document.querySelectorAll("#seg-gerencia button, #seg-period button, #seg-cat button, #seg-centro button").forEach(b=>{
+  document.querySelectorAll("#seg-gerencia button, #seg-period button, #seg-cat button, #seg-canal button, #seg-centro button").forEach(b=>{
     const grp = b.parentElement.id;
     let on;
-    if(grp==="seg-gerencia") on = state.gerencias.has(b.dataset.v);
+    if(grp==="seg-gerencia"){
+      const totalActive = state.gerencias.size===GERENCIA_LIST.length;
+      on = totalActive ? b.dataset.v==="ALL" : b.dataset.v===[...state.gerencias][0];
+    }
     else if(grp==="seg-period") on = b.dataset.v===state.period;
     else if(grp==="seg-cat") on = state.categories.has(b.dataset.v);
-    else if(grp==="seg-centro") on = state.centros.has(b.dataset.v);
+    else if(grp==="seg-canal") on = state.canales.has(b.dataset.v);
+    else if(grp==="seg-centro") on = state.centros.size===1 && state.centros.has(b.dataset.v);
     b.classList.toggle("active", !!on);
   });
 
-  const gerCodes = [...state.gerencias];
-  const centros = [...state.centros];
+  const gerCodes = GERENCIA_LIST.map(g=>g.code).filter(c=>state.gerencias.has(c));
+  const centros = activeCentros(gerCodes);
+  const canales = [...state.canales];
+  const cats = CAT_ORDER.filter(c=>state.categories.has(c));
 
   renderSection(document.getElementById("tbl-total"), {
-    rowLabel:"Gerencia", dims:["Total"], gerCodes,
-    valueFn:(dim,months)=> sumBase(gerCodes, centros, CAT_ORDER.filter(c=>state.categories.has(c)), months),
+    rowLabel:"Gerencia", dims:gerCodes, gerCodes, labelFor:g=>GERENCIA_LABEL[g],
+    valueFn:(dim,months)=> sumBase([dim], centros, cats, canales, months),
   });
 
   const catDims = buildCatDims(state.categories);
   renderSection(document.getElementById("tbl-cat"), {
     rowLabel:"Categoría", dims:catDims, gerCodes,
-    emphasize:catDims.filter(d=>d==="Beer + Rtds + Nabs"||d==="Beer + Rtds"),
-    valueFn:(dim,months)=> catValue(gerCodes, centros, dim, months),
+    emphasize:catDims.filter(d=>d==="Beer + Rtds"),
+    valueFn:(dim,months)=> catValue(gerCodes, centros, canales, dim, months),
   });
 
-  const cdDimsOrdered = unionCdDims(gerCodes).filter(c=>state.centros.has(c));
+  const cdDimsOrdered = centros;
   renderSection(document.getElementById("tbl-centro"), {
     rowLabel:"CD", dims:cdDimsOrdered, gerCodes,
-    valueFn:(dim,months)=> sumBase(gerCodes, [dim], CAT_ORDER.filter(c=>state.categories.has(c)), months),
+    valueFn:(dim,months)=> sumBase(gerCodes, [dim], cats, canales, months),
   });
 
+  const canalDimsOrdered = CANAL_DIMS.filter(c=>state.canales.has(c));
   renderSection(document.getElementById("tbl-canal"), {
-    rowLabel:"Canal", dims:CANAL_DIMS, labelFor:d=>CANAL_LABELS[d]||d, gerCodes,
-    valueFn:(dim,months)=> sumDim(IDX_CANAL, gerCodes, centros, CAT_ORDER.filter(c=>state.categories.has(c)), dim, months),
+    rowLabel:"Canal", dims:canalDimsOrdered, labelFor:d=>CANAL_LABELS[d]||d, gerCodes,
+    valueFn:(dim,months)=> sumCanalRow(gerCodes, centros, cats, dim, months),
   });
 
   renderSection(document.getElementById("tbl-marca"), {
     rowLabel:"Marca", dims:state.marcaOrder, gerCodes,
-    valueFn:(dim,months)=> sumDim(IDX_MARCA, gerCodes, centros, CAT_ORDER.filter(c=>state.categories.has(c)), dim, months),
+    valueFn:(dim,months)=> sumDim(IDX_MARCA, gerCodes, centros, cats, canales, dim, months),
+  });
+
+  renderSection(document.getElementById("tbl-pack"), {
+    rowLabel:"Pack", dims:state.packOrder, gerCodes,
+    valueFn:(dim,months)=> sumDim(IDX_PACK, gerCodes, centros, cats, canales, dim, months),
   });
 
   renderSection(document.getElementById("tbl-formato"), {
     rowLabel:"Formato", dims:state.formatoOrder, gerCodes,
-    valueFn:(dim,months)=> sumDim(IDX_FORMATO, gerCodes, centros, CAT_ORDER.filter(c=>state.categories.has(c)), dim, months),
+    valueFn:(dim,months)=> sumDim(IDX_FORMATO, gerCodes, centros, cats, canales, dim, months),
   });
 
-  ["meta-total","meta-cat","meta-centro","meta-canal","meta-marca","meta-formato"].forEach(id=>{
+  renderSection(document.getElementById("tbl-marcaformato"), {
+    rowLabel:"Marca × Formato", dims:state.marcaFormatoOrder, gerCodes,
+    labelFor:d=>d.split("|").join(" "),
+    valueFn:(dim,months)=> sumDim(IDX_MARCAFORMATO, gerCodes, centros, cats, canales, dim, months),
+  });
+
+  ["meta-total","meta-cat","meta-centro","meta-canal","meta-marca","meta-formato","meta-pack","meta-marcaformato"].forEach(id=>{
     document.getElementById(id).innerHTML = metaLabel();
   });
 
@@ -515,30 +679,93 @@ function renderAll(){
   document.getElementById("note-centro").innerHTML = notaCd + " Se excluyen otros CD marginales/de paso que aparecen en la ficha de algunos clientes (salvo donde se indique lo contrario). CD asignado seg&uacute;n <b>ficha actual del cliente</b> (foto vigente, no hist&oacute;rica por mes).";
 }
 
+// Gerencia y CD son de seleccion unica (radio), con punto de color por gerencia -- mismo estilo
+// que el artifact "Evolucion de Brand Distribution". "Total Direccion" vive como la primera
+// opcion del propio segset de Gerencia (no como un grupo de toolbar aparte).
 function rebuildCentroToolbar(){
   const el = document.getElementById("seg-centro");
-  el.innerHTML = unionCdDims([...state.gerencias]).map(c=>`<button data-v="${c}" class="active">${c}</button>`).join("");
+  const gerCodes = [...state.gerencias];
+  el.innerHTML = unionCdDims(gerCodes).map(c=>{
+    const dom = CD_DOMINANT_GERENCIA[c];
+    const color = dom ? (GERENCIA_COLOR[dom] || "var(--ink-muted)") : "var(--ink-muted)";
+    const active = state.centros.size===1 && state.centros.has(c);
+    return `<button data-v="${c}" class="${active?'active':''}" style="--dot:${color}"><span class="dot"></span>${c}</button>`;
+  }).join("");
 }
 function rebuildGerenciaToolbar(){
   const el = document.getElementById("seg-gerencia");
-  el.innerHTML = GERENCIA_LIST.map(g=>`<button data-v="${g.code}" class="${state.gerencias.has(g.code)?'active':''}">${g.label}</button>`).join("");
+  const totalActive = state.gerencias.size===GERENCIA_LIST.length;
+  let html = `<button data-v="ALL" class="${totalActive?'active':''}" style="--dot:var(--ger-total)"><span class="dot"></span>Total Dirección</button>`;
+  html += GERENCIA_LIST.map(g=>{
+    const active = !totalActive && state.gerencias.has(g.code);
+    return `<button data-v="${g.code}" class="${active?'active':''}" style="--dot:${GERENCIA_COLOR[g.code]}"><span class="dot"></span>${g.label}</button>`;
+  }).join("");
+  el.innerHTML = html;
+}
+function rebuildCanalToolbar(){
+  const el = document.getElementById("seg-canal");
+  const avail = computeAvailableCanales([...state.gerencias]);
+  el.innerHTML = avail.map(c=>`<button data-v="${c}" class="${state.canales.has(c)?'active':''}">${CANAL_LABELS[c]||c}</button>`).join("");
 }
 
-function onGerenciaSetChange(){
-  state.centros = new Set(unionCdDims([...state.gerencias]));
+// recalcula los ordenes fijos (Marca/Formato/Pack/Marca×Formato) para la gerencia actual --
+// comun a los dos flujos que cambian `state.gerencias` (elegir Gerencia directo, o elegir CD y
+// que la gerencia se auto-derive de el).
+function refreshOrdersForGerencia(){
   state.marcaOrder = computeSortedDims(IDX_MARCA, [...state.gerencias]);
   state.formatoOrder = computeSortedDims(IDX_FORMATO, [...state.gerencias]);
+  state.packOrder = computeSortedDims(IDX_PACK, [...state.gerencias]);
+  state.marcaFormatoOrder = computeSortedComboDims(IDX_MARCAFORMATO, [...state.gerencias]);
+}
+
+// Gerencia es el filtro "maestro": elegirla (seleccion unica, o "Total Direccion") limpia
+// cualquier CD puntual que hubiera quedado elegido -- state.centros vacio = agregado de todos
+// los CD de la nueva gerencia (ver activeCentros) -- y recalcula Canal a los canales con volumen
+// real para esa gerencia.
+function onGerenciaSetChange(){
+  state.centros = new Set();
+  state.canales = new Set(computeAvailableCanales([...state.gerencias]));
+  refreshOrdersForGerencia();
   rebuildCentroToolbar();
+  rebuildCanalToolbar();
   rebuildGerenciaToolbar();
-  buildHighlights();
+  updatePageTitle();
+  renderAll();
+}
+
+// CD es el sentido inverso: elegir un CD puntual auto-selecciona su gerencia. Si el CD elegido ya
+// pertenece al cd_list PROPIO de la gerencia actualmente seleccionada (caso de CD compartidos
+// reales, ej. "CD Pucallpa" es volumen real tanto de Iquitos como de Pucall Hco -- ver
+// reglas_negocio.md), NO saltamos de gerencia (seria sorpresivo estar mirando el detalle de
+// Iquitos y que un click en un CD valido para Iquitos te mande a otra gerencia). Si el CD no
+// pertenece a la gerencia actual (ej. veniamos de "Total Direccion", o cambiamos de rumbo),
+// saltamos a la gerencia DOMINANTE de ese CD (CD_DOMINANT_GERENCIA, mapeo 1:1). Deseleccionar el
+// unico CD activo (toggle-off) vuelve a "Total Direccion".
+function onCentroSetChange(){
+  if(state.centros.size===0){
+    state.gerencias = new Set(ALL_GERENCIA_CODES);
+  } else {
+    const cd = [...state.centros][0];
+    const currentGer = [...state.gerencias];
+    const staysInCurrent = currentGer.length===1 && CD_DIMS[currentGer[0]].includes(cd);
+    if(!staysInCurrent){
+      const dominant = CD_DOMINANT_GERENCIA[cd];
+      state.gerencias = new Set(dominant ? [dominant] : ALL_GERENCIA_CODES);
+    }
+  }
+  state.canales = new Set(computeAvailableCanales([...state.gerencias]));
+  refreshOrdersForGerencia();
+  rebuildCentroToolbar();
+  rebuildCanalToolbar();
+  rebuildGerenciaToolbar();
+  updatePageTitle();
   renderAll();
 }
 
 document.getElementById("seg-gerencia").addEventListener("click", e=>{
   const b = e.target.closest("button"); if(!b) return;
   const v = b.dataset.v;
-  if(state.gerencias.has(v)){ if(state.gerencias.size>1) state.gerencias.delete(v); }
-  else state.gerencias.add(v);
+  state.gerencias = v==="ALL" ? new Set(ALL_GERENCIA_CODES) : new Set([v]);
   onGerenciaSetChange();
 });
 document.getElementById("seg-period").addEventListener("click", e=>{
@@ -552,92 +779,29 @@ document.getElementById("seg-cat").addEventListener("click", e=>{
   else state.categories.add(v);
   renderAll();
 });
+document.getElementById("seg-canal").addEventListener("click", e=>{
+  const b = e.target.closest("button"); if(!b) return;
+  const v = b.dataset.v;
+  if(state.canales.has(v)){ if(state.canales.size>1) state.canales.delete(v); }
+  else state.canales.add(v);
+  renderAll();
+});
 document.getElementById("seg-centro").addEventListener("click", e=>{
   const b = e.target.closest("button"); if(!b) return;
   const v = b.dataset.v;
-  if(state.centros.has(v)){ if(state.centros.size>1) state.centros.delete(v); }
-  else state.centros.add(v);
-  renderAll();
+  // toggle-off del unico CD activo -> volver a "todos" (agregado); click en otro CD -> reemplaza
+  state.centros = (state.centros.size===1 && state.centros.has(v)) ? new Set() : new Set([v]);
+  onCentroSetChange();
 });
 
-// ---------- highlights ----------
-function buildHighlights(){
-  const gerCodes = [...state.gerencias];
+// ---------- titulo ----------
+function updatePageTitle(){
   const gerLabel = selectedGerLabel();
-  document.getElementById("page-title").textContent = `Ventas por Gerencia — ${gerLabel}`;
+  document.getElementById("page-title").textContent = `Volumen — ${gerLabel}`;
+}
 
-  const sumHeadline = months => gerCodes.reduce((acc,g)=> acc + sumMonths(IDX_GERENCIA[g], months), 0);
-  const fullYear = y => sumHeadline(Array.from({length:12},(_,i)=>[y,i+1]));
-  const ytdMonths = Array.from({length:LATEST_MONTH},(_,i)=>i+1);
-  const ytdMax = sumHeadline(ytdMonths.map(m=>[YEAR_MAX,m]));
-  const ytdMaxLY = sumHeadline(ytdMonths.map(m=>[YEAR_MAX-1,m]));
-  const lq = lastCompleteQuarter();
-  const lqCur = sumHeadline(lq.months);
-  const lqPrior = sumHeadline(lq.priorMonths);
-  const lqParts = lq.key.split("-Q");
-  const lqPriorLabel = `Q${lqParts[1]}'${String(+lqParts[0]-1).slice(2)}`;
-
-  function kpi(label, curVal, priorVal, sub){
-    const gv = growth(curVal, priorVal);
-    const nom = curVal - priorVal;
-    return `<div class="kpi">
-      <span class="k-label">${label}</span>
-      <span class="k-value">${fmtHl(curVal)} HL</span>
-      <span class="k-sub"><span class="pill ${pctClass(gv)}">${fmtPct(gv)}</span> ${sub}</span>
-      <span class="k-sub cell-delta-nom ${signClass(nom)}" style="font-size:11px;opacity:1">${fmtNomHl(nom)} HL vs LY</span>
-    </div>`;
-  }
-
-  const tiles = [];
-  for(let y=YEAR_MIN; y<YEAR_MAX; y++){
-    tiles.push(kpi(`FY${y} vs FY${y-1}`, fullYear(y), fullYear(y-1), "a&ntilde;o completo"));
-  }
-  const ytdLabel = LATEST_MONTH<12 ? `YTD ${YEAR_MAX} (Ene&ndash;${MES_LBL[LATEST_MONTH]})` : `FY${YEAR_MAX}`;
-  tiles.push(kpi(ytdLabel, ytdMax, ytdMaxLY, `vs mismo tramo ${YEAR_MAX-1}`));
-  tiles.push(kpi(`&Uacute;ltimo trimestre completo (${lq.label})`, lqCur, lqPrior, `vs ${lqPriorLabel}`));
-  document.getElementById("highlights").innerHTML = tiles.join("");
-
-  // narrative
-  const allCd = unionCdDims(gerCodes);
-  const catGrowth = {};
-  for(const cat of CAT_ORDER){
-    const cur = sumBase(gerCodes, allCd, [cat], ytdMonths.map(m=>[YEAR_MAX,m]));
-    const prior = sumBase(gerCodes, allCd, [cat], ytdMonths.map(m=>[YEAR_MAX-1,m]));
-    catGrowth[cat] = { cur, prior, g: growth(cur, prior) };
-  }
-  const catByGrowth = CAT_ORDER.filter(c=>catGrowth[c].g!==null).sort((a,b)=>catGrowth[b].g-catGrowth[a].g);
-  const fastestCat = catByGrowth[0];
-  const beerShare = ytdMax>0 ? (catGrowth["Beer"].cur/ytdMax*100) : null;
-
-  // mejor/peor combinacion gerencia+CD (mas informativo que un CD suelto cuando hay varias gerencias)
-  let bestCd=null, bestG=-Infinity, worstCd=null, worstG=Infinity, nCombos=0;
-  for(const g of gerCodes){
-    for(const c of CD_DIMS[g]){
-      nCombos++;
-      const c1 = sumBase([g], [c], CAT_ORDER, ytdMonths.map(m=>[YEAR_MAX,m]));
-      const c0 = sumBase([g], [c], CAT_ORDER, ytdMonths.map(m=>[YEAR_MAX-1,m]));
-      const gr = growth(c1, c0);
-      if(gr===null) continue;
-      const label = gerCodes.length>1 ? `${c} (${GERENCIA_LABEL[g]})` : c;
-      if(gr>bestG){ bestG=gr; bestCd=label; }
-      if(gr<worstG){ worstG=gr; worstCd=label; }
-    }
-  }
-
-  const others = CAT_ORDER.filter(c=>c!=="Beer" && c!==fastestCat);
-  const othersTxt = others.length ? " " + others.map(c=>`<b>${c}</b> var&iacute;a <span class="pill ${pctClass(catGrowth[c].g)}">${fmtPct(catGrowth[c].g)}</span>`).join(" y ") + "." : "";
-
-  const partialNote = LATEST_MONTH_IS_PARTIAL
-    ? `<li>${MES_LBL[LATEST_MONTH]} ${YEAR_MAX} est&aacute; <b>incompleto</b> (carga a d-1) &mdash; los periodos parciales (&ldquo;YTD&rdquo; o badge <i>parcial</i>) se comparan contra el mismo tramo de meses del a&ntilde;o anterior.</li>`
-    : `<li>Los periodos que llegan solo hasta ${MES_LBL[LATEST_MONTH]} se comparan contra el mismo tramo de meses del a&ntilde;o anterior.</li>`;
-
-  document.getElementById("narrative").innerHTML = `
-    <h3>Lectura r&aacute;pida &mdash; ${gerLabel} &middot; ${ytdLabel} vs mismo tramo ${YEAR_MAX-1}</h3>
-    <ul>
-      <li><b>${fastestCat}</b> es la categor&iacute;a que m&aacute;s crece en volumen (<span class="pill ${pctClass(catGrowth[fastestCat].g)}">${fmtPct(catGrowth[fastestCat].g)}</span>) sobre una base de ${catGrowth[fastestCat].prior.toFixed(0)} HL en ${YEAR_MAX-1}. <b>Beer</b> representa ${beerShare!==null?beerShare.toFixed(0):'&mdash;'}% del volumen (<span class="pill ${pctClass(catGrowth['Beer'].g)}">${fmtPct(catGrowth['Beer'].g)}</span>).${othersTxt}</li>
-      ${bestCd?`<li>De los ${nCombos} CD ${gerCodes.length>1?'(entre las gerencias seleccionadas)':'de la gerencia'}, <b>${bestCd}</b> es el que m&aacute;s crece YTD (<span class="pill ${pctClass(bestG)}">${fmtPct(bestG)}</span>) y <b>${worstCd}</b> el m&aacute;s rezagado (<span class="pill ${pctClass(worstG)}">${fmtPct(worstG)}</span>).</li>`:''}
-      ${partialNote}
-    </ul>`;
+function setYearRange(){
+  document.getElementById("year-range").textContent = YEAR_MIN===YEAR_MAX ? String(YEAR_MAX) : `${YEAR_MIN}–${YEAR_MAX}`;
 }
 
 function setFooter(){
@@ -653,10 +817,14 @@ function setFooter(){
 
 // ---------- init ----------
 rebuildGerenciaToolbar();
+rebuildCanalToolbar();
 rebuildCentroToolbar();
 state.marcaOrder = computeSortedDims(IDX_MARCA, [...state.gerencias]);
 state.formatoOrder = computeSortedDims(IDX_FORMATO, [...state.gerencias]);
-buildHighlights();
+state.packOrder = computeSortedDims(IDX_PACK, [...state.gerencias]);
+state.marcaFormatoOrder = computeSortedComboDims(IDX_MARCAFORMATO, [...state.gerencias]);
+updatePageTitle();
 renderAll();
 setFooter();
+setYearRange();
 </script>

@@ -1,5 +1,6 @@
--- CD x Categoria x Formato (pack, via revenue_maestro_sku) mensual, todas las gerencias del
--- run. Alimenta "Por Formato". revenue_maestro_sku es de carga manual (ver BITACORA_TABLAS.md)
+-- CD x Categoria x Canal x Formato (pack, via revenue_maestro_sku) mensual, todas las gerencias
+-- del run. Alimenta "Por Formato" y el filtro global de Canal. revenue_maestro_sku es de carga
+-- manual (ver BITACORA_TABLAS.md)
 -- -- validar cobertura de join (columna "Sin mapear" no deberia traer volumen relevante; si lo
 -- trae, avisar al usuario antes de confiar en la seccion Formato).
 -- Mismos placeholders que base_cd_categoria_mensual.sql.
@@ -13,6 +14,7 @@ SELECT
     WHEN v.estratificacion = 'Ready To Drink' THEN 'Rtds'
     WHEN v.estratificacion IN ('Gaseosas','Agua','Maltas') THEN 'Nabs'
   END AS categoria_grupo,
+  COALESCE(c.unidad_negocio_revenue_volumen_meta, 'Sin clasificar') AS canal_meta,
   COALESCE(r.pack, 'Sin mapear') AS pack,
   SUM(v.hl) AS hl
 FROM brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_venta v
@@ -33,5 +35,6 @@ GROUP BY
     WHEN v.estratificacion = 'Ready To Drink' THEN 'Rtds'
     WHEN v.estratificacion IN ('Gaseosas','Agua','Maltas') THEN 'Nabs'
   END,
+  COALESCE(c.unidad_negocio_revenue_volumen_meta, 'Sin clasificar'),
   COALESCE(r.pack, 'Sin mapear')
-ORDER BY v.gerencia, anio, mes_num, centro, categoria_grupo, pack
+ORDER BY v.gerencia, anio, mes_num, centro, categoria_grupo, canal_meta, pack

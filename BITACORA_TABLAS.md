@@ -164,6 +164,19 @@ y aparece volumen relevante sin mapear.
 
 **Metadata:** creada 2025-02-05, owner `gen_maz_pe_win053@gmodelo.com.mx`, formato Delta.
 
+**Campo `` `Agrupador (Tipo 2.0)` ``:** explorado 2026-09-03 (Centro Oriente, Beer+Rtds, YTD
+Ene-Ago 2026). Valores observados: `Core 6xx`, `CSQ 6xx`, `Latas`, `SS x 24`, `RTDs`, `Corona
+Extra`, `Otros`, `Litro`, `SS x 6`, `GBs`, `Cero` (11 valores, cruzado tambien con
+`` `Agrupador (Tipo)` `` mas fino y `kpi_premium` Si/No). **No coincide 1:1 con la
+microsegmentacion de categorias que usa el equipo de RGM central en sus presentaciones a
+Direccion** (ej. una presentacion de referencia de H1'26 mostraba categorias `Core 6XX`, `Latas
+Core`, `RTDs`, `P.Fresh`, `Otros`, `Nolo`, `F.Fish`, `Premium`, `Affordable` — parecido pero no
+igual, sin un mapeo limpio 1:1 encontrado todavia). Si se pide reproducir esa segmentacion exacta
+en el futuro, no asumir que `` `Agrupador (Tipo 2.0)` `` alcanza solo — confirmar con el usuario
+la fuente/logica exacta (podria ser una tabla o regla que RGM central arma aparte, no derivable
+solo de `revenue_maestro_sku`). Mientras tanto, los analisis de "categoria" en este proyecto usan
+la taxonomia propia ya validada: Beer/Rtds/Nabs por `estratificacion` (ver CLAUDE.md).
+
 ---
 
 ## `slv_maz_salesdata_salesdatadata_adb.pe_portfolio_hm_brand_distribution` — Hecho de Brand Distribution
@@ -186,6 +199,22 @@ volumen de Brand Distribution). `SELLOUT` = lo que el POC vende al consumidor fi
 chico, probablemente clientes con dato de venta al consumidor disponible, ej. moderno/KKAA) —
 pendiente confirmar el criterio exacto de que clientes reportan SELLOUT. Ambos usan el mismo
 `flag_brand_distro`, filtrar por `tipo` segun cual de las dos vistas se necesite.
+
+**LIMITACION ESTRUCTURAL confirmada (2026-09-02): SELLOUT no se puede atribuir a CD.** El
+`cliente_id` de las filas `tipo = 'SELLOUT'` **no existe en absoluto en `dm_cliente`** (el join
+`dm_cliente c on c.cliente_id = v.cliente_id` da `c.centro_id IS NULL` para el 100% de las filas
+SELLOUT, validado con `group by tipo, centro_id` sobre un mes completo — no es que caigan en un CD
+distinto, simplemente no cruzan). La tabla tampoco tiene un campo de CD propio (`DESCRIBE` solo
+trae `mes, direccion, gerencia, fecha_venta, tipo, cliente_id, material_id, hl,
+flag_brand_distro, marca_tarea, marca_offer, flag_comparable`). Los `cliente_id` de SELLOUT
+probablemente vienen de otra fuente (ej. reporte de venta al consumidor de terceros/moderno) que
+nunca se mapeo al maestro de clientes de Backus.
+**Impacto:** cualquier corte por CD de esta tabla (join a `dm_cliente` para traer `centro_id`)
+**excluye 100% del SELLOUT silenciosamente** — para Iquitos y Tarapoto (las unicas gerencias con
+SELLOUT real) el "total oficial por CD" que usa la regla SELLIN+SELLOUT en realidad solo trae
+SELLIN cuando se filtra por CD, aunque la formula/etiqueta diga que incluye ambos. Confirmado que
+esto afectaba el artifact "Evolución de Brand Distribution" (vista por CD) — corregido el label
+2026-09-02, pendiente evaluar si se puede conseguir el CD real de SELLOUT desde otra fuente.
 
 **Llaves de join:** `material_id` → `pe_portfolio_material.material_id` (ver tabla siguiente —
 catalogo distinto).
@@ -386,6 +415,11 @@ volumetria abajo).
 el descuento), `descripcion`, `abreviacion_sap` (llave para cruzar con
 `revenue_maestro_etiquetas`), `tipo_mecanica`, `escala`, `periodo_promo`, `estratificacion`.
 
+**`periodo_promo` — confirmado por el usuario (2026-09-01):** `FM` = **Full Month**, es decir la
+promo esta prendida/activa **todo el mes** (no es "foco mensual" ni un periodo parcial dentro del
+mes). Pendiente confirmar otros valores de `periodo_promo` si aparecen (no observados aun fuera de
+`FM`).
+
 **Campos de pricing/descuento:** `porcentaje`, `monto`, `ptr`, `ptc`, `mark_up`, `excise`,
 `factor_conversion_descuento`, `monto_descripcion_calculado`.
 
@@ -411,6 +445,20 @@ gerencia X + marca Y"); no confirmado el mecanismo exacto de expansion segmento�
 - **`X` = promocion antigua** (vencio/quedo obsoleta). Pista indirecta que sigue siendo util:
   `D` tiene ~2,746 filas/promo en promedio vs. ~186 filas/promo en `X` (3x mas promos distintas
   para menos volumen).
+
+**OJO — `estado='R'` NO sirve como filtro de "elegibilidad historica" de un mes ya cerrado
+(hallazgo 2026-09-01, caso Foco ON / material 7497 en Tarapoto):** al calcular adherencia
+(clientes que compraron bajo la promo / clientes elegibles) para agosto 2026 consultando **en
+septiembre**, clientes que **si compraron** bajo una fila de `dm_promocion` con vigencia
+`desde`/`hasta` dentro de agosto aparecian con `estado='D'` en esa misma fila — es decir, el
+`estado` parece reflejar el estado **actual/de ultimo batch cargado** (se "desactiva" a `D` en
+cuanto el periodo de vigencia cierra o se sube una tanda nueva de elegibilidad), no si la promo
+estuvo vigente/fue usada en su momento. Filtrar `estado='R'` para medir el universo elegible de un
+mes pasado subestima la poblacion real (en el caso validado, daba mas "adheridos" que "elegibles",
+resultado imposible >100%). **Para elegibilidad historica, usar la sola existencia de la fila
+cliente x material x mes en `dm_promocion` (sin filtrar `estado`)**, o cruzar contra `desde`/
+`hasta` vs. la fecha real de venta si se necesita mas precision. Reservar el filtro `estado='R'`
+para medir el universo **vigente hoy** (mismo uso que valida la tabla de arriba).
 
 **Metadata:** creada 2025-02-05, owner `javier.armando.diaz@gmodelo.com.mx`, formato Delta.
 
@@ -556,6 +604,28 @@ Tarapoto). El dashboard multi-gerencia soluciona esto agregando cada gerencia so
 **propio** `cd_list`, nunca contra la lista compartida que se ve en el filtro de Centro del
 toolbar (ver `references/reglas_negocio.md` del skill `dashboard-gv-volumen` para el detalle de
 un bug real que este descuido causo, ya corregido).
+
+---
+
+## Fuentes externas (fuera de Databricks)
+
+### `MetasBrandDistribution2026.xlsx` — Metas 2026 de Brand Distribution
+
+**Ubicacion:** `C:\Users\aldoz\OneDrive\Claudio\MetasBrandDistribution2026.xlsx` (hoja unica
+`Hoja1`), entregado por el usuario 2026-09-02.
+
+**Grano:** fila = Direccion/Gerencia x Tipo (Sell In / Sell Out), columnas = un mes 2026 cada una
+(ene-dic). Filas: `PE Dir Centro Orient` (Sell In + Sell Out), `PE Ger P4 Pucall Hco` (solo Sell
+In), `PE Ger P4 Huancay Ch` (solo Sell In), `PE Ger P4 Tarapoto` (Sell In + Sell Out), `PE Ger P4
+Iquitos` (Sell In + Sell Out), `PE Ger P4 DA Jun Puc` (solo Sell Out) — coincide exacto con la
+regla de "total oficial por gerencia" ya validada (ver CLAUDE.md).
+
+**Como estan armados los valores (confirmado por el usuario 2026-09-02):** enero-marzo 2026 son
+el **YTD real ya facturado** (coinciden exacto con `pe_portfolio_hm_brand_distribution`), abril-
+diciembre son la **proyeccion/meta** del resto del año (por eso tienen decimales). La **meta anual
+= suma de las 12 columnas** (YTD real + proyeccion), no solo la parte proyectada. Releer el
+archivo con el skill `xlsx` cada vez que se use — se va actualizando mes a mes (el mes que cierra
+pasa de proyectado a real).
 
 ---
 

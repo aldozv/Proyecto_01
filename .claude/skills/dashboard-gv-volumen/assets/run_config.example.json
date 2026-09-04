@@ -2,7 +2,7 @@
   "direccion_label": "Dirección Centro Oriente",
   "eyebrow_text": "Dirección Centro Oriente · Volumen (HL)",
   "page_title_tag": "Centro Oriente Volumen",
-  "page_title_default": "Ventas por Gerencia — Centro Oriente",
+  "page_title_default": "Volumen — Dirección Centro Oriente",
   "year_min": 2025,
   "year_max": 2026,
   "latest_month": 8,
@@ -12,20 +12,20 @@
     {
       "code": "PE Ger P4 Pucall Hco",
       "label": "Pucallpa",
-      "cd_list": ["CD Pucallpa", "CD Huánuco", "CD Tingo María"],
-      "cd_note": "CD Pucallpa, CD Huánuco, CD Tingo María."
+      "cd_list": ["CD Pucallpa", "CD Huánuco", "CD Tingo María", "CD Iquitos", "CD Yurimaguas", "CD Tarapoto"],
+      "cd_note": "CD Pucallpa, CD Huánuco, CD Tingo María, CD Iquitos, CD Yurimaguas y CD Tarapoto -- estos tres últimos son volumen real de clientes que operan en varias ciudades del río (ej. Naviera Oriente S.A.C., con códigos de cliente distintos en Iquitos y Yurimaguas) pero facturan bajo Pucallpa; confirmado 2026-08-31 al refrescar agosto (20.6 HL, canal DSD OFF -- no es el patrón DAs de los demás casos, es un cliente con múltiples códigos por plaza)."
     },
     {
       "code": "PE Ger P4 Tarapoto",
       "label": "Tarapoto",
-      "cd_list": ["CD Tarapoto", "CD Yurimaguas", "CD Moyobamba", "CD Pucallpa"],
-      "cd_note": "CD Tarapoto, CD Yurimaguas, CD Moyobamba, y CD Pucallpa (este último concentra un bloque de clientes canal DAs -- Distribuidores Autorizados -- que factura bajo Tarapoto pero está abastecido/asignado desde CD Pucallpa; confirmado con el usuario 2026-08-27, se incluye deliberadamente para no perder ese volumen)."
+      "cd_list": ["CD Tarapoto", "CD Yurimaguas", "CD Moyobamba", "CD Pucallpa", "CD San Benedicto I (Ate)", "CD Motupe", "CD Chiclayo"],
+      "cd_note": "CD Tarapoto, CD Yurimaguas, CD Moyobamba, CD Pucallpa, CD San Benedicto I (Ate), CD Motupe y CD Chiclayo -- los últimos cuatro concentran volumen de clientes que facturan bajo Tarapoto pero están abastecidos/asignados desde otro CD (Pucallpa confirmado 2026-08-27; San Benedicto I (Ate) y Motupe, ambos 100% canal DAs, confirmados 2026-08-29 -- 2,898 HL y 258 HL; Chiclayo confirmado 2026-08-31, un solo cliente Key Accounts -- Plaza Vea Oriente S.A.C., 25.4 HL, cuenta nacional gestionada de forma centralizada, no es canal DAs). Se incluyen deliberadamente para no perder ese volumen -- revalidar en cada refresh, este patrón puede correrse a otro CD o aparecer en otro canal (ya se vio en DSD OFF, DAs y Key Accounts)."
     },
     {
       "code": "PE Ger P4 Iquitos",
       "label": "Iquitos",
-      "cd_list": ["CD Iquitos"],
-      "cd_note": "CD Iquitos (único CD real de esta gerencia)."
+      "cd_list": ["CD Iquitos", "CD Pucallpa"],
+      "cd_note": "CD Iquitos (CD principal) y CD Pucallpa -- este último concentra un bloque de clientes canal DAs (100% DAs) que factura bajo Iquitos pero está abastecido desde CD Pucallpa; confirmado 2026-08-29 al refrescar agosto."
     },
     {
       "code": "PE Ger P4 Huancay Ch",
@@ -45,6 +45,8 @@
     "RAW_BASE": "resultados/base_cd_categoria_mensual.json",
     "RAW_CANAL": "resultados/canal_cd_categoria_mensual.json",
     "RAW_MARCA": "resultados/marca_cd_categoria_mensual.json",
-    "RAW_FORMATO": "resultados/formato_cd_categoria_mensual.json"
+    "RAW_FORMATO": "resultados/formato_cd_categoria_mensual.json",
+    "RAW_PACK": "resultados/pack_cd_categoria_mensual.json",
+    "RAW_MARCAFORMATO": "resultados/marcaformato_cd_categoria_mensual.json"
   }
 }

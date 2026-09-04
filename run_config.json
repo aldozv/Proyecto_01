@@ -1,0 +1,58 @@
+{
+  "direccion_label": "Dirección Centro Oriente",
+  "eyebrow_text": "Dirección Centro Oriente · Volumen (HL)",
+  "page_title_tag": "Centro Oriente Volumen",
+  "page_title_default": "Volumen — Dirección Centro Oriente",
+  "year_min": 2026,
+  "year_max": 2026,
+  "latest_month": 9,
+  "latest_month_is_partial": true,
+  "footer_scope_note": "Incluye las 4 gerencias geográficas de Centro Oriente + DA Jun Puc (Distribuidor Autorizado, canal 100% DAs que abastece de varios CD en distintas regiones — no es una zona geográfica como las otras 4). Los filtros Gerencia y CD del toolbar son de selección única y están vinculados entre sí: elegir un CD selecciona automáticamente su gerencia, y elegir una gerencia acota el CD y el Canal disponibles. Datos actualizados al 2026-09-03.",
+  "cd_order": [
+    "CD Huancayo", "CD Huancavelica", "CD Chanchamayo", "CD Satipo",
+    "CD Iquitos", "CD Pucallpa", "CD Huánuco", "CD Tingo María",
+    "CD Tarapoto", "CD Yurimaguas", "CD Moyobamba",
+    "CD San Benedicto I (Ate)", "CD Motupe", "CD Chiclayo"
+  ],
+  "gerencias": [
+    {
+      "code": "PE Ger P4 DA Jun Puc",
+      "label": "DA Jun Puc",
+      "cd_list": ["CD Pucallpa", "CD San Benedicto I (Ate)", "CD Satipo", "CD Huánuco", "CD Huancayo", "CD Huancavelica"],
+      "cd_note": "CD Pucallpa, CD San Benedicto I (Ate), CD Satipo, CD Huánuco, CD Huancayo, CD Huancavelica -- todos incluidos (no se excluye ninguno como \"marginal\"): DA Jun Puc es una gerencia de canal (Distribuidor Autorizado, 100% canal DAs), no una zona geográfica como las otras 4, así que abastecerse de varios CD en distintas regiones es su operación normal, no ruido."
+    },
+    {
+      "code": "PE Ger P4 Huancay Ch",
+      "label": "Huancayo Ch",
+      "cd_list": ["CD Huancayo", "CD Chanchamayo", "CD Satipo", "CD Huancavelica"],
+      "cd_note": "CD Huancayo, CD Chanchamayo, CD Satipo, CD Huancavelica."
+    },
+    {
+      "code": "PE Ger P4 Iquitos",
+      "label": "Iquitos",
+      "cd_list": ["CD Iquitos", "CD Pucallpa"],
+      "cd_note": "CD Iquitos (CD principal) y CD Pucallpa -- este último concentra un bloque de clientes canal DAs (100% DAs) que factura bajo Iquitos pero está abastecido desde CD Pucallpa; detectado y confirmado 2026-08-29 al refrescar agosto (1,122 HL Beer+Rtds)."
+    },
+    {
+      "code": "PE Ger P4 Pucall Hco",
+      "label": "Pucallpa",
+      "cd_list": ["CD Pucallpa", "CD Huánuco", "CD Tingo María", "CD Iquitos", "CD Yurimaguas", "CD Tarapoto"],
+      "cd_note": "CD Pucallpa, CD Huánuco, CD Tingo María, CD Iquitos, CD Yurimaguas y CD Tarapoto -- estos tres últimos son volumen real de clientes que operan en varias ciudades del río (ej. Naviera Oriente S.A.C., con códigos de cliente distintos en Iquitos y Yurimaguas) pero facturan bajo Pucallpa; confirmado 2026-08-31 al refrescar agosto (20.6 HL, canal DSD OFF, no es el patrón DAs de los demás casos)."
+    },
+    {
+      "code": "PE Ger P4 Tarapoto",
+      "label": "Tarapoto",
+      "cd_list": ["CD Tarapoto", "CD Yurimaguas", "CD Moyobamba", "CD Pucallpa", "CD San Benedicto I (Ate)", "CD Motupe", "CD Chiclayo"],
+      "cd_note": "CD Tarapoto, CD Yurimaguas, CD Moyobamba, CD Pucallpa, CD San Benedicto I (Ate), CD Motupe y CD Chiclayo -- los últimos cuatro concentran volumen de clientes que facturan bajo Tarapoto pero están abastecidos/asignados desde otro CD (Pucallpa confirmado 2026-08-27; San Benedicto I (Ate) y Motupe, ambos 100% canal DAs, confirmados 2026-08-29 -- 2,898 HL y 258 HL; Chiclayo confirmado 2026-08-31, un solo cliente Key Accounts -- Plaza Vea Oriente S.A.C., 25.4 HL, cuenta nacional gestionada de forma centralizada). Se incluyen deliberadamente para no perder ese volumen."
+    }
+  ],
+  "raw_files": {
+    "RAW_GERENCIA": "C:/Users/aldoz/OneDrive/Claudio/.databricks_query_results/result_20260903_163856.json",
+    "RAW_BASE": "C:/Users/aldoz/OneDrive/Claudio/.databricks_query_results/result_20260903_163900.json",
+    "RAW_CANAL": "C:/Users/aldoz/OneDrive/Claudio/.databricks_query_results/result_20260903_163908.json",
+    "RAW_MARCA": "C:/Users/aldoz/OneDrive/Claudio/.databricks_query_results/result_20260903_163915.json",
+    "RAW_FORMATO": "C:/Users/aldoz/OneDrive/Claudio/.databricks_query_results/result_20260903_164000.json",
+    "RAW_PACK": "C:/Users/aldoz/OneDrive/Claudio/.databricks_query_results/result_20260903_164049.json",
+    "RAW_MARCAFORMATO": "C:/Users/aldoz/OneDrive/Claudio/.databricks_query_results/result_20260903_164108.json"
+  }
+}

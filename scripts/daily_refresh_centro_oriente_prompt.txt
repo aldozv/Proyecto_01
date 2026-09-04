@@ -1,0 +1,66 @@
+Sos parte de una tarea automatica diaria (sin usuario presente). Tu unico trabajo es refrescar
+los datos del dashboard "Centro Oriente Volumen" con lo mas reciente de Databricks y dejar el
+HTML regenerado y validado, listo para que el usuario lo publique el mismo dia cuando lo pida.
+NO hagas preguntas al usuario (AskUserQuestion) -- si en algun paso normalmente le preguntarias
+algo, en vez de preguntar: registralo en tu resumen final (ver mas abajo) y segui con el criterio
+mas conservador (no cambiar cd_list, no cambiar reglas de negocio).
+
+IMPORTANTE: NO intentes usar la tool Artifact para publicar -- en este modo (sesion automatica
+sin usuario, `claude -p`) esa tool no esta disponible. Tu trabajo termina en dejar
+centro_oriente_dashboard.html regenerado y validado en el directorio del proyecto; publicarlo
+al link (https://claude.ai/code/artifact/0205be9d-4f60-40c3-8442-1aecd200dac7) lo hace el
+usuario pidiendoselo a Claude en una sesion interactiva.
+
+Directorio de trabajo: C:\Users\aldoz\OneDrive\Claudio
+Skill de referencia: .claude/skills/dashboard-gv-volumen/SKILL.md y references/reglas_negocio.md
+(leelos para entender el contexto/reglas, pero NO ejecutes el Paso 1 de exploracion de CD -- las
+gerencias y CD_LIST de este run ya estan confirmados en run_config.json, no los reinventes).
+
+Pasos:
+
+1. Corre `SELECT max(v.mes) FROM slv_maz_dataexperience_peru_dm.dm_venta v WHERE v.mes >= 'YYYY01' AND v.indicadores_comerciales = 1`
+   (con el skill databricks-query) para confirmar el mes mas reciente con datos (usa el anio
+   actual). Si el mes mas reciente es MAYOR al `year_max`/`latest_month` que ya tiene
+   run_config.json (es decir, arranco un mes calendario nuevo desde el ultimo refresh), actualiza
+   `year_max`/`latest_month` en run_config.json de forma coherente (year_min tambien deberia
+   quedar igual a year_max, ya que este dashboard solo muestra el anio en curso -- ver la nota
+   sobre `year_min===year_max` en SKILL.md). Ademas, en CADA corrida (haya cambiado el mes o no):
+   revisa si el mes que ya estaba marcado como `latest_month` sigue siendo el mes calendario
+   actual -- si ya paso (por ejemplo hoy es 1 de septiembre y latest_month sigue en agosto),
+   ese mes ya cerro del todo, así que poné `latest_month_is_partial: false`. Si `latest_month`
+   sigue siendo el mes calendario en curso, dejalo en `true`.
+
+2. Corre las 7 queries curadas en querys/Query_CentroOriente_*.sql (Gerencia_Mensual,
+   Base_CD_Categoria_Mensual, Canal_CD_Categoria_Mensual, Marca_CD_Categoria_Mensual,
+   Formato_CD_Categoria_Mensual, Pack_CD_Categoria_Mensual, MarcaFormato_CD_Categoria_Mensual)
+   tal cual estan -- NO les cambies el WHERE ni la normalizacion de marca, ya estan confirmadas.
+   Si `year_max` cambio en el paso 1, actualiza el rango de fechas `BETWEEN` de las 7 queries
+   antes de correrlas (manteniendo el mismo mes de arranque `{{year_min-1}}01` que ya tenian).
+   IMPORTANTE: corre las 7 EN LA MISMA PASADA, nunca un subconjunto -- si el rango incluye el mes
+   en curso (parcial), mezclar resultados de corridas en horarios distintos del mismo dia produce
+   inconsistencias reales entre queries (ver "Filtro global de Canal" en reglas_negocio.md, leccion
+   ya documentada de un bug real detectado el 2026-09-03).
+
+3. Actualiza `run_config.json`: los 7 `raw_files` (RAW_GERENCIA, RAW_BASE, RAW_CANAL, RAW_MARCA,
+   RAW_FORMATO, RAW_PACK, RAW_MARCAFORMATO) apuntando a los resultados nuevos, y la fecha dentro
+   de `footer_scope_note` (buscar el patron "Datos actualizados al YYYY-MM-DD" y reemplazar por
+   la fecha de hoy).
+
+4. Corre `python .claude/skills/dashboard-gv-volumen/scripts/inject_data.py --config run_config.json --out centro_oriente_dashboard.html`.
+
+5. Corre `node .claude/skills/dashboard-gv-volumen/scripts/verify_dashboard.js centro_oriente_dashboard.html`.
+   - Si imprime CUALQUIER "FAIL": dejalo bien claro en tu resumen final -- esto necesita revision
+     humana antes de publicar.
+   - Si todo dice OK: fijate en el bloque "[info] Total headline vs Total base" -- si el % de
+     alguna gerencia crecio de forma notoria versus lo que ya sabemos de reglas_negocio.md
+     (referencia: las ultimas corridas tenian todas <=0.05%), anotalo en tu resumen como
+     ADVERTENCIA. NO agregues ni saques CD del cd_list vos mismo.
+
+6. Termina tu respuesta con un resumen breve y legible (esto va a un log que un humano lee de vez
+   en cuando, no hace falta narrar el proceso paso a paso): fecha/hora, mes de datos usado (y si
+   quedo marcado parcial o cerrado), resultado de la validacion (OK o el detalle del FAIL), y
+   cualquier advertencia. Cerra con una linea clara tipo "Listo para publicar" o "NO publicar
+   todavia, revisar: [motivo]".
+
+No hagas ningun otro cambio al repo (no toques otros archivos, no hagas commits de git, no
+cambies el template ni las reglas de negocio) -- esta tarea es solo refrescar y validar datos.

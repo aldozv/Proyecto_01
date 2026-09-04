@@ -153,7 +153,7 @@ and a.mes in (202605)
 --and e.listado in ('Foco ON Centro','Foco ON Oriente')
 --and f.listado in ('Regional Lateros SMD')
 --and c.cliente_id IN ('12964103')
-AND d.pack_xxx IN ('CAN XXX')
+and d.pack_xxx IN ('CAN XXX')
 and a.agrupador in ('Venta')
 and a.indicadores_comerciales= 1
 and a.cliente_id in (select cliente_id from clientes)
