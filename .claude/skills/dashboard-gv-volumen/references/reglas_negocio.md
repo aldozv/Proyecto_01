@@ -447,11 +447,15 @@ el toolbar.
 ## Filtros base (siempre presentes)
 
 - `v.indicadores_comerciales = 1` (KPIs comerciales oficiales).
-- `v.gerencia = '<codigo transaccional>'` (o `IN (...)` para varias) — usar el campo de
-  **`dm_venta`** (jerarquia al momento de la venta, aplicada de forma retroactiva/vigente tras
-  la reestructuracion de gerencias de inicios de 2026 — ver `BITACORA_TABLAS.md`), no
-  `dm_cliente.gerencia`. Ver `BITACORA_TABLAS.md` para la lista de gerencias conocidas y sus
-  codigos exactos.
+- **REGLA CORREGIDA (2026-09-04, invierte la guia anterior de este parrafo — las 7 plantillas SQL
+  de este skill todavia usan `v.gerencia` y quedan pendientes de reescribir):** filtrar/agrupar
+  por `c.gerencia` (de **`dm_cliente`**, join `v.cliente_id = c.cliente_id`), no `v.gerencia`. Un
+  cliente reasignado de gerencia a mitad de año (caso real: Ucayali Beer, Huancay Ch → DA Jun Puc
+  en abril 2026) queda partido entre dos gerencias en `dm_venta.gerencia` segun el mes de la
+  venta — `dm_cliente` es una foto vigente y atribuye todo su historico a la gerencia actual de
+  forma consistente. Ver detalle en `CLAUDE.md` → "Alcance tipico" y `BITACORA_TABLAS.md` →
+  `dm_cliente`. Antes de volver a correr este skill para un alcance nuevo, migrar las 7 queries de
+  `assets/querys/` a este join.
 - `v.mes BETWEEN '{{MES_DESDE}}' AND '{{MES_HASTA}}'` — siempre filtrar por mes en `dm_venta`
   (tabla fact grande, particionada por `mes`).
 

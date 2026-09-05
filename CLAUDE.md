@@ -83,11 +83,39 @@ al interpretar resultados por CD** — mezclar metricas de una planta con las de
 puede no ser comparable segun el analisis (ej. quiebres de stock en BEES es un concepto de CD/
 reparto a POC, no de planta).
 
-**Ojo:** `dm_cliente.gerencia` (jerarquia *actual* del cliente) puede traer gerencias fuera de esta
-lista (ej. Chiclayo, Piura, Puno, Tacna) para clientes que en algun momento facturaron bajo
-`direccion = 'PE Dir Centro Orient'` pero luego fueron reasignados a otra direccion/gerencia. Para
-cortes por gerencia consistentes con el filtro de `direccion`, usar `a.gerencia` (de `dm_venta`,
-jerarquia vigente aplicada tambien al historico) en vez de `c.gerencia` (de `dm_cliente`).
+**REGLA VIGENTE (corregida 2026-09-04, reemplaza cualquier guia anterior que dijera lo
+contrario): gerencia, supervisor y nombre de cliente deben salir de `dm_cliente`, no de
+`dm_venta`.** Hacer `JOIN dm_cliente c ON v.cliente_id = c.cliente_id` y usar `c.gerencia` /
+`c.supervisor` / `c.nombre` (y `c.direccion` para el filtro de alcance) — no `v.gerencia` /
+`v.direccion`.
+
+**Por que se corrigio:** el usuario encontro la causa raiz de un salto irreal Huancayo→DAS Jun
+Pcl en abril 2026 en el reporte de volumen YTD Centro Oriente: el cliente **Ucayali Beer**
+cambio de gerencia (`PE Ger P4 Huancay Ch` → `PE Ger P4 DA Jun Puc`) ese mes. A diferencia de la
+reestructuracion de gerencias de inicios de 2026 (que si se reescribio retroactivamente en TODO
+el historico de `dm_venta.gerencia`, ver mas abajo), una reasignacion de cliente individual
+**no** se reescribe retroactivamente en `dm_venta` — cada venta pasada conserva la
+gerencia/direccion que tenia el cliente en el momento de facturar. Eso hace que un cliente
+reasignado a mitad de año aparezca partido entre dos gerencias segun el mes de la venta,
+generando saltos artificiales en comparaciones YoY/tendencia que no reflejan un cambio real de
+negocio. `dm_cliente` es una foto **unica/vigente** (no historica, ver `BITACORA_TABLAS.md`), asi
+que usarla como fuente atribuye **todo** el historico de un cliente a su gerencia/supervisor
+**actual** de forma consistente, sin importar cuando se reasigno — el mismo criterio que ya se
+usa para la jerarquia `direccion`/`gerencia` vigente de `dm_venta` tras la reestructuracion de
+GV, ahora extendido a nivel cliente.
+
+**Implicancia en el filtro de alcance:** para acotar a Centro Oriente, filtrar por
+`c.direccion = 'PE Dir Centro Orient'` (no `v.direccion`) — un cliente que hoy pertenece a otra
+direccion queda fuera de todo su historico bajo esta regla, y uno que hoy pertenece a Centro
+Oriente entra con todo su historico, aunque en su momento haya facturado bajo otra
+direccion/gerencia. Esto reemplaza la guia anterior (que recomendaba lo opuesto, usar
+`a.gerencia`/`v.direccion` para evitar arrastrar clientes ya reasignados fuera) — el usuario
+decidio explicitamente priorizar consistencia de atribucion vigente sobre fidelidad al momento
+historico de la venta.
+
+**Pendiente:** las queries y el artifact de volumen YTD Centro Oriente de esta sesion (`querys/
+Query_CentroOriente_*.sql`, dashboard `dashboard-gv-volumen`) todavia usan `v.gerencia` — quedan
+por rehacer con este join corregido antes de confiar en sus cifras por gerencia.
 
 **Reestructuracion de gerencias (inicios de 2026):** la direccion `PE Dir Oriente` paso a llamarse
 **`PE Dir Centro Orient`** y sumo la GV Huancayo (antes `PE Ger P3 Huancayo` bajo la direccion

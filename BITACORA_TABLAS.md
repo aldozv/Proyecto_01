@@ -111,9 +111,16 @@ para este mapeo de canal.
 - Comercial/credito: `linea_credito`, `cxc_liq_perc`, `cxc_envase`, `puntos`, `club_b`.
 - KKAA (cuentas clave): `kkaa_kam`, `kkaa_cadena`, `kkaa_manager`, `kkaa_coordinador`.
 
-**Nota clave:** la jerarquia territorial de este maestro (actual) puede diferir de la que trae
-`dm_venta` al momento historico de la venta (`direccion_historia`/`gerencia_historia`). Para
-reportes de evolucion en el tiempo, aclarar con el usuario cual criterio de territorio aplica.
+**Nota clave (resuelto 2026-09-04, ver CLAUDE.md → "Alcance tipico"):** la jerarquia territorial
+de este maestro (actual) puede diferir de la que trae `dm_venta` al momento historico de la
+venta. **Regla vigente: usar `dm_cliente` (esta tabla) como fuente de gerencia/supervisor/
+direccion/nombre para reportes, unida por `cliente_id`** — no los campos homonimos de
+`dm_venta`. Motivo: un cliente reasignado de gerencia a mitad de año (caso real: **Ucayali
+Beer**, `PE Ger P4 Huancay Ch` → `PE Ger P4 DA Jun Puc` en abril 2026) queda partido entre dos
+gerencias en `dm_venta.gerencia` segun el mes de la venta (esos cambios de cliente individual NO
+se reescriben retroactivamente, a diferencia de la reestructuracion de GV de inicios de 2026),
+generando saltos artificiales en series YoY. `dm_cliente` al ser una foto unica/vigente atribuye
+todo el historico del cliente a su gerencia actual de forma consistente.
 
 **Metadata:** creada 2025-02-05, owner `gen_maz_pe_win053@gmodelo.com.mx`, formato Delta.
 
@@ -215,6 +222,16 @@ SELLOUT real) el "total oficial por CD" que usa la regla SELLIN+SELLOUT en reali
 SELLIN cuando se filtra por CD, aunque la formula/etiqueta diga que incluye ambos. Confirmado que
 esto afectaba el artifact "Evolución de Brand Distribution" (vista por CD) — corregido el label
 2026-09-02, pendiente evaluar si se puede conseguir el CD real de SELLOUT desde otra fuente.
+**Tambien impide un corte por CLIENTE de SELLOUT** (confirmado 2026-09-04 para `PE Ger P4 DA
+Jun Puc`: 8,414 `cliente_id` distintos en SELLOUT, **0 matchean** en `dm_cliente` sobre un mes
+completo) — sin nombre ni identidad de cliente disponible. Es especialmente relevante para DA
+Jun Puc porque su Brand Distribution oficial es **100% SELLOUT** (ver regla de canal en
+CLAUDE.md): no existe forma de desglosar el Total oficial de esta gerencia por cliente. El
+segmento "Brand Distribution" del dashboard `da_jun_puc_dashboard.html` resuelve esto mostrando
+el detalle por cliente con **SELLIN** en su lugar (17-25 codigos → 13 clientes reales
+agrupando por nombre, mismos clientes que "Por Cliente" en Volumen) — dejando explícito que es
+una fuente distinta y no oficial (el universo SELLIN completo de DA Jun Puc es ~365-y pico de
+`flag_brand_distro`/mes vs. ~30-37K del Total SELLOUT, no comparable ni sumable).
 
 **Llaves de join:** `material_id` → `pe_portfolio_material.material_id` (ver tabla siguiente —
 catalogo distinto).
