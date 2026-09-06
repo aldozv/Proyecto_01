@@ -13,8 +13,10 @@
 -- usuario antes de sumarlos aca (ver reglas_negocio.md) -- no asumir que aplica igual en todos
 -- lados, y cuidado con nombres que EMPIEZAN igual pero son marcas distintas (Cristal/Cristalina,
 -- Pilsen Callao/Pilsen Fresh/Pilsen Trujillo).
+-- CORREGIDO 2026-09-06: gerencia sale de dm_cliente (vigente), no de dm_venta -- ver CLAUDE.md
+-- (caso Ucayali Beer, reasignado Huancay Ch -> DA Jun Puc en abril 2026).
 SELECT
-  v.gerencia,
+  c.gerencia,
   CAST(SUBSTR(v.mes,1,4) AS INT) AS anio,
   CAST(SUBSTR(v.mes,5,2) AS INT) AS mes_num,
   c.centro,
@@ -38,13 +40,13 @@ FROM brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_venta v
 INNER JOIN brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_cliente c
   ON v.cliente_id = c.cliente_id
 WHERE v.mes BETWEEN '{{MES_DESDE}}' AND '{{MES_HASTA}}'
-  AND v.gerencia IN ({{GERENCIA_IN_LIST}})
+  AND c.gerencia IN ({{GERENCIA_IN_LIST}})
   AND v.indicadores_comerciales = 1
   AND v.estratificacion IN ('Cervezas','Licores','Ready To Drink','Gaseosas','Agua','Maltas')
   AND NOT (v.estratificacion = 'Agua' AND v.marca = 'San Mateo')
   AND c.centro IN ({{CD_IN_LIST}})
 GROUP BY
-  v.gerencia, CAST(SUBSTR(v.mes,1,4) AS INT), CAST(SUBSTR(v.mes,5,2) AS INT), c.centro,
+  c.gerencia, CAST(SUBSTR(v.mes,1,4) AS INT), CAST(SUBSTR(v.mes,5,2) AS INT), c.centro,
   CASE
     WHEN v.estratificacion IN ('Cervezas','Licores') THEN 'Beer'
     WHEN v.estratificacion = 'Ready To Drink' THEN 'Rtds'
@@ -60,4 +62,4 @@ GROUP BY
     WHEN UPPER(v.marca) = 'PILSEN CALLAO FRESH' THEN 'Pilsen Callao'
     ELSE v.marca
   END
-ORDER BY v.gerencia, anio, mes_num, centro, categoria_grupo, canal_meta, marca
+ORDER BY c.gerencia, anio, mes_num, centro, categoria_grupo, canal_meta, marca
