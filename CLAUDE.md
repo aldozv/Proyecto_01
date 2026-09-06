@@ -116,10 +116,15 @@ historico de la venta.
 **Resuelto (2026-09-06):** las 8 queries `querys/Query_CentroOriente_*.sql` y las 7 plantillas de
 produccion del skill `dashboard-gv-volumen` (`.claude/skills/dashboard-gv-volumen/assets/querys/`,
 excluyendo las 2 exploratorias `explorar_*.sql` que investigan `v.gerencia` a proposito) ya usan
-`c.gerencia` (join a `dm_cliente`). **Falta volver a correrlas y reinyectar los datos al artifact
-"Ejecutivo Volumen - CO"** (via `inject_data.py` + `verify_dashboard.js`) para que las cifras
-publicadas reflejen el fix — el codigo SQL esta corregido pero el HTML del dashboard todavia tiene
-los numeros calculados con el join viejo hasta que se regenere.
+`c.gerencia` (join a `dm_cliente`). Las 7 queries de produccion se corrieron de nuevo para las 5
+gerencias de Centro Oriente (Ene'25-Set'26) y se reinyectaron a los dos artifacts publicados:
+**"Ejecutivo Volumen - CO"** (RAW reconstruido a mano desde `Query_CentroOriente_Base_CD_Categoria_
+Mensual.sql`, agregado a Ene-Ago 2026 vs Ene-Ago 2025 — no usa `inject_data.py`, es un artifact
+manual con su propio esquema de datos embebido) y **"Dashboard Volumen - CO"** (via `inject_data.py`
++ `verify_dashboard.js`, `run_config.json` en la raiz del proyecto). Las cifras de ambos ya
+reflejan el join corregido; los deltas vs. la version previa (ya corregida el 04-05.09) fueron
+minimos (orden de 0.05-0.1 mil HL), confirmando que el fix ya estaba aplicado y esto fue solo un
+refresh de datos de unos dias adicionales.
 
 **Reestructuracion de gerencias (inicios de 2026):** la direccion `PE Dir Oriente` paso a llamarse
 **`PE Dir Centro Orient`** y sumo la GV Huancayo (antes `PE Ger P3 Huancayo` bajo la direccion

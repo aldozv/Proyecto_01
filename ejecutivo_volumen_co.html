@@ -1,0 +1,959 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found]){display:none!important}</style></head><body>
+<title>Ejecutivo Volumen - CO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --bg: #F5F1E8;
+  --surface: #FFFFFF;
+  --surface-2: #FBF8F1;
+  --ink: #241B12;
+  --ink-soft: #6B5D4C;
+  --ink-faint: #9C8E7A;
+  --border: #E4DAC6;
+  --border-soft: #EEE6D6;
+  --accent: #AE5D1F;
+  --accent-strong: #8C481A;
+  --accent-soft: #F1DDBB;
+  --accent-ink: #4A2A0E;
+  --good: #2E7D46;
+  --good-soft: #DEEEDE;
+  --good-ink: #1D5230;
+  --bad: #A3342E;
+  --bad-soft: #F4DEDA;
+  --bad-ink: #6E211D;
+  --bar-base: #B9AA92;
+  --gv-tarapoto: #2a78d6;
+  --gv-iquitos: #eb6834;
+  --gv-pucallpa: #1baf7a;
+  --gv-huancayo: #c98200;
+  --gv-das: #d1568a;
+  --cat-beer: #2a78d6;
+  --cat-rtds: #1baf7a;
+  --cat-nabs: #eb6834;
+  --shadow: 0 1px 2px rgba(36,27,18,.06), 0 8px 24px -12px rgba(36,27,18,.18);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --bg: #1C140C;
+    --surface: #241A10;
+    --surface-2: #2A1F13;
+    --ink: #F3E9D8;
+    --ink-soft: #C7B79E;
+    --ink-faint: #8E7E68;
+    --border: #3C2E1C;
+    --border-soft: #332714;
+    --accent: #E0A356;
+    --accent-strong: #EEBB7A;
+    --accent-soft: #4A3418;
+    --accent-ink: #F6DEB4;
+    --good: #6FBF7C;
+    --good-soft: #223A29;
+    --good-ink: #A6E0AE;
+    --bad: #E2726B;
+    --bad-soft: #402320;
+    --bad-ink: #F2AEA8;
+    --bar-base: #6E5F49;
+    --gv-tarapoto: #3987e5;
+    --gv-iquitos: #f08052;
+    --gv-pucallpa: #35c690;
+    --gv-huancayo: #e0a233;
+    --gv-das: #e784ac;
+    --cat-beer: #3987e5;
+    --cat-rtds: #35c690;
+    --cat-nabs: #f08052;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 28px -14px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg: #1C140C;
+  --surface: #241A10;
+  --surface-2: #2A1F13;
+  --ink: #F3E9D8;
+  --ink-soft: #C7B79E;
+  --ink-faint: #8E7E68;
+  --border: #3C2E1C;
+  --border-soft: #332714;
+  --accent: #E0A356;
+  --accent-strong: #EEBB7A;
+  --accent-soft: #4A3418;
+  --accent-ink: #F6DEB4;
+  --good: #6FBF7C;
+  --good-soft: #223A29;
+  --good-ink: #A6E0AE;
+  --bad: #E2726B;
+  --bad-soft: #402320;
+  --bad-ink: #F2AEA8;
+  --bar-base: #6E5F49;
+  --gv-tarapoto: #3987e5;
+  --gv-iquitos: #f08052;
+  --gv-pucallpa: #35c690;
+  --gv-huancayo: #e0a233;
+  --gv-das: #e784ac;
+  --cat-beer: #3987e5;
+  --cat-rtds: #35c690;
+  --cat-nabs: #f08052;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 28px -14px rgba(0,0,0,.6);
+}
+
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'IBM Plex Sans',system-ui,-apple-system,Segoe UI,sans-serif;
+  font-variant-numeric: tabular-nums;
+  line-height:1.5;
+}
+.num, .fig{ font-variant-numeric: tabular-nums; }
+.wrap{ max-width:1180px; margin:0 auto; padding:0 28px; }
+h1,h2,h3{ font-family:'Big Shoulders',system-ui,sans-serif; text-wrap:balance; margin:0; letter-spacing:.2px; }
+a{ color:inherit; }
+
+/* ---------- top nav ---------- */
+.topnav{
+  position:sticky; top:0; z-index:20;
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom:1px solid var(--border);
+}
+.topnav-inner{
+  max-width:1180px; margin:0 auto; padding:0 28px;
+  display:flex; gap:22px; overflow-x:auto;
+  scrollbar-width:none;
+}
+.topnav-inner::-webkit-scrollbar{ display:none; }
+.topnav a{
+  flex:0 0 auto;
+  font-size:12.5px; font-weight:600; letter-spacing:.04em; text-transform:uppercase;
+  color:var(--ink-soft); text-decoration:none;
+  padding:12px 2px; border-bottom:2px solid transparent;
+  white-space:nowrap;
+}
+.topnav a:hover{ color:var(--accent); border-bottom-color:var(--accent); }
+
+/* ---------- hero ---------- */
+.hero{ padding:44px 0 30px; border-bottom:1px solid var(--border); }
+.eyebrow{
+  font-size:12px; font-weight:600; letter-spacing:.11em; text-transform:uppercase;
+  color:var(--accent-strong); margin-bottom:10px;
+}
+.hero h1{ font-size:clamp(30px,4.4vw,46px); font-weight:800; color:var(--ink); }
+.hero .sub{ margin-top:8px; color:var(--ink-soft); font-size:15px; max-width:66ch; }
+
+.hero-kpis{
+  margin-top:26px; display:flex; flex-wrap:wrap; gap:20px; align-items:flex-end;
+}
+.badge{
+  display:inline-flex; align-items:center; gap:5px;
+  font-size:12px; font-weight:700; padding:2px 9px; border-radius:999px;
+  width:fit-content;
+}
+.badge.good{ background:var(--good-soft); color:var(--good-ink); }
+.badge.bad{ background:var(--bad-soft); color:var(--bad-ink); }
+.badge.neutral{ background:var(--border-soft); color:var(--ink-soft); }
+.badge svg{ width:9px; height:9px; }
+
+.hero-overview{ margin-top:26px; display:grid; grid-template-columns:1.3fr 1fr; gap:16px; align-items:start; }
+.hero-big-stack{ display:flex; flex-direction:column; gap:10px; }
+.cat-overview-card.total{ border-color:color-mix(in srgb, var(--accent) 30%, var(--border)); }
+.cat-overview-grid{ display:flex; flex-direction:column; gap:10px; }
+.cat-overview-card{
+  flex:1; background:var(--surface); border:1px solid var(--border); border-radius:12px;
+  padding:12px 16px; box-shadow:var(--shadow); display:flex; flex-direction:column; justify-content:center; gap:2px;
+}
+.cat-overview-card .cn{ font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.07em; }
+.cat-overview-card .cv{ font-family:'Big Shoulders'; font-size:23px; font-weight:800; line-height:1.1; }
+.cat-overview-card .cv .unit{ font-size:11px; font-weight:600; color:var(--ink-soft); margin-left:4px;}
+.cat-overview-card .cg{ font-size:12.5px; font-weight:700; margin-top:2px;}
+
+.filter-bar{
+  margin-top:22px; display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  background:var(--surface-2); border:1px solid var(--border-soft); border-radius:12px; padding:12px 16px;
+}
+.filter-label{ font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft); }
+.filter-opts{ display:flex; gap:8px; flex-wrap:wrap; }
+.filter-chip{
+  display:inline-flex; align-items:center; gap:6px; cursor:pointer; user-select:none;
+  padding:6px 14px; border-radius:999px; border:1.5px solid var(--border); background:var(--surface);
+  font-size:13px; font-weight:600; color:var(--ink-soft); transition:border-color .15s, background .15s, color .15s;
+}
+.filter-chip input{ display:none; }
+.filter-chip.on{ border-color:var(--accent); background:var(--accent-soft); color:var(--accent-ink); }
+.filter-note{ font-size:12px; color:var(--ink-faint); margin-left:auto; }
+
+.qtr-row{ margin-top:22px; display:flex; gap:12px; flex-wrap:wrap; }
+.qtr-chip{
+  background:var(--surface-2); border:1px solid var(--border-soft); border-radius:11px;
+  padding:10px 16px; min-width:110px;
+}
+.qtr-chip .qlabel{ font-size:11px; color:var(--ink-faint); font-weight:600; text-transform:uppercase; letter-spacing:.06em;}
+.qtr-chip .qgrowth{ font-size:19px; font-weight:700; font-family:'Big Shoulders'; margin-top:2px;}
+.qtr-chip .qdelta{ font-size:11.5px; color:var(--ink-soft); margin-top:1px;}
+
+.month-strip{ margin-top:22px; display:grid; grid-template-columns:repeat(8,1fr); gap:8px; }
+.month-chip{
+  background:var(--surface); border:1px solid var(--border-soft); border-radius:10px;
+  padding:9px 6px; text-align:center;
+}
+.month-chip .m{ font-size:11px; color:var(--ink-faint); font-weight:600; text-transform:uppercase;}
+.month-chip .g{ font-size:14px; font-weight:700; margin-top:3px; font-family:'Big Shoulders';}
+.month-chip .v{ font-size:10.5px; color:var(--ink-soft); margin-top:1px;}
+.month-chip.good .g{ color:var(--good); }
+.month-chip.bad .g{ color:var(--bad); }
+
+/* ---------- sections ---------- */
+section{ padding:46px 0; border-bottom:1px solid var(--border); }
+section:last-of-type{ border-bottom:none; }
+.section-head{ margin-bottom:22px; }
+.section-num{ font-family:'Big Shoulders'; font-size:13px; font-weight:700; color:var(--accent-strong); letter-spacing:.08em; }
+.section-head h2{ font-size:clamp(22px,3vw,30px); font-weight:700; margin-top:2px;}
+.section-head p{ color:var(--ink-soft); font-size:14.5px; max-width:74ch; margin-top:6px;}
+
+/* ---------- waterfall wrap ---------- */
+.chart-card{
+  background:var(--surface); border:1px solid var(--border); border-radius:16px;
+  padding:22px 22px 10px; box-shadow:var(--shadow); overflow-x:auto;
+}
+.chart-card svg{ display:block; margin:0 auto; }
+
+.wf-split{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+.wf-split-title{
+  font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.06em;
+  color:var(--ink-faint); text-align:center; margin-bottom:8px;
+}
+@media (max-width: 860px){
+  .wf-split{ grid-template-columns:1fr; }
+}
+
+/* ---------- gv cards ---------- */
+.gv-grid{ margin-top:22px; display:grid; grid-template-columns:repeat(auto-fit,minmax(500px,1fr)); gap:18px; }
+.gv-card{
+  background:var(--surface); border:1px solid var(--border); border-radius:16px;
+  box-shadow:var(--shadow); overflow:hidden;
+}
+.gv-card-top{ height:5px; }
+.gv-card-body{ padding:20px 22px 22px; }
+.gv-card-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:14px; flex-wrap:wrap;}
+.gv-card-head h3{ font-size:22px; font-weight:700; }
+.gv-card-head .peso{ font-size:12px; color:var(--ink-faint); margin-top:2px; }
+.gv-card-stat{ text-align:right; }
+.gv-card-stat .v{ font-family:'Big Shoulders'; font-size:26px; font-weight:800; }
+.gv-card-stat .v .unit{ font-size:12px; font-weight:600; color:var(--ink-soft); }
+.gv-mini-row{ margin-top:14px; display:flex; gap:18px; flex-wrap:wrap; }
+.gv-mini-block{ flex:1 1 220px; min-width:220px; }
+.gv-mini-label{ font-size:11px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.06em; font-weight:600; margin-bottom:6px;}
+.qtr-mini{ display:flex; gap:8px; margin-top:12px; }
+.qtr-mini .qm{
+  flex:1; background:var(--surface-2); border:1px solid var(--border-soft); border-radius:8px;
+  padding:6px 8px; text-align:center;
+}
+.qtr-mini .qm .ql{ font-size:9.5px; color:var(--ink-faint); font-weight:700; text-transform:uppercase;}
+.qtr-mini .qm .qv{ font-size:13px; font-weight:700; margin-top:1px;}
+.qtr-mini .qm .qs{ font-size:9.5px; color:var(--ink-faint); margin-top:1px;}
+.gv-card-stat .d{ font-size:12px; color:var(--ink-soft); margin-top:3px; }
+
+.canal-list{ display:flex; flex-direction:column; gap:6px; }
+.canal-head{ display:flex; align-items:center; gap:8px; margin-bottom:4px; }
+.canal-head span{ font-size:9.5px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.04em; font-weight:700; }
+.canal-head .ch-name{ flex:0 0 80px; }
+.canal-head .ch-bar{ flex:1; }
+.canal-head .ch-crec{ flex:0 0 68px; text-align:right; }
+.canal-row{ display:flex; align-items:center; gap:8px; font-size:12.5px; }
+.canal-row .cname{ flex:0 0 80px; color:var(--ink-soft); }
+.canal-row .cbar-track{ flex:1; height:7px; background:var(--border-soft); border-radius:4px; overflow:hidden; }
+.canal-row .cbar-fill{ height:100%; border-radius:4px; }
+.canal-row .cstat{ flex:0 0 68px; text-align:right; }
+.canal-row .cnom{ font-weight:700; }
+.canal-row .cpct{ font-size:10.5px; color:var(--ink-faint); margin-top:1px; }
+
+.cat-chips{ display:flex; gap:8px; flex-wrap:wrap; }
+.cat-chip{
+  flex:1; min-width:90px; background:var(--surface-2); border:1px solid var(--border-soft);
+  border-radius:10px; padding:8px 10px;
+}
+.cat-chip .cn{ font-size:11px; color:var(--ink-faint); font-weight:700; text-transform:uppercase;}
+.cat-chip .cv{ font-size:14px; font-weight:700; margin-top:2px;}
+.cat-chip .cv-sub{ font-size:11px; font-weight:600; color:var(--ink-faint); margin-top:1px;}
+.cat-chip.ref{ border-style:dashed; border-color:color-mix(in srgb, var(--accent) 45%, var(--border-soft)); background:var(--surface); }
+.cat-chip.ref .cn{ color:var(--accent-strong); }
+
+/* ---------- tables ---------- */
+.tbl-wrap{ overflow-x:auto; border:1px solid var(--border); border-radius:14px; background:var(--surface); box-shadow:var(--shadow);}
+table{ width:100%; border-collapse:collapse; min-width:640px; font-size:14px; }
+thead th{
+  text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.06em; font-weight:700;
+  color:var(--ink-faint); padding:12px 16px; border-bottom:1px solid var(--border); white-space:nowrap;
+}
+tbody td{ padding:11px 16px; border-bottom:1px solid var(--border-soft); white-space:nowrap; }
+tbody tr:last-child td{ border-bottom:none; }
+tbody tr:hover{ background:var(--surface-2); }
+td.num, th.num{ text-align:right; }
+.growth-cell{ font-weight:700; }
+.growth-cell.good{ color:var(--good); }
+.growth-cell.bad{ color:var(--bad); }
+.mini-bar-cell{ width:140px; }
+.mini-bar-track{ height:8px; background:var(--border-soft); border-radius:4px; overflow:hidden;}
+.mini-bar-fill{ height:100%; background:var(--accent); border-radius:4px;}
+.dot{ display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:8px; vertical-align:middle;}
+.qsign{ display:inline-block; font-size:11px; font-weight:700; padding:1px 6px; border-radius:5px; margin-right:4px;}
+.qsign.good{ background:var(--good-soft); color:var(--good-ink); }
+.qsign.bad{ background:var(--bad-soft); color:var(--bad-ink); }
+.note{ font-size:12.5px; color:var(--ink-faint); margin-top:10px; }
+
+/* ---------- highlights & gaps ---------- */
+.hg-grid{ display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:22px; }
+.hg-col{ border-radius:16px; padding:22px 24px; }
+.hg-col.h{ background:var(--good-soft); border:1px solid color-mix(in srgb, var(--good) 35%, var(--border)); }
+.hg-col.g{ background:var(--bad-soft); border:1px solid color-mix(in srgb, var(--bad) 35%, var(--border)); }
+.hg-col h3{ font-size:19px; display:flex; align-items:center; gap:8px; }
+.hg-col.h h3{ color:var(--good-ink); }
+.hg-col.g h3{ color:var(--bad-ink); }
+.hg-list{ margin:16px 0 0; padding:0; list-style:none; display:flex; flex-direction:column; gap:13px; }
+.hg-list li{ font-size:14px; line-height:1.55; padding-left:22px; position:relative; color:var(--ink); }
+.hg-list li::before{ content:''; position:absolute; left:0; top:7px; width:8px; height:8px; border-radius:2px; }
+.hg-col.h .hg-list li::before{ background:var(--good); }
+.hg-col.g .hg-list li::before{ background:var(--bad); }
+.hg-list b{ font-weight:700; }
+
+footer{ padding:30px 0 60px; color:var(--ink-faint); font-size:12.5px; line-height:1.7; }
+footer .wrap{ border-top:1px solid var(--border); padding-top:22px; }
+
+@media (max-width: 720px){
+  .wrap{ padding:0 18px; }
+  .month-strip{ grid-template-columns:repeat(4,1fr); }
+  .hg-grid{ grid-template-columns:1fr; }
+  .hero-kpis{ flex-direction:column; align-items:stretch; }
+  .hero-overview{ grid-template-columns:1fr; }
+  .cat-overview-grid{ flex-direction:row; }
+  .filter-note{ margin-left:0; }
+}
+</style>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a href="#resumen">Resumen</a>
+    <a href="#gerencias">Gerencias</a>
+    <a href="#canales">Canales</a>
+    <a href="#categorias">Categor&iacute;as</a>
+    <a href="#cds">Centros de Distribuci&oacute;n</a>
+    <a href="#highlights">Highlights &amp; Gaps</a>
+  </div>
+</nav>
+
+<div class="hero" id="resumen">
+  <div class="wrap">
+    <div class="eyebrow">Direcci&oacute;n Centro Oriente &middot; Backus &mdash; Reporte ejecutivo de volumen</div>
+    <h1>Volumen YTD 2026</h1>
+    <p class="sub">Enero&ndash;Agosto 2026 vs. mismo periodo 2025 (mes cerrado) &middot; Corte de datos 06.09.2026</p>
+
+    <div class="hero-overview">
+      <div class="hero-big-stack">
+        <div class="cat-overview-card" id="hero-total-beerrtds"></div>
+        <div class="cat-overview-card total" id="hero-total-full"></div>
+      </div>
+      <div class="cat-overview-grid" id="hero-cat-overview"></div>
+    </div>
+
+    <div class="filter-bar">
+      <div class="filter-label">Analizar Gerencias / Canales / CD con:</div>
+      <div class="filter-opts" id="filter-opts"></div>
+      <div class="filter-note" id="filter-note"></div>
+    </div>
+
+    <div class="qtr-row" id="hero-quarters"></div>
+    <div class="month-strip" id="hero-months"></div>
+  </div>
+</div>
+
+<section id="gerencias">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-num">01 &middot; Gerencias</div>
+      <h2 id="h2-gerencias">Crecimiento por gerencia</h2>
+      <p id="p-gerencias"></p>
+    </div>
+    <div class="chart-card"><div id="wf-gerencias"></div></div>
+    <div class="gv-grid" id="gv-cards"></div>
+  </div>
+</section>
+
+<section id="canales">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-num">02 &middot; Canales</div>
+      <h2 id="h2-canales">Crecimiento por canal</h2>
+      <p id="p-canales"></p>
+    </div>
+    <div class="chart-card"><div id="wf-canales"></div></div>
+    <div class="tbl-wrap" style="margin-top:18px;">
+      <table id="tbl-canales"></table>
+    </div>
+  </div>
+</section>
+
+<section id="categorias">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-num">03 &middot; Categor&iacute;as</div>
+      <h2 id="h2-categorias">Descomposici&oacute;n del volumen total</h2>
+      <p id="p-categorias">Beer, Rtds y Nabs completos (esta secci&oacute;n no cambia con el filtro de arriba &mdash; siempre muestra las 3 categor&iacute;as).</p>
+    </div>
+    <div class="wf-split">
+      <div class="chart-card">
+        <div class="wf-split-title">Beer + Rtds + Nabs</div>
+        <div id="wf-categorias-full"></div>
+      </div>
+      <div class="chart-card">
+        <div class="wf-split-title">Beer + Rtds</div>
+        <div id="wf-categorias-beerrtds"></div>
+      </div>
+    </div>
+    <div class="tbl-wrap" style="margin-top:18px;">
+      <table id="tbl-gv-categoria"></table>
+    </div>
+  </div>
+</section>
+
+<section id="cds">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-num">04 &middot; Centros de Distribuci&oacute;n</div>
+      <h2 id="h2-cds">Ranking de CD por volumen</h2>
+      <p id="p-cds"></p>
+    </div>
+    <div class="tbl-wrap">
+      <table id="tbl-cds"></table>
+    </div>
+    <p class="note">Los CD de muy bajo volumen (ej. Motupe, Chiclayo) pueden mostrar variaciones % extremas por tener base chica &mdash; no son representativos en t&eacute;rminos relativos.</p>
+  </div>
+</section>
+
+<section id="highlights">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-num">05 &middot; S&iacute;ntesis</div>
+      <h2>Highlights &amp; Gaps</h2>
+      <p>Calculados sobre <b>Beer+Rtds</b> (el filtro por defecto) &mdash; no cambian si mueves el filtro de arriba.</p>
+    </div>
+    <div class="hg-grid">
+      <div class="hg-col h">
+        <h3>Highlights</h3>
+        <ul class="hg-list" id="highlights-list"></ul>
+      </div>
+      <div class="hg-col g">
+        <h3>Gaps</h3>
+        <ul class="hg-list" id="gaps-list"></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Fuente: <code>dm_venta</code> / <code>dm_cliente</code> (Databricks, cat&aacute;logo brewdat_uc_mazana_dev) &middot;
+    Gerencia: <code>dm_cliente.gerencia</code> (vigente, join por <code>cliente_id</code>) &mdash; no <code>dm_venta.gerencia</code>, que atribuye la venta a la gerencia del cliente al momento de facturar y puede partir a un mismo cliente entre 2 gerencias si fue reasignado a mitad de a&ntilde;o (corregido 04.09.26) &middot;
+    Filtros: <code>indicadores_comerciales=1</code>, base <b>Beer+Rtds</b> = estratificaci&oacute;n Cervezas+Licores (Beer) + Ready To Drink (Rtds); Nabs (Gaseosas+Agua+Maltas) excluido de todos los totales y mostrado solo como referencia, excl. marca San Mateo en Agua &middot;
+    Canal: <code>dm_cliente.unidad_negocio_revenue_volumen_meta</code> (High End plegado en DSD ON) &middot;
+    CD: lista curada por gerencia (ver BITACORA_TABLAS.md) &middot;
+    YTD = Ene&ndash;Ago 2026 (Set-26 excluido, mes en curso con 3 d&iacute;as facturados a la fecha de corte) &middot;
+    Volumen en miles de HL (khl).
+  </div>
+</footer>
+
+<script>
+const RAW = {"cats":["Beer","Rtds","Nabs"],"direccion":{"monthly":{"Beer":[{"mes":1,"y26":216.193313,"y25":204.941281},{"mes":2,"y26":206.727452,"y25":201.01431},{"mes":3,"y26":209.232649,"y25":195.982846},{"mes":4,"y26":203.351426,"y25":208.5157},{"mes":5,"y26":226.649888,"y25":228.369186},{"mes":6,"y26":239.980024,"y25":240.131373},{"mes":7,"y26":259.64259,"y25":243.666564},{"mes":8,"y26":239.598133,"y25":253.748095}],"Rtds":[{"mes":1,"y26":2.717168,"y25":0.910922},{"mes":2,"y26":1.881917,"y25":0.781176},{"mes":3,"y26":3.191515,"y25":0.860244},{"mes":4,"y26":2.960826,"y25":1.277936},{"mes":5,"y26":3.454219,"y25":1.4635150000000001},{"mes":6,"y26":4.538584,"y25":1.516981},{"mes":7,"y26":4.551546,"y25":1.460361},{"mes":8,"y26":5.016593,"y25":1.697622}],"Nabs":[{"mes":1,"y26":18.638289999999998,"y25":15.528781},{"mes":2,"y26":15.732056,"y25":13.963103},{"mes":3,"y26":17.83453,"y25":14.049463000000001},{"mes":4,"y26":17.648507,"y25":14.610661},{"mes":5,"y26":18.648823,"y25":18.526904},{"mes":6,"y26":18.16894,"y25":18.402993},{"mes":7,"y26":18.567838000000002,"y25":16.379934},{"mes":8,"y26":18.445571,"y25":18.648812}]}},"gerencias":[{"code":"PE Ger P4 Tarapoto","label":"Tarapoto","monthly":{"Beer":[{"mes":1,"y26":56.078790000000005,"y25":53.010694},{"mes":2,"y26":54.03063,"y25":51.699099999999994},{"mes":3,"y26":57.790754,"y25":48.127078000000004},{"mes":4,"y26":54.482479,"y25":49.831982},{"mes":5,"y26":62.963966,"y25":65.14815},{"mes":6,"y26":70.166371,"y25":69.772146},{"mes":7,"y26":74.44647,"y25":65.721714},{"mes":8,"y26":64.194261,"y25":72.622044}],"Rtds":[{"mes":1,"y26":0.891846,"y25":0.298456},{"mes":2,"y26":0.6113409999999999,"y25":0.253665},{"mes":3,"y26":1.349102,"y25":0.243143},{"mes":4,"y26":1.134994,"y25":0.381584},{"mes":5,"y26":1.091589,"y25":0.405674},{"mes":6,"y26":1.467964,"y25":0.501694},{"mes":7,"y26":1.528494,"y25":0.511665},{"mes":8,"y26":1.7488290000000002,"y25":0.562087}],"Nabs":[{"mes":1,"y26":5.171131,"y25":3.6516230000000003},{"mes":2,"y26":4.560349,"y25":3.633409},{"mes":3,"y26":5.340121,"y25":3.759218},{"mes":4,"y26":5.776165,"y25":3.384631},{"mes":5,"y26":5.434972999999999,"y25":4.573662},{"mes":6,"y26":5.620321000000001,"y25":5.045158},{"mes":7,"y26":5.118228,"y25":4.711063},{"mes":8,"y26":5.614909,"y25":4.857035}]},"canal":{"Beer":[{"canal":"DAs","y26":256.127407,"y25":227.089252},{"canal":"DSD OFF","y26":151.714541,"y25":157.364443},{"canal":"DSD ON","y26":32.957047,"y25":32.319662},{"canal":"Eventos","y26":21.552723,"y25":24.998051},{"canal":"Key Accounts","y26":4.01422,"y25":3.470227},{"canal":"Mayoristas","y26":27.787783,"y25":30.691273}],"Rtds":[{"canal":"DAs","y26":3.026348,"y25":1.087872},{"canal":"DSD OFF","y26":3.6595910000000003,"y25":1.163382},{"canal":"DSD ON","y26":0.770178,"y25":0.18857100000000002},{"canal":"Eventos","y26":0.810199,"y25":0.168744},{"canal":"Key Accounts","y26":0.927319,"y25":0.354853},{"canal":"Mayoristas","y26":0.630524,"y25":0.194546}],"Nabs":[{"canal":"DAs","y26":22.339529,"y25":19.169940999999998},{"canal":"DSD OFF","y26":15.361069,"y25":10.765073},{"canal":"DSD ON","y26":0.938335,"y25":0.719247},{"canal":"Eventos","y26":1.54813,"y25":0.866031},{"canal":"Key Accounts","y26":0.781152,"y25":0.483929},{"canal":"Mayoristas","y26":1.667982,"y25":1.611578}]}},{"code":"PE Ger P4 Iquitos","label":"Iquitos","monthly":{"Beer":[{"mes":1,"y26":24.330513,"y25":24.320057000000002},{"mes":2,"y26":27.621468999999998,"y25":25.657249},{"mes":3,"y26":29.358539,"y25":26.570001},{"mes":4,"y26":25.692998,"y25":28.712897},{"mes":5,"y26":28.114147,"y25":24.93388},{"mes":6,"y26":29.308016,"y25":26.849318},{"mes":7,"y26":29.846559,"y25":25.252532},{"mes":8,"y26":29.927221,"y25":26.158304}],"Rtds":[{"mes":1,"y26":0.28605,"y25":0.097044},{"mes":2,"y26":0.230866,"y25":0.064898},{"mes":3,"y26":0.27163899999999996,"y25":0.069176},{"mes":4,"y26":0.443076,"y25":0.113428},{"mes":5,"y26":0.446172,"y25":0.1541},{"mes":6,"y26":0.517717,"y25":0.145999},{"mes":7,"y26":0.41260800000000003,"y25":0.13371},{"mes":8,"y26":0.583008,"y25":0.18452}],"Nabs":[{"mes":1,"y26":2.692083,"y25":2.328767},{"mes":2,"y26":2.167058,"y25":2.136022},{"mes":3,"y26":2.820503,"y25":2.0862770000000004},{"mes":4,"y26":2.857968,"y25":2.332867},{"mes":5,"y26":2.510048,"y25":2.64243},{"mes":6,"y26":2.586475,"y25":2.456921},{"mes":7,"y26":2.838252,"y25":2.334021},{"mes":8,"y26":2.4356560000000003,"y25":2.5132250000000003}]},"canal":{"Beer":[{"canal":"DAs","y26":48.45275,"y25":43.302828},{"canal":"DSD OFF","y26":84.858897,"y25":80.270579},{"canal":"DSD ON","y26":15.096732,"y25":12.525859},{"canal":"Eventos","y26":24.201227,"y25":23.427626},{"canal":"Key Accounts","y26":1.5943209999999999,"y25":1.855461},{"canal":"Mayoristas","y26":49.995535000000004,"y25":47.071885}],"Rtds":[{"canal":"DAs","y26":0.006407,"y25":0.047695},{"canal":"DSD OFF","y26":1.6525999999999998,"y25":0.58197},{"canal":"DSD ON","y26":0.27811400000000003,"y25":0.05727},{"canal":"Eventos","y26":0.478313,"y25":0.10325799999999999},{"canal":"Key Accounts","y26":0.207923,"y25":0.1082},{"canal":"Mayoristas","y26":0.567779,"y25":0.064482}],"Nabs":[{"canal":"DAs","y26":0.9501189999999999,"y25":0.713305},{"canal":"DSD OFF","y26":11.262407,"y25":9.682809},{"canal":"DSD ON","y26":0.656813,"y25":0.372088},{"canal":"Eventos","y26":1.02064,"y25":0.866166},{"canal":"Key Accounts","y26":0.20772,"y25":0.249257},{"canal":"Mayoristas","y26":6.810344,"y25":6.946905}]}},{"code":"PE Ger P4 Pucall Hco","label":"Pucallpa","monthly":{"Beer":[{"mes":1,"y26":44.254179,"y25":40.507079},{"mes":2,"y26":39.79271,"y25":39.341837},{"mes":3,"y26":38.769162,"y25":36.902398999999996},{"mes":4,"y26":40.272017999999996,"y25":43.013217},{"mes":5,"y26":38.444238,"y25":36.889301},{"mes":6,"y26":42.084973,"y25":42.002097},{"mes":7,"y26":42.043806000000004,"y25":38.598452},{"mes":8,"y26":40.903353,"y25":40.296455}],"Rtds":[{"mes":1,"y26":0.813145,"y25":0.187898},{"mes":2,"y26":0.65627,"y25":0.177079},{"mes":3,"y26":0.8506830000000001,"y25":0.200879},{"mes":4,"y26":0.661729,"y25":0.311712},{"mes":5,"y26":0.932271,"y25":0.429966},{"mes":6,"y26":1.288983,"y25":0.371695},{"mes":7,"y26":1.270266,"y25":0.415037},{"mes":8,"y26":1.353726,"y25":0.42451099999999997}],"Nabs":[{"mes":1,"y26":5.196172,"y25":4.663221},{"mes":2,"y26":4.3568050000000005,"y25":3.394929},{"mes":3,"y26":4.321033,"y25":3.369346},{"mes":4,"y26":4.0333120000000005,"y25":3.582671},{"mes":5,"y26":4.341697,"y25":4.898421},{"mes":6,"y26":4.295035,"y25":4.918909},{"mes":7,"y26":4.253081,"y25":3.670441},{"mes":8,"y26":4.095105,"y25":4.74638}]},"canal":{"Beer":[{"canal":"DAs","y26":7.002122,"y25":8.269777},{"canal":"DSD OFF","y26":131.27761999999998,"y25":134.530161},{"canal":"DSD ON","y26":37.405864,"y25":36.56797},{"canal":"Eventos","y26":69.032484,"y25":60.406948},{"canal":"Key Accounts","y26":3.2425260000000002,"y25":4.425292},{"canal":"Mayoristas","y26":78.603823,"y25":73.350689}],"Rtds":[{"canal":"DAs","y26":0.000213,"y25":0},{"canal":"DSD OFF","y26":4.485364,"y25":1.392338},{"canal":"DSD ON","y26":0.641813,"y25":0.13496},{"canal":"Eventos","y26":1.15882,"y25":0.401775},{"canal":"Key Accounts","y26":0.687432,"y25":0.268946},{"canal":"Mayoristas","y26":0.853431,"y25":0.320758}],"Nabs":[{"canal":"DSD OFF","y26":23.544469,"y25":19.155464},{"canal":"DSD ON","y26":2.184359,"y25":1.667309},{"canal":"Eventos","y26":5.473906,"y25":6.9739759999999995},{"canal":"Key Accounts","y26":0.508715,"y25":0.521491},{"canal":"Mayoristas","y26":3.180791,"y25":4.926078}]}},{"code":"PE Ger P4 Huancay Ch","label":"Huancayo","monthly":{"Beer":[{"mes":1,"y26":59.475662,"y25":54.034773},{"mes":2,"y26":53.957211,"y25":49.752256},{"mes":3,"y26":51.573608,"y25":49.679139},{"mes":4,"y26":47.864095,"y25":51.583484},{"mes":5,"y26":59.843777,"y25":58.207118},{"mes":6,"y26":56.281614,"y25":58.246618},{"mes":7,"y26":75.72916,"y25":70.600428},{"mes":8,"y26":67.894946,"y25":70.076835}],"Rtds":[{"mes":1,"y26":0.324552,"y25":0.123044},{"mes":2,"y26":0.24116300000000002,"y25":0.112982},{"mes":3,"y26":0.410176,"y25":0.180821},{"mes":4,"y26":0.349555,"y25":0.22541},{"mes":5,"y26":0.453817,"y25":0.223713},{"mes":6,"y26":0.501379,"y25":0.235603},{"mes":7,"y26":0.6010679999999999,"y25":0.182689},{"mes":8,"y26":0.613199,"y25":0.23372}],"Nabs":[{"mes":1,"y26":3.911835,"y25":3.373763},{"mes":2,"y26":3.111491,"y25":2.867553},{"mes":3,"y26":3.585964,"y25":3.325862},{"mes":4,"y26":3.5838520000000003,"y25":3.261804},{"mes":5,"y26":4.089933,"y25":4.235963},{"mes":6,"y26":3.578763,"y25":3.854973},{"mes":7,"y26":4.3750979999999995,"y25":3.519012},{"mes":8,"y26":4.12694,"y25":3.9852469999999998}]},"canal":{"Beer":[{"canal":"DAs","y26":17.635674,"y25":17.749275},{"canal":"DSD OFF","y26":226.054971,"y25":219.12260700000002},{"canal":"DSD ON","y26":39.044993,"y25":35.476538},{"canal":"Eventos","y26":89.011715,"y25":88.539924},{"canal":"Key Accounts","y26":51.809375,"y25":52.671043},{"canal":"Mayoristas","y26":49.063345,"y25":48.621264}],"Rtds":[{"canal":"DAs","y26":0.01413,"y25":0.0012820000000000002},{"canal":"DSD OFF","y26":1.87733,"y25":0.83551},{"canal":"DSD ON","y26":0.113524,"y25":0.025466},{"canal":"Eventos","y26":0.477781,"y25":0.286198},{"canal":"Key Accounts","y26":0.41831100000000004,"y25":0.213203},{"canal":"Mayoristas","y26":0.593833,"y25":0.15632300000000002}],"Nabs":[{"canal":"DAs","y26":0.169775,"y25":0.13422},{"canal":"DSD OFF","y26":18.470327,"y25":15.43848},{"canal":"DSD ON","y26":1.132734,"y25":0.8288179999999999},{"canal":"Eventos","y26":2.738473,"y25":3.323319},{"canal":"Key Accounts","y26":3.623973,"y25":2.547484},{"canal":"Mayoristas","y26":4.228594,"y25":6.1518559999999995}]}},{"code":"PE Ger P4 DA Jun Puc","label":"DAS Jun Pcl","monthly":{"Beer":[{"mes":1,"y26":32.054169,"y25":33.068678},{"mes":2,"y26":31.325432000000003,"y25":34.563868},{"mes":3,"y26":31.740585999999997,"y25":34.704229},{"mes":4,"y26":35.039836,"y25":35.37412},{"mes":5,"y26":37.28376,"y25":43.190737},{"mes":6,"y26":42.13905,"y25":43.261194},{"mes":7,"y26":37.576595,"y25":43.493438},{"mes":8,"y26":36.678352,"y25":44.594457000000006}],"Rtds":[{"mes":1,"y26":0.401575,"y25":0.20448000000000002},{"mes":2,"y26":0.14227700000000001,"y25":0.172552},{"mes":3,"y26":0.309915,"y25":0.16622499999999998},{"mes":4,"y26":0.371472,"y25":0.245802},{"mes":5,"y26":0.53037,"y25":0.250062},{"mes":6,"y26":0.762541,"y25":0.26198999999999995},{"mes":7,"y26":0.73911,"y25":0.21725999999999998},{"mes":8,"y26":0.717831,"y25":0.29278400000000004}],"Nabs":[{"mes":1,"y26":1.667069,"y25":1.511407},{"mes":2,"y26":1.536353,"y25":1.93119},{"mes":3,"y26":1.7669089999999998,"y25":1.50876},{"mes":4,"y26":1.3972099999999998,"y25":2.048688},{"mes":5,"y26":2.2721720000000003,"y25":2.1764279999999996},{"mes":6,"y26":2.088346,"y25":2.1270320000000003},{"mes":7,"y26":1.983179,"y25":2.145397},{"mes":8,"y26":2.172961,"y25":2.546925}]},"canal":{"Beer":[{"canal":"DAs","y26":283.83778,"y25":312.250721}],"Rtds":[{"canal":"DAs","y26":3.975091,"y25":1.811155}],"Nabs":[{"canal":"DAs","y26":14.884199,"y25":15.995827}]}}],"canales":{"Beer":[{"canal":"DAs","y26":613.055733,"y25":608.661853},{"canal":"DSD OFF","y26":593.906029,"y25":591.28779},{"canal":"DSD ON","y26":124.504636,"y25":116.890029},{"canal":"Eventos","y26":203.798149,"y25":197.372549},{"canal":"Key Accounts","y26":60.660442,"y25":62.422022999999996},{"canal":"Mayoristas","y26":205.450486,"y25":199.735111}],"Rtds":[{"canal":"DAs","y26":7.022189,"y25":2.948004},{"canal":"DSD OFF","y26":11.674885,"y25":3.9732},{"canal":"DSD ON","y26":1.803629,"y25":0.406267},{"canal":"Eventos","y26":2.925113,"y25":0.959975},{"canal":"Key Accounts","y26":2.2409850000000002,"y25":0.945202},{"canal":"Mayoristas","y26":2.6455670000000002,"y25":0.736109}],"Nabs":[{"canal":"DAs","y26":38.343622,"y25":36.013293},{"canal":"DSD OFF","y26":68.638272,"y25":55.041826},{"canal":"DSD ON","y26":4.912241,"y25":3.587462},{"canal":"Eventos","y26":10.781149,"y25":12.029492},{"canal":"Key Accounts","y26":5.12156,"y25":3.802161},{"canal":"Mayoristas","y26":15.887711,"y25":19.636417}]},"cds":[{"centro":"Pucallpa","byCat":{"Beer":{"y26":622.159996,"y25":600.707464,"q1":{"y26":214.057065,"y25":198.692698},"q2":{"y26":238.405966,"y25":227.44006100000001},"q3":{"y26":169.696965,"y25":174.574705}},"Rtds":{"y26":3.797505,"y25":1.4425350000000001,"q1":{"y26":0.92793,"y25":0.43741},"q2":{"y26":1.544869,"y25":0.622285},"q3":{"y26":1.324706,"y25":0.38284}},"Nabs":{"y26":26.309631,"y25":28.432558,"q1":{"y26":10.502024,"y25":9.442054},"q2":{"y26":9.976031,"y25":11.713509},"q3":{"y26":5.831576,"y25":7.276994999999999}}}},{"centro":"Huancayo","byCat":{"Beer":{"y26":317.625187,"y25":309.275779,"q1":{"y26":112.817649,"y25":104.944475},"q2":{"y26":106.556916,"y25":106.848175},"q3":{"y26":98.25062199999999,"y25":97.483129}},"Rtds":{"y26":2.033961,"y25":1.035696,"q1":{"y26":0.619959,"y25":0.310556},"q2":{"y26":0.788798,"y25":0.474389},"q3":{"y26":0.625204,"y25":0.250751}},"Nabs":{"y26":21.475888,"y25":20.956597,"q1":{"y26":7.469982,"y25":6.928608},"q2":{"y26":8.108886,"y25":8.525502},"q3":{"y26":5.8970199999999995,"y25":5.5024869999999995}}}},{"centro":"Iquitos","byCat":{"Beer":{"y26":199.88691599999999,"y25":186.566196,"q1":{"y26":73.403124,"y25":68.838608},"q2":{"y26":73.672102,"y25":73.078012},"q3":{"y26":52.81169,"y25":44.649576}},"Rtds":{"y26":3.195864,"y25":0.941275,"q1":{"y26":0.789906,"y25":0.22645200000000001},"q2":{"y26":1.4095119999999999,"y25":0.408564},"q3":{"y26":0.996446,"y25":0.306259}},"Nabs":{"y26":20.492836,"y25":18.473967000000002,"q1":{"y26":7.626691,"y25":6.500528},"q2":{"y26":7.741643,"y25":7.28745},"q3":{"y26":5.124502000000001,"y25":4.685989}}}},{"centro":"Tarapoto","byCat":{"Beer":{"y26":113.13868,"y25":118.934079,"q1":{"y26":39.567623,"y25":37.987052},"q2":{"y26":42.59033,"y25":48.155667},"q3":{"y26":30.980726999999998,"y25":32.79136}},"Rtds":{"y26":3.916835,"y25":1.331694,"q1":{"y26":1.253031,"y25":0.291835},"q2":{"y26":1.408609,"y25":0.552668},"q3":{"y26":1.255195,"y25":0.487191}},"Nabs":{"y26":8.021856,"y25":5.961329,"q1":{"y26":3.010563,"y25":2.048129},"q2":{"y26":2.997096,"y25":2.189941},"q3":{"y26":2.0141970000000002,"y25":1.7232589999999999}}}},{"centro":"Huánuco","byCat":{"Beer":{"y26":107.557467,"y25":118.440743,"q1":{"y26":44.039075,"y25":47.94224},"q2":{"y26":37.394899,"y25":42.609406},"q3":{"y26":26.123493,"y25":27.889097}},"Rtds":{"y26":3.52661,"y25":1.512665,"q1":{"y26":1.1450690000000001,"y25":0.36038},"q2":{"y26":1.147998,"y25":0.663184},"q3":{"y26":1.233543,"y25":0.48910099999999995}},"Nabs":{"y26":10.167393,"y25":8.990919,"q1":{"y26":3.837289,"y25":3.3031580000000003},"q2":{"y26":3.532873,"y25":3.378931},"q3":{"y26":2.797231,"y25":2.30883}}}},{"centro":"San Benedicto I (Ate)","byCat":{"Beer":{"y26":74.219978,"y25":72.944159,"q1":{"y26":23.742238999999998,"y25":25.975622},"q2":{"y26":30.241127,"y25":28.141511},"q3":{"y26":20.236612,"y25":18.827026}},"Rtds":{"y26":5.46486,"y25":2.135278,"q1":{"y26":1.4007990000000001,"y25":0.67734},"q2":{"y26":2.21733,"y25":0.817217},"q3":{"y26":1.8467310000000001,"y25":0.640721}},"Nabs":{"y26":29.17787,"y25":26.623289,"q1":{"y26":10.284677,"y25":8.334852},"q2":{"y26":11.407614,"y25":10.939537},"q3":{"y26":7.485579,"y25":7.3488999999999995}}}},{"centro":"Satipo","byCat":{"Beer":{"y26":83.34783,"y25":79.931712,"q1":{"y26":27.917524999999998,"y25":23.59593},"q2":{"y26":31.143511,"y25":32.467827},"q3":{"y26":24.286794,"y25":23.867955000000002}},"Rtds":{"y26":0.644436,"y25":0.160371,"q1":{"y26":0.147317,"y25":0.023297},"q2":{"y26":0.22892099999999999,"y25":0.080246},"q3":{"y26":0.268198,"y25":0.056828000000000004}},"Nabs":{"y26":3.078202,"y25":2.8054959999999998,"q1":{"y26":1.116403,"y25":1.023746},"q2":{"y26":1.050456,"y25":1.042321},"q3":{"y26":0.911343,"y25":0.739429}}}},{"centro":"Moyobamba","byCat":{"Beer":{"y26":73.255638,"y25":78.044918,"q1":{"y26":24.596505,"y25":24.576593},"q2":{"y26":29.786535,"y25":33.315322},"q3":{"y26":18.872598,"y25":20.153003}},"Rtds":{"y26":1.595707,"y25":0.524838,"q1":{"y26":0.470145,"y25":0.104534},"q2":{"y26":0.608772,"y25":0.250549},"q3":{"y26":0.51679,"y25":0.169755}},"Nabs":{"y26":4.486397,"y25":3.270643,"q1":{"y26":1.449493,"y25":1.067425},"q2":{"y26":1.936202,"y25":1.290631},"q3":{"y26":1.100702,"y25":0.912587}}}},{"centro":"Chanchamayo","byCat":{"Beer":{"y26":73.34652,"y25":72.33663299999999,"q1":{"y26":24.563156,"y25":23.304605},"q2":{"y26":27.09384,"y25":28.411815},"q3":{"y26":21.689524,"y25":20.620213}},"Rtds":{"y26":0.93842,"y25":0.313608,"q1":{"y26":0.22983900000000002,"y25":0.071473},"q2":{"y26":0.325631,"y25":0.132105},"q3":{"y26":0.38294999999999996,"y25":0.11003}},"Nabs":{"y26":4.435477,"y25":3.633009,"q1":{"y26":1.582991,"y25":1.305111},"q2":{"y26":1.611558,"y25":1.379589},"q3":{"y26":1.240928,"y25":0.948309}}}},{"centro":"Yurimaguas","byCat":{"Beer":{"y26":62.351374,"y25":60.74017,"q1":{"y26":21.621265,"y25":20.087579},"q2":{"y26":24.246673,"y25":23.913822000000003},"q3":{"y26":16.483435999999998,"y25":16.738769}},"Rtds":{"y26":1.241672,"y25":0.20144299999999998,"q1":{"y26":0.319455,"y25":0.019577},"q2":{"y26":0.472123,"y25":0.08311299999999999},"q3":{"y26":0.450094,"y25":0.098753}},"Nabs":{"y26":7.688257,"y25":5.220041,"q1":{"y26":2.511617,"y25":1.788091},"q2":{"y26":2.8134930000000002,"y25":1.796293},"q3":{"y26":2.363147,"y25":1.635657}}}},{"centro":"Tingo María","byCat":{"Beer":{"y26":43.505955,"y25":44.191016,"q1":{"y26":15.09742,"y25":14.947495},"q2":{"y26":17.092483,"y25":17.583365},"q3":{"y26":11.316051999999999,"y25":11.660156}},"Rtds":{"y26":1.795648,"y25":0.282831,"q1":{"y26":0.445751,"y25":0.014898999999999999},"q2":{"y26":0.735573,"y25":0.141512},"q3":{"y26":0.614324,"y25":0.12642}},"Nabs":{"y26":4.434768,"y25":3.952715,"q1":{"y26":1.527487,"y25":1.33913},"q2":{"y26":1.663022,"y25":1.551861},"q3":{"y26":1.244259,"y25":1.0617240000000001}}}},{"centro":"Huancavelica","byCat":{"Beer":{"y26":30.610477,"y25":28.799963,"q1":{"y26":10.636075,"y25":9.895311000000001},"q2":{"y26":11.506738,"y25":11.056049},"q3":{"y26":8.467664,"y25":7.848602999999999}},"Rtds":{"y26":0.11665299999999999,"y25":0.048522,"q1":{"y26":0.027766,"y25":0.011692},"q2":{"y26":0.042342,"y25":0.02525},"q3":{"y26":0.046544999999999996,"y25":0.01158}},"Nabs":{"y26":1.4720469999999999,"y25":1.312118,"q1":{"y26":0.47014899999999993,"y25":0.421945},"q2":{"y26":0.530693,"y25":0.498695},"q3":{"y26":0.471205,"y25":0.391478}}}},{"centro":"Motupe","byCat":{"Beer":{"y26":0.0,"y25":5.382915000000001,"q1":{"y26":0.0,"y25":1.1194870000000001},"q2":{"y26":0.0,"y25":3.9611470000000004},"q3":{"y26":0,"y25":0.302281}},"Rtds":{"y26":0,"y25":0.02556,"q1":{"y26":0,"y25":0},"q2":{"y26":0,"y25":0},"q3":{"y26":0,"y25":0.02556}},"Nabs":{"y26":2.34298,"y25":0.484005,"q1":{"y26":0.785315,"y25":0},"q2":{"y26":1.037775,"y25":0},"q3":{"y26":0.51989,"y25":0.484005}}}},{"centro":"Chiclayo","byCat":{"Beer":{"y26":0.369457,"y25":0.07360799999999999,"q1":{"y26":0.094693,"y25":0.030742},"q2":{"y26":0.250218,"y25":0.03408},"q3":{"y26":0.024546000000000002,"y25":0.008785999999999999}},"Rtds":{"y26":0.044197,"y25":0.012441,"q1":{"y26":0.013633000000000001,"y25":0.002897},"q2":{"y26":0.023150999999999998,"y25":0.007350000000000001},"q3":{"y26":0.007413,"y25":0.0021939999999999998}},"Nabs":{"y26":0.100953,"y25":-0.0060349999999999935,"q1":{"y26":0.030195,"y25":0.03857000000000001},"q2":{"y26":0.058927999999999994,"y25":-0.053702},"q3":{"y26":0.011830000000000002,"y25":0.009097000000000001}}}}]};
+const CATS = ['Beer','Rtds','Nabs'];
+let selectedCats = ['Beer','Rtds'];
+
+function fmtVol(n, dec){
+  dec = dec===undefined?1:dec;
+  if(n===null||n===undefined||!isFinite(n)) return 's/d';
+  const neg = n<0; n = Math.abs(n);
+  let s = n.toFixed(dec);
+  let [int,d] = s.split('.');
+  int = int.replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+  return (neg?'−':'') + int + (d!==undefined? ','+d : '');
+}
+function fmtPct(n, sign){
+  sign = sign===undefined?true:sign;
+  if(n===null||n===undefined||!isFinite(n)) return 'nuevo';
+  const s = Math.abs(n).toFixed(1).replace('.',',');
+  return (n<0?'−':(sign?'+':'')) + s + '%';
+}
+function gcls(n){ return (n===null||n===undefined)? '' : (n>=0?'good':'bad'); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+
+const GV_COLOR = {
+  'Tarapoto':'var(--gv-tarapoto)', 'Iquitos':'var(--gv-iquitos)', 'Pucallpa':'var(--gv-pucallpa)',
+  'Huancayo':'var(--gv-huancayo)', 'DAS Jun Pcl':'var(--gv-das)'
+};
+const CAT_COLOR = { 'Beer':'var(--cat-beer)', 'Rtds':'var(--cat-rtds)', 'Nabs':'var(--cat-nabs)' };
+const CANAL_LABEL = { 'Mayoristas':'MAY', 'Eventos':'EVE', 'DAs':'DAS', 'Key Accounts':'KA' };
+function canalLabel(name){ return CANAL_LABEL[name] || name; }
+const MES_LABEL = ['','Ene','Feb','Mar','Abr','May','Jun','Jul','Ago'];
+function catLabel(cats){ return cats.join('+'); }
+
+/* ============================= WATERFALL SVG ============================= */
+function waterfallSVG(cfg){
+  const items = cfg.items.slice().sort((a,b)=>b.delta-a.delta);
+  const base = cfg.base, total = cfg.total;
+  const compact = !!cfg.compact;
+  const barW = compact? 46 : 68;
+  const gap = compact? 12 : 24;
+  const plotH = compact? 140 : 208;
+  const padTop = compact? 30 : 40;
+  const padBottom = compact? 58 : 74;
+  const padSide = compact? 20 : 34;
+
+  const n = items.length + 2;
+  const svgW = padSide*2 + n*barW + (n-1)*gap;
+  const svgH = padTop + plotH + padBottom;
+
+  let cum = base;
+  const cums = [base];
+  items.forEach(it=>{ cum += it.delta; cums.push(cum); });
+  const maxVal = Math.max(base, total, ...cums, ...items.map((it,i)=>Math.max(cums[i],cums[i+1]))) * 1.14;
+
+  const y0 = padTop + plotH;
+  const scaleY = v => plotH * (v/maxVal);
+  const yFor = v => y0 - scaleY(v);
+
+  let x = padSide;
+  let svg = '';
+
+  function labelBelow(cx, text, sub){
+    return `<text x="${cx}" y="${y0+22}" text-anchor="middle" font-size="${compact?10.5:12.5}" font-weight="600" fill="var(--ink)">${esc(text)}</text>` +
+           (sub? `<text x="${cx}" y="${y0+22+(compact?13:15)}" text-anchor="middle" font-size="${compact?9.5:11}" fill="var(--ink-faint)">${esc(sub)}</text>` : '');
+  }
+
+  // base bar
+  {
+    const h = scaleY(base); const yTop = y0-h; const cx = x+barW/2;
+    svg += `<rect x="${x}" y="${yTop}" width="${barW}" height="${Math.max(h,1)}" rx="4" fill="var(--bar-base)"/>`;
+    svg += `<text x="${cx}" y="${yTop-10}" text-anchor="middle" font-size="${compact?11:13}" font-weight="700" fill="var(--ink)">${fmtVol(base,1)}</text>`;
+    svg += labelBelow(cx, cfg.baseLabel);
+  }
+  x += barW+gap;
+
+  items.forEach((it,i)=>{
+    const prev = cums[i], curV = cums[i+1];
+    const top = Math.max(prev,curV), bot = Math.min(prev,curV);
+    const yTop = yFor(top), yBot = yFor(bot);
+    const h = Math.max(yBot-yTop,2);
+    const cx = x+barW/2;
+    const color = it.delta>=0? 'var(--good)':'var(--bad)';
+    // connector from previous level
+    const prevX = x-gap;
+    svg += `<line x1="${prevX}" y1="${yFor(prev)}" x2="${x}" y2="${yFor(prev)}" stroke="var(--border)" stroke-width="1.3" stroke-dasharray="3,3"/>`;
+    svg += `<rect x="${x}" y="${yTop}" width="${barW}" height="${h}" rx="3" fill="${color}"/>`;
+    const labelY = it.delta>=0 ? yTop-9 : yBot+16;
+    svg += `<text x="${cx}" y="${labelY}" text-anchor="middle" font-size="${compact?10:12}" font-weight="700" fill="${color}">${it.delta>=0?'+':'−'}${fmtVol(Math.abs(it.delta),1)}</text>`;
+    svg += labelBelow(cx, it.label, cfg.showGrowth!==false? fmtPct(it.growth): null);
+    x += barW+gap;
+  });
+
+  // connector to total
+  svg += `<line x1="${x-gap}" y1="${yFor(cum)}" x2="${x}" y2="${yFor(cum)}" stroke="var(--border)" stroke-width="1.3" stroke-dasharray="3,3"/>`;
+  // total bar
+  {
+    const h = scaleY(total); const yTop = y0-h; const cx = x+barW/2;
+    svg += `<rect x="${x}" y="${yTop}" width="${barW}" height="${Math.max(h,1)}" rx="4" fill="var(--accent)"/>`;
+    svg += `<text x="${cx}" y="${yTop-10}" text-anchor="middle" font-size="${compact?11:13}" font-weight="700" fill="var(--accent-strong)">${fmtVol(total,1)}</text>`;
+    svg += labelBelow(cx, cfg.totalLabel);
+  }
+
+  svg += `<line x1="${padSide-8}" y1="${y0}" x2="${svgW-padSide+8}" y2="${y0}" stroke="var(--border)" stroke-width="1"/>`;
+
+  return `<svg viewBox="0 0 ${svgW} ${svgH}" width="${svgW}" height="${svgH}" role="img" aria-label="${esc(cfg.ariaLabel||'')}">${svg}</svg>`;
+}
+
+/* ============================= MONTHLY MINI BARS ============================= */
+function monthlyBarsSVG(monthly, opts){
+  opts = opts||{};
+  const compact = !!opts.compact;
+  const barW = compact? 8 : 14;
+  const gapPair = 2.5;
+  const groupGap = compact? 8 : 16;
+  const plotH = compact? 70 : 110;
+  const padTop = compact? 22 : 30;
+  const padBottom = compact? 16 : 20;
+  const padSide = 6;
+  const n = monthly.length;
+  const groupW = barW*2+gapPair;
+  const svgW = padSide*2 + n*groupW + (n-1)*groupGap;
+  const svgH = padTop+plotH+padBottom;
+  const maxVal = Math.max(...monthly.map(m=>Math.max(m.y25,m.y26)))*1.18;
+  const y0 = padTop+plotH;
+  const scaleY = v => plotH*(v/maxVal);
+
+  let svg='';
+  let x = padSide;
+  monthly.forEach(m=>{
+    const h25 = scaleY(m.y25), h26 = scaleY(m.y26);
+    svg += `<rect x="${x}" y="${y0-h25}" width="${barW}" height="${Math.max(h25,1)}" rx="2" fill="var(--bar-base)"/>`;
+    svg += `<rect x="${x+barW+gapPair}" y="${y0-h26}" width="${barW}" height="${Math.max(h26,1)}" rx="2" fill="var(--accent)"/>`;
+    const gcol = m.growth>=0?'var(--good)':'var(--bad)';
+    const topH = Math.max(h25,h26);
+    svg += `<text x="${x+groupW/2}" y="${y0-topH-7}" text-anchor="middle" font-size="${compact?8.5:10}" font-weight="700" fill="${gcol}">${m.growth>=0?'+':'−'}${Math.abs(m.growth).toFixed(0)}%</text>`;
+    svg += `<text x="${x+groupW/2}" y="${y0+13}" text-anchor="middle" font-size="${compact?8.5:10}" font-weight="600" fill="var(--ink-faint)">${MES_LABEL[m.mes]}</text>`;
+    x += groupW+groupGap;
+  });
+  svg += `<line x1="0" y1="${y0}" x2="${svgW}" y2="${y0}" stroke="var(--border)" stroke-width="1"/>`;
+  return `<svg viewBox="0 0 ${svgW} ${svgH}" width="100%" height="${svgH}">${svg}</svg>`;
+}
+
+/* ============================= HELPERS DE AGREGACION POR CATEGORIA ============================= */
+function ytdFromMonthly(monthly){
+  let y26=0,y25=0; monthly.forEach(m=>{y26+=m.y26; y25+=m.y25;});
+  // deltaRaw se calcula antes de redondear y26/y25 -- precision real en HL para donde se necesite
+  // (no la nota de 1 decimal khl = 100 HL que basta para el resto del reporte).
+  const deltaRaw = y26-y25;
+  const growth = y25?(y26/y25-1)*100:null;
+  y26=r1(y26); y25=r1(y25);
+  return {y26,y25,growth, delta:r1(deltaRaw), deltaRaw};
+}
+function r1(x){ return Math.round(x*10)/10; }
+function quarterFromMonthly(monthly, months){
+  return ytdFromMonthly(monthly.filter(m=>months.includes(m.mes)));
+}
+function quarters(monthly){
+  return { q1:quarterFromMonthly(monthly,[1,2,3]), q2:quarterFromMonthly(monthly,[4,5,6]), q3:quarterFromMonthly(monthly,[7,8]) };
+}
+function sumMonthlyCats(byCat, cats){
+  // Sin redondeo aqui: este resultado se vuelve a sumar (YTD/trimestre) en ytdFromMonthly/
+  // quarterFromMonthly -- redondear antes compone error de hasta 8 meses (detectado 2026-09-04).
+  // growth/delta si quedan expuestos (se usan para las barras mensuales), pero a partir de
+  // valores y26/y25 sin redondear -- fmtVol/fmtPct redondean solo para mostrar.
+  const base = byCat[cats[0]] || byCat.Beer || byCat.Rtds || byCat.Nabs;
+  return base.map((m0,i)=>{
+    let y26=0,y25=0;
+    cats.forEach(cat=>{ const e=(byCat[cat]||[])[i]; if(e){y26+=e.y26;y25+=e.y25;} });
+    return {mes:m0.mes, y26, y25, growth:y25?(y26/y25-1)*100:null, delta:y26-y25};
+  });
+}
+function sumSeriesCats(seriesByCat, cats){
+  const map = {};
+  cats.forEach(cat=>{
+    (seriesByCat[cat]||[]).forEach(row=>{
+      map[row.canal] = map[row.canal] || {canal:row.canal, y26:0, y25:0};
+      map[row.canal].y26 += row.y26; map[row.canal].y25 += row.y25;
+    });
+  });
+  return Object.values(map).map(r=>{
+    // deltaRaw/growth se calculan ANTES de redondear y26/y25 -- el nominal por canal en HL
+    // (canal-row) necesita precision real, no la nota de 1 decimal khl (=100 HL) del resto del reporte.
+    const deltaRaw = r.y26 - r.y25;
+    const growth = r.y25 ? (r.y26/r.y25-1)*100 : null;
+    const y26=r1(r.y26), y25=r1(r.y25);
+    return {canal:r.canal, y26, y25, growth, delta:r1(deltaRaw), deltaRaw};
+  }).sort((a,b)=>b.y26-a.y26);
+}
+function sumCdCats(cats){
+  return RAW.cds.map(c=>{
+    let y26=0,y25=0; const qs={q1:{y26:0,y25:0},q2:{y26:0,y25:0},q3:{y26:0,y25:0}};
+    cats.forEach(cat=>{
+      const b=c.byCat[cat]; if(!b) return;
+      y26+=b.y26; y25+=b.y25;
+      ['q1','q2','q3'].forEach(q=>{ qs[q].y26+=b[q].y26; qs[q].y25+=b[q].y25; });
+    });
+    const mk = o => { const a=r1(o.y26), bb=r1(o.y25); return {y26:a,y25:bb,growth:bb?(a/bb-1)*100:null,delta:r1(a-bb)}; };
+    y26=r1(y26); y25=r1(y25);
+    return { centro:c.centro, y26,y25, growth:y25?(y26/y25-1)*100:null, delta:r1(y26-y25), q1:mk(qs.q1), q2:mk(qs.q2), q3:mk(qs.q3) };
+  }).sort((a,b)=>b.y26-a.y26);
+}
+function deriveData(cats){
+  const monthly = sumMonthlyCats(RAW.direccion.monthly, cats);
+  const ytd = ytdFromMonthly(monthly);
+  const q = quarters(monthly);
+  const gerencias = RAW.gerencias.map(g=>{
+    const gMonthly = sumMonthlyCats(g.monthly, cats);
+    const gYtd = ytdFromMonthly(gMonthly);
+    const gQ = quarters(gMonthly);
+    const canal = sumSeriesCats(g.canal, cats);
+    const categoriaFull = CATS.map(cat=>({categoria:cat, ...ytdFromMonthly(g.monthly[cat])}));
+    return { code:g.code, label:g.label, monthly:gMonthly, ytd:gYtd, q1:gQ.q1, q2:gQ.q2, q3:gQ.q3, canal, categoriaFull };
+  });
+  const totalYtd = gerencias.reduce((s,g)=>s+g.ytd.y26,0);
+  gerencias.forEach(g=> g.peso = totalYtd? g.ytd.y26/totalYtd*100 : null);
+  const canales = sumSeriesCats(RAW.canales, cats);
+  const cds = sumCdCats(cats);
+  return { direccion:{ytd, monthly, q1:q.q1, q2:q.q2, q3:q.q3}, gerencias, canales, cds };
+}
+
+/* ============================= HERO: overview fijo (no depende del filtro) ============================= */
+(function(){
+  const full = ytdFromMonthly(sumMonthlyCats(RAW.direccion.monthly, CATS));
+  const beerRtds = ytdFromMonthly(sumMonthlyCats(RAW.direccion.monthly, ['Beer','Rtds']));
+  const dTxt = o => `${o.delta>=0?'+':'−'}${fmtVol(Math.abs(o.delta))} mil HL`;
+  document.getElementById('hero-total-beerrtds').innerHTML = `
+    <div class="cn" style="color:var(--accent)">Beer+Rtds</div>
+    <div class="cv">${fmtVol(beerRtds.y26)}<span class="unit">mil HL</span></div>
+    <div class="cg" style="color:${beerRtds.growth>=0?'var(--good)':'var(--bad)'}">${fmtPct(beerRtds.growth)} (${dTxt(beerRtds)})</div>
+  `;
+  document.getElementById('hero-total-full').innerHTML = `
+    <div class="cn" style="color:var(--accent)">Beer+Rtds+Nabs</div>
+    <div class="cv">${fmtVol(full.y26)}<span class="unit">mil HL</span></div>
+    <div class="cg" style="color:${full.growth>=0?'var(--good)':'var(--bad)'}">${fmtPct(full.growth)} (${dTxt(full)})</div>
+  `;
+  document.getElementById('hero-cat-overview').innerHTML = CATS.map(cat=>{
+    const o = ytdFromMonthly(RAW.direccion.monthly[cat]);
+    return `<div class="cat-overview-card">
+      <div class="cn" style="color:${CAT_COLOR[cat]}">${cat}</div>
+      <div class="cv">${fmtVol(o.y26)}<span class="unit">mil HL</span></div>
+      <div class="cg" style="color:${o.growth>=0?'var(--good)':'var(--bad)'}">${fmtPct(o.growth)} (${dTxt(o)})</div>
+    </div>`;
+  }).join('');
+})();
+
+/* ============================= CATEGORIAS: seccion fija, siempre Beer+Rtds+Nabs completo ============================= */
+(function(){
+  const full = ytdFromMonthly(sumMonthlyCats(RAW.direccion.monthly, CATS));
+  const catItems = CATS.map(cat=>({ categoria:cat, ...ytdFromMonthly(RAW.direccion.monthly[cat]) }));
+  document.getElementById('wf-categorias-full').innerHTML = waterfallSVG({
+    base: full.y25, total: full.y26,
+    baseLabel:'YTD ’25', totalLabel:'YTD ’26',
+    items: catItems.map(c=>({label:c.categoria, delta:c.delta, growth:c.growth})),
+    ariaLabel:'Cascada de volumen YTD por categoría (Beer+Rtds+Nabs)', compact:true
+  });
+
+  const beerRtds = ytdFromMonthly(sumMonthlyCats(RAW.direccion.monthly, ['Beer','Rtds']));
+  const beerRtdsItems = ['Beer','Rtds'].map(cat=>({ categoria:cat, ...ytdFromMonthly(RAW.direccion.monthly[cat]) }));
+  document.getElementById('wf-categorias-beerrtds').innerHTML = waterfallSVG({
+    base: beerRtds.y25, total: beerRtds.y26,
+    baseLabel:'YTD ’25', totalLabel:'YTD ’26',
+    items: beerRtdsItems.map(c=>({label:c.categoria, delta:c.delta, growth:c.growth})),
+    ariaLabel:'Cascada de volumen YTD por categoría (Beer+Rtds)', compact:true
+  });
+
+  const rows = RAW.gerencias.map(g=>{
+    const gCats = CATS.map(cat=>({categoria:cat, ...ytdFromMonthly(g.monthly[cat])}));
+    const gTotal = ytdFromMonthly(sumMonthlyCats(g.monthly, CATS));
+    const cells = gCats.map(c=>{
+      const deltaTxt = `${c.delta>=0?'+':'−'}${fmtVol(Math.abs(c.delta))}`;
+      return `<td class="num growth-cell ${gcls(c.growth)}">${fmtPct(c.growth)} <span style="color:var(--ink-faint); font-weight:500;">(${deltaTxt} khl)</span></td>`;
+    }).join('');
+    return `<tr>
+      <td><span class="dot" style="background:${GV_COLOR[g.label]}"></span>${esc(g.label)}</td>
+      ${cells}
+      <td class="num growth-cell ${gcls(gTotal.growth)}">${fmtPct(gTotal.growth)} <span style="color:var(--ink-faint); font-weight:500;">(${gTotal.delta>=0?'+':'−'}${fmtVol(Math.abs(gTotal.delta))})</span></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('tbl-gv-categoria').innerHTML = `
+    <thead><tr><th>Gerencia</th>${CATS.map(c=>`<th class="num">${esc(c)}</th>`).join('')}<th class="num">Total (Beer+Rtds+Nabs)</th></tr></thead>
+    <tbody>${rows}</tbody>`;
+})();
+
+/* ============================= FILTRO + SECCIONES 01/02/04 (reactivas) ============================= */
+function renderAll(data){
+  const d = data.direccion, gvs = data.gerencias, canales = data.canales, cds = data.cds;
+  const lbl = catLabel(selectedCats);
+
+  // --- hero quarters/months (reactivo al filtro) ---
+  const qs = [['Q1 ’26','q1'],['Q2 ’26','q2'],['Q3 ’26 (parcial, Jul–Ago)','q3']];
+  document.getElementById('hero-quarters').innerHTML = qs.map(([label,key])=>{
+    const q = d[key];
+    const dTxt = `${q.delta>=0?'+':'−'}${fmtVol(Math.abs(q.delta))} mil HL`;
+    return `<div class="qtr-chip">
+      <div class="qlabel">${label}</div>
+      <div class="qgrowth" style="color:${q.growth>=0?'var(--good)':'var(--bad)'}">${fmtPct(q.growth)}</div>
+      <div class="qdelta">${esc(lbl)} (${dTxt})</div>
+    </div>`;
+  }).join('');
+  document.getElementById('hero-months').innerHTML = d.monthly.map(m=>`
+    <div class="month-chip ${gcls(m.growth)}">
+      <div class="m">${MES_LABEL[m.mes]} ’26</div>
+      <div class="g">${fmtPct(m.growth)}</div>
+      <div class="v">(${m.delta>=0?'+':'−'}${fmtVol(Math.abs(m.delta))})</div>
+    </div>`).join('');
+
+  // --- 01 Gerencias ---
+  const growersGV = gvs.filter(g=>g.ytd.growth>=0);
+  document.getElementById('h2-gerencias').textContent = `${growersGV.length} de ${gvs.length} gerencias crecen en ${lbl}`;
+  const topAbs = gvs.slice().sort((a,b)=>b.ytd.delta-a.ytd.delta)[0];
+  const topRel = gvs.slice().sort((a,b)=>b.ytd.growth-a.ytd.growth)[0];
+  const declinersGV = gvs.filter(g=>g.ytd.growth<0).map(g=>g.label);
+  document.getElementById('p-gerencias').innerHTML = `Sobre ${esc(lbl)}, <b>${esc(topAbs.label)}</b> aporta el mayor volumen de crecimiento (${topAbs.ytd.delta>=0?'+':'−'}${fmtVol(Math.abs(topAbs.ytd.delta))} khl); <b>${esc(topRel.label)}</b> crece m&aacute;s en t&eacute;rminos relativos (${fmtPct(topRel.ytd.growth)}). ${declinersGV.length? '<b>'+esc(declinersGV.join(', '))+'</b> en ca&iacute;da.' : 'Todas las gerencias en positivo.'}`;
+
+  document.getElementById('wf-gerencias').innerHTML = waterfallSVG({
+    base: d.ytd.y25, total: d.ytd.y26,
+    baseLabel: 'YTD ’25', totalLabel: 'YTD ’26',
+    items: gvs.map(g=>({label:g.label, delta:g.ytd.delta, growth:g.ytd.growth})),
+    ariaLabel: 'Cascada de volumen YTD por gerencia'
+  });
+
+  document.getElementById('gv-cards').innerHTML = gvs.map(g=>{
+    const canalSorted = g.canal.slice().sort((a,b)=>b.delta-a.delta);
+    const maxAporte = Math.max(...canalSorted.map(c=>Math.abs(c.delta)), 0.1);
+    const canalRows = canalSorted.map(c=>{
+      const deltaHL = c.deltaRaw*1000;
+      const aporteTxt = `${deltaHL>=0?'+':'−'}${fmtVol(Math.abs(deltaHL),0)}`;
+      const color = c.growth>=0?'var(--good)':'var(--bad)';
+      return `
+      <div class="canal-row">
+        <div class="cname">${esc(canalLabel(c.canal))}</div>
+        <div class="cbar-track"><div class="cbar-fill" style="width:${(Math.abs(c.delta)/maxAporte*100).toFixed(0)}%;background:${color}"></div></div>
+        <div class="cstat">
+          <div class="cnom" style="color:${color}">${aporteTxt}</div>
+          <div class="cpct">(${fmtPct(c.growth)})</div>
+        </div>
+      </div>`;
+    }).join('');
+    const catChips = g.categoriaFull.map(c=>{
+      const isOff = !selectedCats.includes(c.categoria);
+      return `<div class="cat-chip${isOff?' ref':''}">
+        <div class="cn" style="color:${CAT_COLOR[c.categoria]}">${esc(c.categoria)}</div>
+        <div class="cv" style="color:${c.growth>=0?'var(--good)':'var(--bad)'}">${fmtPct(c.growth)}</div>
+        <div class="cv-sub">(${c.delta>=0?'+':'−'}${fmtVol(Math.abs(c.delta))} khl)</div>
+      </div>`;
+    }).join('');
+    const gDeltaHL = g.ytd.deltaRaw*1000;
+    const gDeltaTxt = `${gDeltaHL>=0?'+':'−'}${fmtVol(Math.abs(gDeltaHL),0)}`;
+    return `<div class="gv-card">
+      <div class="gv-card-top" style="background:${GV_COLOR[g.label]}"></div>
+      <div class="gv-card-body">
+        <div class="gv-card-head">
+          <div>
+            <h3><span class="dot" style="background:${GV_COLOR[g.label]}"></span>${esc(g.label)}</h3>
+            <div class="peso">${g.peso.toFixed(1).replace('.',',')}% del ${esc(lbl)} de la Direcci&oacute;n</div>
+          </div>
+          <div class="gv-card-stat">
+            <div class="v">${fmtVol(g.ytd.y26)}<span class="unit"> khl</span></div>
+            <div class="badge ${gcls(g.ytd.growth)}">${esc(lbl)} ${fmtPct(g.ytd.growth)}</div>
+            <div class="d">(${gDeltaTxt})</div>
+          </div>
+        </div>
+        <div class="gv-mini-row">
+          <div class="gv-mini-block" style="flex:1 1 260px;">
+            <div class="gv-mini-label">Mensual 2026 vs 2025</div>
+            ${monthlyBarsSVG(g.monthly,{compact:true})}
+          </div>
+          <div class="gv-mini-block" style="flex:1 1 200px;">
+            <div class="gv-mini-label">Por canal (aporte vs LY)</div>
+            <div class="canal-head"><span class="ch-name"></span><span class="ch-bar"></span><span class="ch-crec">Crec. vs LY</span></div>
+            <div class="canal-list">${canalRows}</div>
+          </div>
+        </div>
+        <div class="qtr-mini">
+          ${['q1','q2','q3'].map((k,i)=>`<div class="qm"><div class="ql">${['Q1','Q2','Q3 parc.'][i]}</div><div class="qv" style="color:${g[k].growth>=0?'var(--good)':'var(--bad)'}">${fmtPct(g[k].growth)}</div><div class="qs">(${g[k].delta>=0?'+':'−'}${fmtVol(Math.abs(g[k].delta))})</div></div>`).join('')}
+        </div>
+        <div class="gv-mini-label" style="margin-top:14px;">Por categor&iacute;a (Beer, Rtds y Nabs completos)</div>
+        <div class="cat-chips">${catChips}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // --- 02 Canales ---
+  const growersCanal = canales.filter(c=>c.growth>=0);
+  document.getElementById('h2-canales').textContent = `${growersCanal.length} de ${canales.length} canales crecen en ${lbl}`;
+  const topCanalAbs = canales.slice().sort((a,b)=>b.delta-a.delta)[0];
+  const topCanalRel = canales.slice().sort((a,b)=>b.growth-a.growth)[0];
+  const declinersCanal = canales.filter(c=>c.growth<0).map(c=>canalLabel(c.canal));
+  document.getElementById('p-canales').innerHTML = `Sobre ${esc(lbl)}, <b>${esc(canalLabel(topCanalRel.canal))}</b> crece m&aacute;s en t&eacute;rminos relativos (${fmtPct(topCanalRel.growth)}); <b>${esc(canalLabel(topCanalAbs.canal))}</b> aporta el mayor volumen (${topCanalAbs.delta>=0?'+':'−'}${fmtVol(Math.abs(topCanalAbs.delta))} khl). ${declinersCanal.length? '<b>'+esc(declinersCanal.join(', '))+'</b> en ca&iacute;da.' : 'Todos los canales en positivo.'}`;
+
+  document.getElementById('wf-canales').innerHTML = waterfallSVG({
+    base: d.ytd.y25, total: d.ytd.y26,
+    baseLabel:'YTD ’25', totalLabel:'YTD ’26',
+    items: canales.map(c=>({label:canalLabel(c.canal), delta:c.delta, growth:c.growth})),
+    ariaLabel:'Cascada de volumen YTD por canal'
+  });
+
+  const maxCanalT = Math.max(...canales.map(c=>c.y26), 1);
+  const rowsCanal = canales.map(c=>{
+    let best=null, worst=null;
+    gvs.forEach(g=>{
+      const row = g.canal.find(x=>x.canal===c.canal);
+      if(!row) return;
+      if(!best || row.delta>best.delta) best = {label:g.label, delta:row.delta};
+      if(!worst || row.delta<worst.delta) worst = {label:g.label, delta:row.delta};
+    });
+    const movers = (best && worst && best.label!==worst.label)
+      ? `<span style="color:var(--good)">${esc(best.label)} ${best.delta>=0?'+':'−'}${fmtVol(Math.abs(best.delta),0)}</span> &middot; <span style="color:var(--bad)">${esc(worst.label)} ${worst.delta>=0?'+':'−'}${fmtVol(Math.abs(worst.delta),0)}</span>`
+      : (best? `<span style="color:var(--good)">${esc(best.label)} ${best.delta>=0?'+':'−'}${fmtVol(Math.abs(best.delta),0)}</span>` : '&mdash;');
+    return `<tr>
+      <td>${esc(canalLabel(c.canal))}</td>
+      <td class="num">${fmtVol(c.y26)}</td>
+      <td class="num" style="color:var(--ink-faint)">${fmtVol(c.y25)}</td>
+      <td class="num growth-cell ${gcls(c.growth)}">${fmtPct(c.growth)} <span style="color:var(--ink-faint); font-weight:500;">(${c.delta>=0?'+':'−'}${fmtVol(Math.abs(c.delta))})</span></td>
+      <td class="mini-bar-cell"><div class="mini-bar-track"><div class="mini-bar-fill" style="width:${(c.y26/maxCanalT*100).toFixed(0)}%"></div></div></td>
+      <td style="font-size:12.5px;">${movers}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('tbl-canales').innerHTML = `
+    <thead><tr>
+      <th>Canal</th><th class="num">${esc(lbl)} YTD ’26</th><th class="num">YTD ’25</th><th class="num">Crece en ${esc(lbl)} (khl)</th><th>Peso</th><th>Principal impulsor / freno</th>
+    </tr></thead>
+    <tbody>${rowsCanal}</tbody>`;
+
+  // --- 04 CD ---
+  document.getElementById('p-cds').textContent = `Ranking de los ${cds.length} CD de la Dirección por volumen ${lbl} YTD, con crecimiento vs LY por trimestre.`;
+  const maxV = Math.max(...cds.map(c=>c.y26), 1);
+  const rowsCd = cds.map(c=>{
+    const qcell = k => {
+      const q = c[k];
+      if(!q) return '';
+      return `<span class="qsign ${gcls(q.growth)}">${fmtPct(q.growth,false)}</span>`;
+    };
+    return `<tr>
+      <td>${esc(c.centro)}</td>
+      <td class="num">${fmtVol(c.y26)}</td>
+      <td class="num" style="color:var(--ink-faint)">${fmtVol(c.y25)}</td>
+      <td class="num growth-cell ${gcls(c.growth)}">${fmtPct(c.growth)} <span style="color:var(--ink-faint); font-weight:500;">(${c.delta>=0?'+':'−'}${fmtVol(Math.abs(c.delta))})</span></td>
+      <td class="mini-bar-cell"><div class="mini-bar-track"><div class="mini-bar-fill" style="width:${(c.y26/maxV*100).toFixed(0)}%"></div></div></td>
+      <td>${qcell('q1')} ${qcell('q2')} ${qcell('q3')}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('tbl-cds').innerHTML = `
+    <thead><tr><th>Centro de Distribución</th><th class="num">${esc(lbl)} ’26 khl</th><th class="num">’25 khl</th><th class="num">Crece en ${esc(lbl)} (khl)</th><th>Volumen</th><th>Q1 &middot; Q2 &middot; Q3 (parc.)</th></tr></thead>
+    <tbody>${rowsCd}</tbody>`;
+}
+
+function renderFilterBar(){
+  document.getElementById('filter-opts').innerHTML = CATS.map(cat=>`
+    <label class="filter-chip ${selectedCats.includes(cat)?'on':''}" data-cat="${cat}">${cat}</label>
+  `).join('');
+  document.getElementById('filter-note').textContent = 'Mostrando: ' + catLabel(selectedCats);
+  document.querySelectorAll('.filter-chip').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const cat = el.dataset.cat;
+      if(selectedCats.includes(cat)){
+        if(selectedCats.length===1) return;
+        selectedCats = selectedCats.filter(c=>c!==cat);
+      } else {
+        selectedCats = CATS.filter(c=> c===cat || selectedCats.includes(c));
+      }
+      renderFilterBar();
+      renderAll(deriveData(selectedCats));
+    });
+  });
+}
+renderFilterBar();
+renderAll(deriveData(selectedCats));
+
+/* ============================= HIGHLIGHTS & GAPS ============================= */
+(function(){
+  const H = [
+    'La Dirección Centro Oriente crece en <b>Beer+Rtds +2,4% YTD</b> (Ene–Ago) vs LY &mdash; <b>(+43,3 mil HL)</b>, con Rtds como el gran motor de ese crecimiento.',
+    '<b>4 de 5 gerencias crecen en Beer+Rtds</b>: Iquitos lidera el crecimiento relativo (+8,6%, +18,0 mil HL) y Tarapoto aporta el mayor volumen absoluto (+24,9 mil HL, ~57% del crecimiento total de la Dirección).',
+    '<b>Rtds crece en Beer+Rtds +184,0%</b> (+18,3 mil HL, base aún chica) y lo hace en las <b>5 gerencias por igual</b> &mdash; señal de expansión de portafolio consistente en toda la región.',
+    '<b>DSD ON</b> es el canal que más crece en Beer+Rtds en términos relativos (+7,7%, +9,0 mil HL); <b>DSD OFF</b> es el que más aporta en volumen (+10,3 mil HL).',
+    '<b>CD Iquitos</b> es el CD que más crece en Beer+Rtds en términos relativos (+8,3%, +15,6 mil HL).'
+  ];
+  const G = [
+    '<b>DAS Jun Pcl</b> sigue siendo la única gerencia en caída en Beer+Rtds &mdash; y se profundiza tras corregir la atribución de gerencia: <b>-8,4% (−26,3 mil HL)</b>, 100% concentrada en el canal DAS.',
+    'Al aislar Beer+Rtds, <b>KA pasa a terreno negativo</b> (-0,7%, −0,5 mil HL) &mdash; con el volumen total (incl. Nabs) parecía estar creciendo; el canal estratégico de cuentas clave en realidad retrocede en la base real del negocio.',
+    '<b>Q2 prácticamente plano en Beer+Rtds</b> (-0,0%) tras un Q1 fuerte (+5,9%).',
+    '<b>CD Tarapoto y CD Huánuco caen en Beer+Rtds</b> (-2,7% y -7,4%).',
+    '<b>Corrección de metodología (04.09.26):</b> el hallazgo de una versión anterior de este reporte ("DAs cae -27,6% en Huancayo") era un artefacto de atribución &mdash; el cliente <b>Ucayali Beer</b> se reasignó de Huancayo a DAS Jun Pcl en abril 2026 y quedaba partido entre ambas gerencias al usar la gerencia de <code>dm_venta</code> (al momento de cada venta). Con <code>dm_cliente</code> (gerencia vigente) ese canal en Huancayo queda prácticamente plano y toda la caída real de ese cliente se refleja, correctamente, en DAS Jun Pcl.'
+  ];
+  document.getElementById('highlights-list').innerHTML = H.map(t=>`<li>${t}</li>`).join('');
+  document.getElementById('gaps-list').innerHTML = G.map(t=>`<li>${t}</li>`).join('');
+})();
+</script>
+
+</body></html>

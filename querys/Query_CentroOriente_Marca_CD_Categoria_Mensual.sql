@@ -1,13 +1,18 @@
--- CD x Categoria x Canal x Marca mensual, por gerencia. Alimenta la seccion "Por Marca" y el
--- filtro global de Canal.
+-- CD x Categoria x Canal x Marca mensual, todas las gerencias del run. Alimenta "Por Marca" y
+-- el filtro global de Canal.
+-- Mismos placeholders que base_cd_categoria_mensual.sql.
 -- Normalizacion de marca (maestro trae duplicados/variantes de escritura, confirmado con el
--- usuario 2026-08-31):
+-- usuario 2026-08-31 en Centro Oriente):
 --   "golden"/"Golden"                              -> "Golden"
 --   Mikes H Fresa/Lemon/Maracuya/Arandano/Apple/Mango Hot (cualquier capitalizacion) -> "Mikes"
 --   "Cristal (Peru)"                                -> "Cristal" (OJO: "Cristalina" es otra marca, no tocar)
 --   Cualquier "Cusqueña ..." (Trigo/Malta/Negra/Quinua/Doble Malta/Red Lager/Cero Trigo/etc.) -> "Cusqueña"
 --   Cualquier "Corona ..." o "Coronita ..." (Extra/Cero/Tropical)                -> "Corona"
 --   "Pilsen Callao Fresh"                           -> "Pilsen Callao" (OJO: "Pilsen Fresh" y "Pilsen Trujillo" son otras marcas, no tocar)
+-- Si al correr esto para otra direccion aparecen mas duplicados de este tipo, confirmar con el
+-- usuario antes de sumarlos aca (ver reglas_negocio.md) -- no asumir que aplica igual en todos
+-- lados, y cuidado con nombres que EMPIEZAN igual pero son marcas distintas (Cristal/Cristalina,
+-- Pilsen Callao/Pilsen Fresh/Pilsen Trujillo).
 -- CORREGIDO 2026-09-06: gerencia sale de dm_cliente (vigente), no de dm_venta -- ver CLAUDE.md
 -- (caso Ucayali Beer, reasignado Huancay Ch -> DA Jun Puc en abril 2026).
 SELECT
@@ -34,7 +39,7 @@ SELECT
 FROM brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_venta v
 INNER JOIN brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_cliente c
   ON v.cliente_id = c.cliente_id
-WHERE v.mes BETWEEN '202401' AND '202609'
+WHERE v.mes BETWEEN '202501' AND '202609'
   AND c.gerencia IN ('PE Ger P4 Tarapoto','PE Ger P4 Iquitos','PE Ger P4 Pucall Hco','PE Ger P4 Huancay Ch','PE Ger P4 DA Jun Puc')
   AND v.indicadores_comerciales = 1
   AND v.estratificacion IN ('Cervezas','Licores','Ready To Drink','Gaseosas','Agua','Maltas')

@@ -1,6 +1,12 @@
--- CD x Categoria x Canal x Marca x Formato (pack, via revenue_maestro_sku) mensual, por gerencia.
--- Alimenta la seccion "Por Marca x Formato" y el filtro global de Canal (cruce de las dos dimensiones, mismas reglas de
--- normalizacion de marca ya confirmadas -- ver Query_CentroOriente_Marca_CD_Categoria_Mensual.sql).
+-- CD x Categoria x Canal x Marca x Formato (pack, via revenue_maestro_sku) mensual, todas las
+-- gerencias del run. Alimenta "Por Marca x Formato" y el filtro global de Canal (cruce de las
+-- dos dimensiones marca+formato). Mismas reglas de
+-- normalizacion de marca que marca_cd_categoria_mensual.sql (confirmar si aplican para otra
+-- direccion antes de asumirlas -- ver reglas_negocio.md) y mismo join/validacion de cobertura
+-- que formato_cd_categoria_mensual.sql. Mismos placeholders que base_cd_categoria_mensual.sql.
+-- OJO volumetria: esta query tiene 2 dims de detalle (marca + formato) en vez de 1, dimensiona
+-- con un COUNT(*) antes de correrla para un alcance nuevo (puede ser bastante mas grande que las
+-- otras 5 queries).
 -- CORREGIDO 2026-09-06: gerencia sale de dm_cliente (vigente), no de dm_venta -- ver CLAUDE.md
 -- (caso Ucayali Beer, reasignado Huancay Ch -> DA Jun Puc en abril 2026).
 SELECT
@@ -30,7 +36,7 @@ INNER JOIN brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_cliente c
   ON v.cliente_id = c.cliente_id
 LEFT JOIN brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_revenue.revenue_maestro_sku r
   ON v.material_id = r.sku
-WHERE v.mes BETWEEN '202401' AND '202609'
+WHERE v.mes BETWEEN '202501' AND '202609'
   AND c.gerencia IN ('PE Ger P4 Tarapoto','PE Ger P4 Iquitos','PE Ger P4 Pucall Hco','PE Ger P4 Huancay Ch','PE Ger P4 DA Jun Puc')
   AND v.indicadores_comerciales = 1
   AND v.estratificacion IN ('Cervezas','Licores','Ready To Drink','Gaseosas','Agua','Maltas')

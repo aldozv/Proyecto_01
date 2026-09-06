@@ -1,8 +1,9 @@
--- CD x Categoria x Canal x Formato (pack, via revenue_maestro_sku) mensual, por gerencia.
--- Alimenta la seccion "Por Formato" y el filtro global de Canal. revenue_maestro_sku es de carga manual (ver
--- BITACORA_TABLAS.md) -- validado 2026-08-27: 100% de cobertura de join para este alcance
--- (0 filas "Sin mapear" en el mes mas reciente), pero revalidar si se nota volumen relevante
--- cayendo en 'Sin mapear' al correr esto para un periodo nuevo.
+-- CD x Categoria x Canal x Formato (pack, via revenue_maestro_sku) mensual, todas las gerencias
+-- del run. Alimenta "Por Formato" y el filtro global de Canal. revenue_maestro_sku es de carga
+-- manual (ver BITACORA_TABLAS.md)
+-- -- validar cobertura de join (columna "Sin mapear" no deberia traer volumen relevante; si lo
+-- trae, avisar al usuario antes de confiar en la seccion Formato).
+-- Mismos placeholders que base_cd_categoria_mensual.sql.
 -- CORREGIDO 2026-09-06: gerencia sale de dm_cliente (vigente), no de dm_venta -- ver CLAUDE.md
 -- (caso Ucayali Beer, reasignado Huancay Ch -> DA Jun Puc en abril 2026).
 SELECT
@@ -23,7 +24,7 @@ INNER JOIN brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_cliente c
   ON v.cliente_id = c.cliente_id
 LEFT JOIN brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_revenue.revenue_maestro_sku r
   ON v.material_id = r.sku
-WHERE v.mes BETWEEN '202401' AND '202609'
+WHERE v.mes BETWEEN '202501' AND '202609'
   AND c.gerencia IN ('PE Ger P4 Tarapoto','PE Ger P4 Iquitos','PE Ger P4 Pucall Hco','PE Ger P4 Huancay Ch','PE Ger P4 DA Jun Puc')
   AND v.indicadores_comerciales = 1
   AND v.estratificacion IN ('Cervezas','Licores','Ready To Drink','Gaseosas','Agua','Maltas')

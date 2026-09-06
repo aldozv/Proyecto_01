@@ -7,7 +7,7 @@
   "year_max": 2026,
   "latest_month": 9,
   "latest_month_is_partial": true,
-  "footer_scope_note": "Incluye las 4 gerencias geográficas de Centro Oriente + DA Jun Puc (Distribuidor Autorizado, canal 100% DAs que abastece de varios CD en distintas regiones — no es una zona geográfica como las otras 4). Los filtros Gerencia y CD del toolbar son de selección única y están vinculados entre sí: elegir un CD selecciona automáticamente su gerencia, y elegir una gerencia acota el CD y el Canal disponibles. Datos actualizados al 2026-09-03.",
+  "footer_scope_note": "Incluye las 4 gerencias geográficas de Centro Oriente + DA Jun Puc (Distribuidor Autorizado, canal 100% DAs que abastece de varios CD en distintas regiones — no es una zona geográfica como las otras 4). Los filtros Gerencia y CD del toolbar son de selección única y están vinculados entre sí: elegir un CD selecciona automáticamente su gerencia, y elegir una gerencia acota el CD y el Canal disponibles. Datos actualizados al 2026-09-06.",
   "cd_order": [
     "CD Huancayo", "CD Huancavelica", "CD Chanchamayo", "CD Satipo",
     "CD Iquitos", "CD Pucallpa", "CD Huánuco", "CD Tingo María",
@@ -47,12 +47,12 @@
     }
   ],
   "raw_files": {
-    "RAW_GERENCIA": "C:/Users/aldoz/OneDrive/Claudio/.databricks_query_results/result_20260903_163856.json",
-    "RAW_BASE": "C:/Users/aldoz/OneDrive/Claudio/.databricks_query_results/result_20260903_163900.json",
-    "RAW_CANAL": "C:/Users/aldoz/OneDrive/Claudio/.databricks_query_results/result_20260903_163908.json",
-    "RAW_MARCA": "C:/Users/aldoz/OneDrive/Claudio/.databricks_query_results/result_20260903_163915.json",
-    "RAW_FORMATO": "C:/Users/aldoz/OneDrive/Claudio/.databricks_query_results/result_20260903_164000.json",
-    "RAW_PACK": "C:/Users/aldoz/OneDrive/Claudio/.databricks_query_results/result_20260903_164049.json",
-    "RAW_MARCAFORMATO": "C:/Users/aldoz/OneDrive/Claudio/.databricks_query_results/result_20260903_164108.json"
+    "RAW_GERENCIA": "C:/Users/aldoz/OneDrive/Claudio/.databricks_query_results/result_20260906_180040.json",
+    "RAW_BASE": "C:/Users/aldoz/OneDrive/Claudio/.databricks_query_results/result_20260906_180050.json",
+    "RAW_CANAL": "C:/Users/aldoz/OneDrive/Claudio/.databricks_query_results/result_20260906_180102.json",
+    "RAW_MARCA": "C:/Users/aldoz/OneDrive/Claudio/.databricks_query_results/result_20260906_180109.json",
+    "RAW_FORMATO": "C:/Users/aldoz/OneDrive/Claudio/.databricks_query_results/result_20260906_180123.json",
+    "RAW_PACK": "C:/Users/aldoz/OneDrive/Claudio/.databricks_query_results/result_20260906_180137.json",
+    "RAW_MARCAFORMATO": "C:/Users/aldoz/OneDrive/Claudio/.databricks_query_results/result_20260906_180149.json"
   }
 }
