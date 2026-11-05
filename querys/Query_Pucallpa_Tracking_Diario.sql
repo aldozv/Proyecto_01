@@ -42,6 +42,8 @@ a.fecha_preventa_flujo1 as fecha_preventa,
 a.fecha_venta as fecha_entrega,
 sum(a.hl) as HL,
 sum(a.caja_equivalente) as CE,
+--Caja fisica por SKU: HL x 100000 / (ml por unidad x unidades por caja). Misma formula en los 4 tipos
+SUM(a.hl*100000/NULLIF(c.volumen*c.unidades_caja,0)) as CF,
 'FACT' as TIPO,
 a.numero_venta
 
@@ -104,6 +106,7 @@ a.FechaCreacionPedido as fecha_creacion,
 a.FechaPlan as fecha_entrega,
 sum(HLPlaneado) as HL,
 sum(HLPlaneado)*13.4408602150538 as CE,
+SUM(HLPlaneado*100000/NULLIF(c.volumen*c.unidades_caja,0)) as CF,
 'PLAN' as TIPO,
 a.NumeroPedido
 
@@ -167,6 +170,7 @@ a.FechaCreado as fecha_creacion,
 a.FechaEntrega as fecha_entrega,
 sum(a.VolumenHl) as HL,
 sum(a.VolumenHl)*13.4408602150538 as CE,
+SUM(a.VolumenHl*100000/NULLIF(c.volumen*c.unidades_caja,0)) as CF,
 'PV D+1' as TIPO,
 a.pedido
 
@@ -232,6 +236,7 @@ a.Fecha_Preventa as fecha_creacion,
 a.Fecha_Preferente_Entrega as fecha_entrega,
 sum(a.hl) as HL,
 sum(a.hl)*13.4408602150538 as CE,
+SUM(a.hl*100000/NULLIF(c.volumen*c.unidades_caja,0)) as CF,
 'PV FUT' as TIPO,
 a.numero_preventa
 
