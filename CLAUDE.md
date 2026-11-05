@@ -330,7 +330,8 @@ Definiciones validadas por el usuario (2026-08-27):
   del usuario, recibido 2026-11-04): une 4 tipos por fecha de entrega. `FACT` = facturado MTD
   (`dm_venta`); `PLAN` = entrega de hoy (`revenue_h_pv_planeada`); `PV D+1` = entrega de manana, que
   es la preventa de hoy (`dm_preventa_flash_actual_fe`); `PV FUT` = entregas posteriores
-  (`dm_preventa`). Usar este query como fuente para preguntas de avance diario de la GV. El mes de
+  hasta el ultimo dia del mes en curso (`dm_preventa`). `PV D+1` no se limita al mes: la preventa
+  del ultimo dia cuenta como venta del mes siguiente (confirmado por el usuario, 2026-11-04). Usar este query como fuente para preguntas de avance diario de la GV. El mes de
   `FACT` se calcula solo, a hora de Lima. **No incluye Marketplace ni SKU sin categoria en
   `revenue_maestro_sku`** (regla del usuario, 2026-11-04): el filtro `revenue_maestro_sku.categoria
   IN (Cervezas, Licores, Ready to drink, Gaseosas, Agua, Maltas)` ya los deja fuera, no quitarlo. Ver validaciones y riesgos en

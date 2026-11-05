@@ -260,7 +260,8 @@ AND b.gerencia IN ('PE Ger P4 Pucall Hco')
 AND d.categoria IN ('Cervezas', 'Licores','Ready to drink','Gaseosas','Agua','Maltas')
 --AND d.categoria IN ('Cervezas', 'Licores','Ready to drink')
 AND a.fecha_preferente_entrega > CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE)
-AND a.fecha_preferente_entrega < ADD_MONTHS(TRUNC(CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE), "MM"), 2)
+--Hasta el ultimo dia del mes en curso, a hora de Lima
+AND a.fecha_preferente_entrega <= LAST_DAY(CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE))
 --Excluye solo la fecha que trae PV D+1. IS DISTINCT FROM evita que PV FUT quede vacio si esa fecha es nula
 AND a.fecha_preferente_entrega IS DISTINCT FROM (SELECT MIN(f.FechaEntrega) FROM slv_maz_dataexperience_peru_dm.dm_preventa_flash_actual_fe f JOIN slv_maz_dataexperience_peru_dm.dm_cliente g ON g.cliente_id = f.codcliente WHERE g.gerencia = 'PE Ger P4 Pucall Hco' AND f.FechaEntrega > CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE))
 AND a.flujo = 1
