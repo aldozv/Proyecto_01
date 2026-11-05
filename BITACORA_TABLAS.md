@@ -657,6 +657,19 @@ Pucallpa (`TIPO` = `FACT`, `PLAN`, `PV D+1`, `PV FUT`). Esquemas tomados de `DES
   Compatible con reprogramacion, sin confirmar a nivel documento. Anotar la hora al comparar cifras.
 - **`FACT` no filtra `cliente_id > 10000000`**, a diferencia de `PV D+1` y `PV FUT`: 10.88 HL MTD.
 - `revenue_maestro_sku` no duplica el join (1,340 filas = 1,340 SKUs).
+- **HL a caja fisica:** `CF = HL x 100000 / (dm_material.volumen x dm_material.unidades_caja)`, con
+  `volumen` en ml por unidad. En las 6 categorias del tracking (Pucallpa, Oct-Nov'26) solo 1 SKU se
+  desvia mas de 2% contra `dm_venta`, con volumen casi nulo. Coincide exacto con `VolumenCA` en
+  `PV D+1` (41,340) y con `cajas_fisicas` en `PV FUT` (72,216) el 04.11. **No sirve fuera de esas
+  categorias:** sale muy inflada en `dm_venta.estratificacion` `Licor Mp` (ej. Ron Cartavio Black
+  250 ml x1, 37 veces), `Mercaderias Cigarros`, `Comestibles` y `Cuidado Personal`. En
+  `revenue_maestro_sku.categoria` esos SKU son `Marketplace` o no tienen categoria, asi que el tracking
+  ya los excluye. `13.44` es justo el factor de una caja de 620 ml x12.
+- **`dm_venta` tiene lineas con `hl = 0` y `caja_fisica > 0`:** en Pucallpa Nov'26 (al 03.11) son
+  ~16,626 de 62,523 CF, el 26.6%. ~16,550 son clase `BKIP` facturada a los clientes `ISJ90` (CD
+  Huanuco) e `ISJ93` (CD Tingo Maria), o sea a los propios CD y no a POCs; parecen traslados, sin
+  confirmar. Caen bajo el supervisor Jose Trujillo. Sin ellas, HL x factor por SKU cuadra con la caja
+  fisica real (45,898 CF), asi que `SUM(caja_fisica)` sin filtrar sobreestima la venta en cajas.
 
 ---
 

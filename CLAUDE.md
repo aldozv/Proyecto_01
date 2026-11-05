@@ -331,7 +331,9 @@ Definiciones validadas por el usuario (2026-08-27):
   (`dm_venta`); `PLAN` = entrega de hoy (`revenue_h_pv_planeada`); `PV D+1` = entrega de manana, que
   es la preventa de hoy (`dm_preventa_flash_actual_fe`); `PV FUT` = entregas posteriores
   (`dm_preventa`). Usar este query como fuente para preguntas de avance diario de la GV. El mes de
-  `FACT` esta fijo en el codigo y hay que cambiarlo cada mes. Ver validaciones y riesgos en
+  `FACT` esta fijo en el codigo y hay que cambiarlo cada mes. **No incluye Marketplace ni SKU sin categoria en
+  `revenue_maestro_sku`** (regla del usuario, 2026-11-04): el filtro `revenue_maestro_sku.categoria
+  IN (Cervezas, Licores, Ready to drink, Gaseosas, Agua, Maltas)` ya los deja fuera, no quitarlo. Ver validaciones y riesgos en
   `BITACORA_TABLAS.md`.
 
 ## Reglas de negocio validadas por el usuario
