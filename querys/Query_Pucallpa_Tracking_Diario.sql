@@ -44,6 +44,7 @@ sum(a.hl) as HL,
 sum(a.caja_equivalente) as CE,
 --Caja fisica por SKU: HL x 100000 / (ml por unidad x unidades por caja). Misma formula en los 4 tipos
 SUM(a.hl*100000/NULLIF(c.volumen*c.unidades_caja,0)) as CF,
+DATEADD(hour, -5, CURRENT_TIMESTAMP()) as hora_corte,
 'FACT' as TIPO,
 a.numero_venta
 
@@ -56,7 +57,8 @@ WHERE b.direccion in ('PE Dir Centro Orient')
 AND b.gerencia IN ('PE Ger P4 Pucall Hco')
 AND d.categoria IN ('Cervezas', 'Licores','Ready to drink','Gaseosas','Agua','Maltas')
 --AND d.categoria IN ('Cervezas', 'Licores','Ready to drink')
-AND a.mes IN ('202611')
+--Mes en curso, a hora de Lima
+AND a.mes = DATE_FORMAT(CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE), "yyyyMM")
 AND a.indicadores_comerciales= 1
 --Hasta ayer: lo de hoy esta en PLAN
 AND a.fecha_venta < CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE)
@@ -109,6 +111,7 @@ a.FechaPlan as fecha_entrega,
 sum(HLPlaneado) as HL,
 sum(HLPlaneado)*13.4408602150538 as CE,
 SUM(HLPlaneado*100000/NULLIF(c.volumen*c.unidades_caja,0)) as CF,
+DATEADD(hour, -5, CURRENT_TIMESTAMP()) as hora_corte,
 'PLAN' as TIPO,
 a.NumeroPedido
 
@@ -122,6 +125,7 @@ AND b.gerencia IN ('PE Ger P4 Pucall Hco')
 AND d.categoria IN ('Cervezas', 'Licores','Ready to drink','Gaseosas','Agua','Maltas')
 --AND d.categoria IN ('Cervezas', 'Licores','Ready to drink')
 AND a.FechaPlan = CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE)
+AND b.cliente_id > 10000000
 --AND a.FechaPlan = DATE_SUB(CAST(GETDATE() AS DATE), 0) /*fecha de hoy*/
 
 GROUP BY ALL
@@ -173,6 +177,7 @@ a.FechaEntrega as fecha_entrega,
 sum(a.VolumenHl) as HL,
 sum(a.VolumenHl)*13.4408602150538 as CE,
 SUM(a.VolumenHl*100000/NULLIF(c.volumen*c.unidades_caja,0)) as CF,
+DATEADD(hour, -5, CURRENT_TIMESTAMP()) as hora_corte,
 'PV D+1' as TIPO,
 a.pedido
 
@@ -241,6 +246,7 @@ a.Fecha_Preferente_Entrega as fecha_entrega,
 sum(a.hl) as HL,
 sum(a.hl)*13.4408602150538 as CE,
 SUM(a.hl*100000/NULLIF(c.volumen*c.unidades_caja,0)) as CF,
+DATEADD(hour, -5, CURRENT_TIMESTAMP()) as hora_corte,
 'PV FUT' as TIPO,
 a.numero_preventa
 
@@ -254,7 +260,7 @@ AND b.gerencia IN ('PE Ger P4 Pucall Hco')
 AND d.categoria IN ('Cervezas', 'Licores','Ready to drink','Gaseosas','Agua','Maltas')
 --AND d.categoria IN ('Cervezas', 'Licores','Ready to drink')
 AND a.fecha_preferente_entrega > CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE)
-AND a.fecha_preferente_entrega < ADD_MONTHS(DATE_FORMAT(CURRENT_DATE(), 'yyyy-MM-1'), 2)
+AND a.fecha_preferente_entrega < ADD_MONTHS(TRUNC(CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE), "MM"), 2)
 --Excluye solo la fecha que trae PV D+1. IS DISTINCT FROM evita que PV FUT quede vacio si esa fecha es nula
 AND a.fecha_preferente_entrega IS DISTINCT FROM (SELECT MIN(f.FechaEntrega) FROM slv_maz_dataexperience_peru_dm.dm_preventa_flash_actual_fe f JOIN slv_maz_dataexperience_peru_dm.dm_cliente g ON g.cliente_id = f.codcliente WHERE g.gerencia = 'PE Ger P4 Pucall Hco' AND f.FechaEntrega > CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE))
 AND a.flujo = 1

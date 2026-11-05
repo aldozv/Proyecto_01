@@ -655,7 +655,9 @@ Pucallpa (`TIPO` = `FACT`, `PLAN`, `PV D+1`, `PV FUT`). Esquemas tomados de `DES
 - **`dm_preventa` y la tabla flash cambian durante el dia:** entre dos corridas del 04.11, la
   preventa con preferente 04.11 bajo 303 HL, la del 05.11 subio 101 HL y la del 06.11 subio 121 HL.
   Compatible con reprogramacion, sin confirmar a nivel documento. Anotar la hora al comparar cifras.
-- **`FACT` no filtra `cliente_id > 10000000`**, a diferencia de `PV D+1` y `PV FUT`: 10.88 HL MTD.
+- **`FACT` no filtra `cliente_id > 10000000`, a proposito** (decision del usuario, 2026-11-04), a
+  diferencia de `PLAN`, `PV D+1` y `PV FUT`. Asi conserva 10.88 HL MTD al 03.11, casi todo de clientes
+  genericos `VARIOS PN` (`200565`-`200567`).
 - `revenue_maestro_sku` no duplica el join (1,340 filas = 1,340 SKUs).
 - **HL a caja fisica:** `CF = HL x 100000 / (dm_material.volumen x dm_material.unidades_caja)`, con
   `volumen` en ml por unidad. En las 6 categorias del tracking (Pucallpa, Oct-Nov'26) solo 1 SKU se
