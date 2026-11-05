@@ -592,6 +592,74 @@ y `pe_promo_adherenciadiaria`).
 
 ---
 
+## Tablas de tracking diario: plan y preventa (explorado 2026-11-04)
+
+Usadas en `querys/Query_Pucallpa_Tracking_Diario.sql`, query propio del usuario para seguir la GV
+Pucallpa (`TIPO` = `FACT`, `PLAN`, `PV D+1`, `PV FUT`). Esquemas tomados de `DESCRIBE TABLE EXTENDED`.
+
+### `slv_maz_dataexperience_peru_revenue.revenue_h_pv_planeada` — Plan de entrega
+
+- **Campos:** `NumeroPedido`, `PosicionPedido`, `FechaCreacionPedido`, `FechaPlan`, `CodCliente`,
+  `ZonaPV`, `Regional`, `Centro`, `ClaseDocumento`, `Tipo`, `SKU`, `Linea`,
+  `OficinaVentasRegional`, `GrupoGerencia`, `CodigoCanalSubcanalLocal`, `HLPlaneado`.
+- **Es historica:** conserva fechas pasadas, asi que sirve para comparar plan vs. facturado por dia.
+- Solo trae HL. CE se deriva con `HL x 13.44086022`.
+- **Validacion Pucallpa, Beer+Rtds, Oct'26:** plan 46,260.5 HL vs. facturado 46,419.5 HL = 100.3%,
+  contando solo dias con plan y venta. Hay dias atipicos (11.10 = 250%, 03.11 = 112%).
+
+### `slv_maz_dataexperience_peru_dm.dm_preventa_flash_actual_fe` — Preventa del dia siguiente
+
+- **Campos principales:** `FechaCreado`, `FechaEntrega`, `CodCentro`, `ClaseDoc`, `CodCliente`,
+  `Pedido`, `PosicionPedido`, `CodMaterial`, `Anulado`, `MotivoAnulacion`, `VolumenHL`, `VolumenCA`,
+  `VolumenCE`, `ValorVenta`, `Dscto`, `ValorNeto`. Tambien trae su propia jerarquia
+  (`Direccion`, `Gerencia`, `Supervisor`).
+- **Es una foto de la siguiente fecha de reparto, no de hoy+1:** el sabado 31.10 ya traia el lunes
+  02.11 desde las 09:00 de Lima, y seguia asi el domingo. Se actualiza cada hora (Delta, version por
+  corrida) y permite ver versiones pasadas con `TIMESTAMP AS OF`, solo hasta 7 dias atras
+  (`deletedFileRetentionDuration` = 168 h).
+- `Anulado` es string (`'0'`/`'1'`).
+- **No cuadra exacto con `dm_preventa`:** para entrega 05.11 en Pucallpa, todas las categorias, sin
+  anulados: 1,939.5 HL aqui vs. 2,071.4 HL en `dm_preventa` (`flujo = 1`). Causa pendiente.
+
+### `slv_maz_dataexperience_peru_dm.dm_preventa` — Preventa con historico
+
+- **Particionada por `mes`.** Trae `direccion`/`gerencia` propias (usar las de `dm_cliente`).
+- **Fechas:** `fecha_preventa`, `fecha_preferente_entrega`, `fecha_entrega`, `fecha_planificado`.
+- **Volumen:** `hl`, `hl_planeado`, `hl_entregado`, `hl_rechazado`, `cajas_fisicas`.
+- **Estado:** `flujo`, `facturado`, `estado`, `motivo_anulacion`, `on_time`, `in_full`.
+- **Otros:** `numero_preventa`, `numero_preventa_bees`, `posicion_numero`, `cliente_id`,
+  `material_id`, `tipo_origen_pedido`, `clase_preventa`, `promocion_id`, `combo_id`, `valor_neto`.
+- El significado de cada valor de `flujo` esta por confirmar: el query usa `flujo = 1`, y `flujo = 2`
+  solo mostro volumen en una fecha ya pasada (03.11).
+- `hl_planeado` vino nulo en todas las filas revisadas (entregas 03-06.11, Pucallpa).
+
+### Observaciones al combinar los 4 tipos (corrida del 2026-11-04, Pucallpa)
+
+- **CE de NABS no es comparable:** `dm_venta.caja_equivalente` da ~17.58 CE/HL en NABS, mientras
+  `PLAN`, `PV D+1` y `PV FUT` usan 13.44. En Beer+Rtds si coincide (13.44). Comparar en HL o
+  solo Beer+Rtds.
+- **Doble conteo el sabado (confirmado con la foto del 31.10, 18:00 de Lima):** `PV FUT` excluye
+  solo hoy+1 (domingo), pero la foto flash ya trae el lunes, asi que ese dia entra en `PV D+1` y en
+  `PV FUT`. Fueron 646 documentos y 1,518.7 HL duplicados (1,242.4 HL en Beer+Rtds), un 48.6% de
+  inflacion sobre la preventa total. Por la misma logica aplicaria a la vispera de un feriado sin
+  reparto (sin verificar). **Corregido el 2026-11-04:** `PV FUT` ahora excluye las `FechaEntrega`
+  de la tabla flash en vez de hoy+1. Al reconstruir el 31.10 con esa regla, el lunes queda solo en
+  `PV D+1` (total 3,086.4 HL). Quedan fuera de ambos bloques los pedidos con preferente en esa fecha
+  que no estan en flash (39.3 HL ese dia).
+- **Preventa fuera de los 4 tipos:** con `fecha_preferente_entrega` = hoy, `flujo = 1`, sin anular y
+  sin pedido en `revenue_h_pv_planeada` hubo 474 HL / 183 docs el 04.11, tras bajar de 772 HL / 299
+  docs en una corrida previa del mismo dia, y 263 HL / 104 docs el 03.11. Casi todos tienen
+  `fecha_entrega` y `fecha_planificado` nulas, y ninguno esta en la tabla flash. De los 263 HL del
+  03.11, 223 HL son de clientes que facturaron ese dia (cruce por cliente, no por documento) y 34 HL
+  de clientes sin venta ni plan.
+- **`dm_preventa` y la tabla flash cambian durante el dia:** entre dos corridas del 04.11, la
+  preventa con preferente 04.11 bajo 303 HL, la del 05.11 subio 101 HL y la del 06.11 subio 121 HL.
+  Compatible con reprogramacion, sin confirmar a nivel documento. Anotar la hora al comparar cifras.
+- **`FACT` no filtra `cliente_id > 10000000`**, a diferencia de `PV D+1` y `PV FUT`: 10.88 HL MTD.
+- `revenue_maestro_sku` no duplica el join (1,340 filas = 1,340 SKUs).
+
+---
+
 ## CD reales por gerencia — Direccion Centro Oriente (validado con el usuario, 2026-08-27)
 
 `dm_cliente.centro` puede traer, para clientes de una gerencia dada, CD que en realidad

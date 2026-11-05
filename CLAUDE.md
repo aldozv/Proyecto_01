@@ -326,6 +326,13 @@ Definiciones validadas por el usuario (2026-08-27):
   fecha de entrega en el sistema; la **facturacion** es cuando el producto ya fue entregado y el
   cliente pago. Ver `clase_venta` en `dm_venta` (`BITACORA_TABLAS.md`) para los codigos SAP de cada
   etapa/tipo de documento.
+- **Tracking diario de la GV Pucallpa** (`querys/Query_Pucallpa_Tracking_Diario.sql`, query propio
+  del usuario, recibido 2026-11-04): une 4 tipos por fecha de entrega. `FACT` = facturado MTD
+  (`dm_venta`); `PLAN` = entrega de hoy (`revenue_h_pv_planeada`); `PV D+1` = entrega de manana, que
+  es la preventa de hoy (`dm_preventa_flash_actual_fe`); `PV FUT` = entregas posteriores
+  (`dm_preventa`). Usar este query como fuente para preguntas de avance diario de la GV. El mes de
+  `FACT` esta fijo en el codigo y hay que cambiarlo cada mes. Ver validaciones y riesgos en
+  `BITACORA_TABLAS.md`.
 
 ## Reglas de negocio validadas por el usuario
 
