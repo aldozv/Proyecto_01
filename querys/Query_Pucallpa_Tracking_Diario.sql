@@ -58,6 +58,8 @@ AND d.categoria IN ('Cervezas', 'Licores','Ready to drink','Gaseosas','Agua','Ma
 --AND d.categoria IN ('Cervezas', 'Licores','Ready to drink')
 AND a.mes IN ('202611')
 AND a.indicadores_comerciales= 1
+--Hasta ayer: lo de hoy esta en PLAN
+AND a.fecha_venta < CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE)
 GROUP BY ALL
 )
 UNION ALL
@@ -188,6 +190,8 @@ AND d.categoria IN ('Cervezas', 'Licores','Ready to drink','Gaseosas','Agua','Ma
 --AND a.FechaEntrega = DATE_SUB(CAST(GETDATE() AS DATE)+1, 0) /*fecha de mañana*/
 AND b.cliente_id > 10000000
 AND a.Anulado = 0
+--Solo la siguiente fecha de reparto de la GV (el sabado es el lunes). Las posteriores van en PV FUT
+AND a.FechaEntrega = (SELECT MIN(f.FechaEntrega) FROM slv_maz_dataexperience_peru_dm.dm_preventa_flash_actual_fe f JOIN slv_maz_dataexperience_peru_dm.dm_cliente g ON g.cliente_id = f.codcliente WHERE g.gerencia = 'PE Ger P4 Pucall Hco' AND f.FechaEntrega > CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE))
 GROUP BY ALL
 )
 UNION ALL
@@ -251,10 +255,8 @@ AND d.categoria IN ('Cervezas', 'Licores','Ready to drink','Gaseosas','Agua','Ma
 --AND d.categoria IN ('Cervezas', 'Licores','Ready to drink')
 AND a.fecha_preferente_entrega > CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE)
 AND a.fecha_preferente_entrega < ADD_MONTHS(DATE_FORMAT(CURRENT_DATE(), 'yyyy-MM-1'), 2)
---Excluye la fecha que trae PV D+1 (siguiente fecha de reparto, no siempre hoy+1: el sabado trae el lunes)
-AND a.fecha_preferente_entrega NOT IN (
-  SELECT DISTINCT FechaEntrega FROM slv_maz_dataexperience_peru_dm.dm_preventa_flash_actual_fe
-)
+--Excluye solo la fecha que trae PV D+1. IS DISTINCT FROM evita que PV FUT quede vacio si esa fecha es nula
+AND a.fecha_preferente_entrega IS DISTINCT FROM (SELECT MIN(f.FechaEntrega) FROM slv_maz_dataexperience_peru_dm.dm_preventa_flash_actual_fe f JOIN slv_maz_dataexperience_peru_dm.dm_cliente g ON g.cliente_id = f.codcliente WHERE g.gerencia = 'PE Ger P4 Pucall Hco' AND f.FechaEntrega > CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE))
 AND a.flujo = 1
 AND b.cliente_id > 10000000
 AND a.motivo_anulacion IS NULL
