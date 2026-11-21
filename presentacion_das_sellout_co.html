@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>DAS Sell Out Centro Oriente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+@page { size: 1280px 720px; margin: 0; }
+:root { --y: #FFF200; --k: #111111; --g: #6b6b6b; --up: #0f7b3e; --dn: #c62828; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: #ffffff; color: var(--k); font-family: "Barlow", "Segoe UI", Arial, sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.slide { width: 1280px; height: 720px; position: relative; overflow: hidden; page-break-after: always; break-after: page; background: #fff; padding: 34px 40px; }
+.slide:last-child { page-break-after: auto; break-after: auto; }
+.ybar { position: absolute; left: 0; right: 0; top: 0; height: 14px; background: var(--y); }
+.lbl { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 15px; letter-spacing: .22em; color: #5b5b5b; text-transform: uppercase; margin-top: 6px; }
+h1.hd { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 31px; line-height: 1.08; margin: 6px 0 4px; text-transform: uppercase; }
+.sub { font-size: 14.5px; color: var(--g); margin-bottom: 14px; }
+.foot { position: absolute; left: 40px; right: 40px; bottom: 12px; font-size: 10px; font-weight: 700; display: flex; justify-content: space-between; text-transform: uppercase; letter-spacing: .03em; }
+.foot .src { font-weight: 400; text-transform: none; color: #8a8a8a; letter-spacing: 0; }
+.up { color: var(--up); } .dn { color: var(--dn); } .mut { color: #8a8a8a; }
+.grid { display: grid; gap: 18px; }
+.col { border: 1px solid #dcdcdc; display: flex; flex-direction: column; min-width: 0; }
+.col > .ch { background: var(--y); font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 18px; padding: 7px 12px; text-transform: uppercase; }
+.col > .cb { padding: 12px 14px; flex: 1; }
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+.blk { background: var(--k); color: #fff; padding: 13px 16px; }
+.blk .n { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 44px; line-height: 1; color: var(--y); }
+.blk .t { font-size: 13.5px; margin-top: 6px; line-height: 1.3; font-weight: 600; }
+.blk .t2 { font-size: 12px; margin-top: 4px; color: #cfcfcf; line-height: 1.35; }
+.blk .t2 b { color: #fff; }
+ul.b { margin: 0; padding: 0; list-style: none; font-size: 13.5px; line-height: 1.38; }
+ul.b li { position: relative; padding-left: 18px; margin-bottom: 8px; }
+ul.b li:before { content: ""; position: absolute; left: 0; top: 5px; width: 10px; height: 10px; background: var(--y); outline: 1px solid #d8cf00; }
+ul.b li.r:before { background: var(--dn); outline: none; }
+ul.b li.k:before { background: var(--k); outline: none; }
+.bar { position: absolute; left: 40px; right: 40px; bottom: 36px; background: var(--k); color: #fff; padding: 11px 18px; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 18px; text-transform: uppercase; }
+.bar b { color: var(--y); margin-right: 12px; }
+table.t { width: 100%; border-collapse: collapse; font-size: 12.3px; }
+table.t th { background: var(--k); color: #fff; font-family: "Barlow Condensed", sans-serif; font-weight: 600; font-size: 13.5px; padding: 5px 6px; text-align: right; line-height: 1.1; }
+table.t td { padding: 4px 6px; border-bottom: 1px solid #e3e3e3; text-align: right; white-space: nowrap; }
+table.t td:first-child, table.t th:first-child { text-align: left; }
+table.t tr.sg td { background: #efefef; font-weight: 700; }
+table.t tr.tt td { background: var(--y); font-weight: 700; border-bottom: none; }
+table.t tr.ref td { color: #8a8a8a; font-style: italic; }
+table.t td.in { padding-left: 18px; }
+.cap { font-size: 11px; color: #8a8a8a; margin-top: 6px; line-height: 1.3; }
+.st { font-weight: 700; font-size: 14px; margin: 0 0 6px; }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 12.5px; color: #444; margin: 0 0 4px; }
+.legend i { display: inline-block; width: 18px; height: 0; border-top: 3px solid; vertical-align: 3px; margin-right: 6px; }
+/* portada */
+.cover { padding: 0; }
+.cover .panel { position: absolute; left: 48px; top: 120px; width: 600px; bottom: 0; background: var(--k); border-top-right-radius: 120px; color: #fff; padding: 70px 48px; }
+.cover .panel h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 76px; line-height: .98; margin: 0 0 22px; text-transform: uppercase; }
+.cover .panel h2 span { color: var(--y); }
+.cover .panel p { font-size: 21px; font-weight: 300; margin: 6px 0; color: #e6e6e6; }
+.cover .brand { position: absolute; left: 48px; top: 40px; font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 30px; letter-spacing: .12em; }
+.cover .tag { position: absolute; right: 48px; top: 40px; background: var(--k); color: var(--y); font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 18px; padding: 8px 18px; border-radius: 0 0 0 24px; letter-spacing: .1em; }
+.cover .side { position: absolute; left: 700px; right: 60px; top: 150px; }
+.cover .side .it { border-left: 6px solid var(--y); padding: 7px 16px; margin-bottom: 10px; font-family: "Barlow Condensed", sans-serif; font-size: 23px; font-weight: 600; background: #f4f4f4; }
+.cover .side .it span { display: block; font-family: "Barlow", sans-serif; font-size: 13.5px; font-weight: 400; color: #666; margin-top: 2px; }
+.act { display: grid; grid-template-columns: 64px 1fr 170px; gap: 0; border: 1px solid #dcdcdc; margin-bottom: 10px; }
+.act .nn { background: var(--k); color: var(--y); font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 34px; display: flex; align-items: center; justify-content: center; }
+.act .tx { padding: 9px 14px; font-size: 13.5px; line-height: 1.35; }
+.act .tx b.h { display: block; font-family: "Barlow Condensed", sans-serif; font-size: 18px; text-transform: uppercase; margin-bottom: 2px; }
+.act .q { background: var(--y); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 6px; }
+.act .q .v { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 30px; line-height: 1; }
+.act .q .l { font-size: 11px; margin-top: 3px; line-height: 1.2; }
+</style>
+</head>
+<body>
+<div id="deck"></div>
+<script>
+// ===== DATA: DAS Sell Out (venta del distribuidor a sus POCs), Centro Oriente, Beer+Rtds, YTD Ene-Oct =====
+// Fuente: querys/Query_DAS_SellOut_*.sql (dm_das_venta + dm_das_cliente, gerencia vigente del maestro), corrido 11-nov-2026.
+// Arrays por año [2023, 2024, 2025, 2026]. pocs = POCs compradores promedio por mes; m = meses con venta.
+var GER = [
+  { n: 'DA Jun Puc', hl: [225699.5, 319932.4, 341011.7, 334765.6], p: [4076.9, 6466.5, 7763.4, 7820.7], m: [10,10,10,10], d: [
+    { n: 'Dismar Cinco Huánuco', hl: [92393.5, 117518.8, 119689.1, 108062.7], p: [1737.4, 1886.4, 1942.4, 2058.8], m: [10,10,10,10] },
+    { n: 'P & A Logistic Huancayo', hl: [0, 50432.6, 62189.8, 64125.3], p: [0, 2373.3, 2729.3, 2661.7], m: [0,8,10,10] },
+    { n: 'Transblanco J & M', hl: [51446.3, 57315.0, 59484.4, 59065.1], p: [967.9, 1020.7, 1047.3, 974.4], m: [10,10,10,10] },
+    { n: 'Inv. Globales Olarte', hl: [35657.8, 35669.5, 35285.2, 38613.1], p: [573.7, 824.7, 1026.3, 959.5], m: [10,10,10,10] },
+    { n: 'Rep. e Inv. Selva Oriente', hl: [26999.2, 33286.1, 40718.4, 36231.6], p: [450.9, 465.3, 465.2, 479.2], m: [10,10,10,10] },
+    { n: 'Jhotogo Inversiones', hl: [19183.1, 25710.1, 23639.3, 25551.0], p: [346.1, 370.7, 552.2, 628.1], m: [10,10,10,10] },
+    { n: 'Ucayali Beer (desde Ago\'26)', hl: [0, 0, 0, 3116.4], p: [0, 0, 0, 196.6], m: [0,0,0,3] } ] },
+  { n: 'Tarapoto', hl: [268998.5, 267320.5, 282116.3, 322256.4], p: [6551.3, 6624.2, 6494.0, 6655.0], m: [10,10,10,10], d: [
+    { n: 'Represent y Dist. del Norte', hl: [147581.6, 147252.1, 158195.4, 184355.6], p: [3224.4, 3346.5, 3447.5, 3479.5], m: [10,10,10,10] },
+    { n: 'Dismar Cinco (Tarapoto)', hl: [120104.1, 119907.0, 123920.9, 137899.8], p: [3291.4, 3269.0, 3046.5, 3175.4], m: [10,10,10,10] } ] },
+  { n: 'Iquitos', hl: [0, 0, 16597.9, 43201.7], p: [0, 0, 670.0, 718.5], m: [0,0,5,10], d: [
+    { n: 'Inv. Bonanza del Oriente (desde Jun\'25)', hl: [0, 0, 16597.9, 43201.7], p: [0, 0, 670.0, 718.5], m: [0,0,5,10] } ] }
+];
+var TOT = { hl: [494698.0, 587252.9, 639726.0, 700223.7], p: [10628.2, 13090.7, 14592.4, 15194.2], m: [10,10,10,10] };
+
+var CAT = [
+  { n: 'Cervezas', hl: [487193.6, 577716.8, 630018.0, 686753.4] },
+  { n: 'Licores', hl: [6644.6, 8313.2, 6254.6, 4374.3] },
+  { n: 'Ready To Drink', hl: [859.8, 1222.8, 3453.3, 9095.9] } ];
+var NABS = [42019.7, 42311.2, 44289.9, 49535.4];
+var MARCA = [
+  { n: 'Pilsen Callao', hl: [191040.0, 214385.8, 249388.5, 322637.5] },
+  { n: 'San Juan', hl: [98503.4, 131730.5, 146397.2, 148365.0] },
+  { n: 'Cristal', hl: [152162.8, 171595.8, 162677.1, 146609.1] },
+  { n: 'Cusqueña', hl: [42054.5, 55700.0, 66408.3, 63922.2] },
+  { n: 'Mike\'s', hl: [716.3, 1163.3, 3453.3, 9095.9] },
+  { n: 'Corona', hl: [3038.0, 3973.5, 4875.0, 4678.5] },
+  { n: 'Golden', hl: [6644.6, 8313.2, 6254.6, 4374.3] },
+  { n: 'Otras marcas', hl: [538.0, 390.4, 271.7, 540.9] } ];
+
+var CANAL = [
+  { n: 'Off Tradicional', hl: [224650.2, 257460.1, 296442.7, 329817.7], p: [7995.8, 10078.5, 11069.4, 11451.7] },
+  { n: 'On Tradicional', hl: [67345.3, 80798.8, 95105.7, 95748.8], p: [2145.9, 2455.7, 2900.5, 2985.1] },
+  { n: 'On Moderno', hl: [6958.2, 9743.9, 15843.5, 26422.3], p: [112.6, 199.6, 286.3, 432.7] },
+  { n: 'Terceros (mayoristas, eventeros)', hl: [194365.3, 234399.6, 232329.4, 248234.8], p: [352.2, 333.8, 334.5, 324.7], s: [
+    { n: 'Mayorista atención al público', hl: [null, null, 111191.6, 93336.0] },
+    { n: 'Mayorista mixto', hl: [null, null, 78638.1, 84735.4] },
+    { n: 'Mayorista con reparto', hl: [null, null, 31912.7, 37052.3] },
+    { n: 'Eventero', hl: [null, null, 6025.3, 29296.2] },
+    { n: 'Minería / territorio de riesgo', hl: [null, null, 4561.5, 3814.6] } ] },
+  { n: 'Otros / sin canal', hl: [1378.6, 4850.0, 4.5, 0], p: [null, null, null, null] } ];
+// Δ HL 2026 vs 2025 por GV x canal
+var GxC = { cols: ['Off Trad', 'On Trad', 'On Mod', 'Terceros'], rows: [
+  { n: 'DA Jun Puc', v: [[169509.0,169352.3],[51975.5,49980.1],[7519.5,10252.7],[112003.0,105180.3]] },
+  { n: 'Tarapoto', v: [[117476.7,134856.7],[39965.7,38948.8],[6527.2,11923.7],[118146.6,136527.0]] },
+  { n: 'Iquitos', v: [[9456.9,25608.6],[3164.4,6819.8],[1796.6,4245.8],[2179.8,6527.3]] } ] };
+
+// Serie mensual Beer+Rtds (HL), Ene..Dic
+var MES = {
+  TOT: { 2023:[41446,38937,40377,37859,52798,51927,52662,59410,56028,63253,45867,59250], 2024:[44159,46278,46603,49317,59789,65741,67534,73464,67085,67282,62786,79476], 2025:[56144,49339,51198,57134,62772,67973,72391,77368,73880,71527,66866,97183], 2026:[62844,59229,61912,62790,68308,72681,81372,72399,76860,81829,null,null] },
+  DAJP: { 2025:[30982,28253,29495,34835,35051,37153,36747,37688,36290,34518,33182,46012], 2026:[30958,29098,29252,31772,33032,35545,37616,33917,35903,37670,null,null] },
+  TAR: { 2025:[25161,21085,21703,22300,27722,29948,31855,35631,33552,33159,29658,44389], 2026:[28491,26107,28481,27475,30846,31972,38916,34187,36323,39458,null,null] },
+  IQT: { 2025:[0,0,0,0,0,872,3788,4048,4039,3851,4025,6782], 2026:[3394,4024,4179,3542,4430,5164,4840,4294,4633,4701,null,null] }
+};
+var POCS_MES = { 2025: [13970,13538,14018,14047,14127,14632,15336,15428,15349,15479], 2026: [14795,14471,14544,14765,15010,15285,15538,15724,15786,16024] };
+
+// ===== helpers =====
+var MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Set','Oct','Nov','Dic'];
+function f0(n) { return Math.round(n).toLocaleString('en-US'); }
+function f1(n) { return n.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 }); }
+function f2(n) { return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+function sgn(v) { return (v > 0 ? '+' : '') + f1(v) + '%'; }
+function cls(v) { return v > 0.0001 ? 'up' : (v < -0.0001 ? 'dn' : ''); }
+function sg(v, txt) { return '<span class="' + cls(v) + '">' + (v > 0 ? '+' : (v < 0 ? '−' : '')) + txt + '</span>'; }
+function dHL(a, b) { if (a == null || b == null) return '<span class="mut">—</span>'; var d = a - b; return sg(d, f0(Math.abs(d))); }
+function pc(a, b) { if (a == null || b == null) return '<span class="mut">—</span>'; if (!b) return '<span class="mut">' + (a ? 'nuevo' : '—') + '</span>'; var v = (a / b - 1) * 100; return sg(v, f1(Math.abs(v)) + '%'); }
+function pp(a, b) { if (a == null || b == null) return '<span class="mut">—</span>'; var v = a - b; return sg(v, f1(Math.abs(v)) + ' pp'); }
+function hpp(o, i) { return (o.m[i] && o.p[i]) ? o.hl[i] / o.m[i] / o.p[i] : null; }
+var SRC = 'Fuente: dm_das_venta (sell out del distribuidor a sus POCs) + dm_das_cliente · Beer+Rtds · YTD Ene-Oct de cada año · gerencia vigente del maestro de cliente';
+function slide(lbl, title, sub, body, page, src) {
+  return '<div class="slide"><div class="ybar"></div><div class="lbl">' + lbl + '</div><h1 class="hd">' + title + '</h1>' + (sub ? '<div class="sub">' + sub + '</div>' : '') + body +
+    '<div class="foot"><span>1YP 2027 | DAS Sell Out &nbsp;<span class="src">' + (src || SRC) + '</span></span><span>Dirección Centro Oriente · ' + page + '</span></div></div>';
+}
+
+// ===== derived =====
+var T = TOT.hl, dTot = T[3] - T[2];
+var lfl26 = T[3] - GER[2].hl[3], lfl25 = T[2] - GER[2].hl[2];
+var hppT = [0,1,2,3].map(function (i) { return hpp(TOT, i); });
+
+var H = '';
+// ---------- 1. Portada ----------
+H += '<div class="slide cover"><div class="ybar"></div><div class="brand">BACKUS · CENTRO ORIENTE</div><div class="tag">1YP 2027</div>' +
+  '<div class="panel"><h2>Status<br><span>DAS Sell Out</span></h2><p>Venta de nuestros distribuidores a sus puntos de venta</p><p style="margin-top:18px;font-size:17px;color:#bdbdbd">YTD Ene-Oct 2026 vs 2025 · 2024 · 2023 · Beer+Rtds</p></div>' +
+  '<div class="side">' +
+  '<div class="it">1 · Resumen ejecutivo<span>El sell out crece y el motor es Tarapoto</span></div>' +
+  '<div class="it">2 · Evolución mensual<span>Tendencia 2023-2026 y ritmo por trimestre</span></div>' +
+  '<div class="it">3 · Gerencia y distribuidor<span>Volumen, POCs compradores y volumen por POC</span></div>' +
+  '<div class="it">4 · Categoría y marca<span>Pilsen Callao reemplaza a Cristal</span></div>' +
+  '<div class="it">5 · Canal<span>Off Trade, On Trade y mayoristas</span></div>' +
+  '<div class="it">6 · Sell in vs sell out<span>¿Los DAS venden lo que les vendemos?</span></div>' +
+  '<div class="it">7 · Implicancias para 1YP 2027<span>Palancas cuantificadas</span></div></div></div>';
+
+// ---------- 2. Resumen ----------
+var b2 = '<div class="kpis">' +
+  '<div class="blk"><div class="n">' + f0(T[3]) + '</div><div class="t">HL sell out YTD Ene-Oct 2026</div><div class="t2">vs 25: <b>+' + f1((T[3]/T[2]-1)*100) + '%</b> (+' + f0(dTot) + ' HL)<br>vs 24: <b>+' + f1((T[3]/T[1]-1)*100) + '%</b> · vs 23: <b>+' + f1((T[3]/T[0]-1)*100) + '%</b></div></div>' +
+  '<div class="blk"><div class="n">+' + f1((lfl26/lfl25-1)*100) + '%</div><div class="t">Crecimiento sin Iquitos (mismos distribuidores)</div><div class="t2">+' + f0(lfl26 - lfl25) + ' HL; Iquitos aporta +' + f0(GER[2].hl[3]-GER[2].hl[2]) + ' HL por ser distribuidor nuevo (desde Jun\'25)</div></div>' +
+  '<div class="blk"><div class="n">' + f0(TOT.p[3]) + '</div><div class="t">POCs compradores por mes (promedio)</div><div class="t2">vs 25: <b>+' + f1((TOT.p[3]/TOT.p[2]-1)*100) + '%</b> (+' + f0(TOT.p[3]-TOT.p[2]) + ') · Oct\'26 récord: <b>' + f0(POCS_MES[2026][9]) + '</b> POCs</div></div>' +
+  '<div class="blk"><div class="n">' + f2(hppT[3]) + '</div><div class="t">HL por POC al mes</div><div class="t2">vs 25: <b>+' + f1((hppT[3]/hppT[2]-1)*100) + '%</b> · vs 24: <b>' + sgn((hppT[3]/hppT[1]-1)*100) + '</b> · vs 23: <b>' + sgn((hppT[3]/hppT[0]-1)*100) + '</b></div></div></div>';
+b2 += '<div class="grid" style="grid-template-columns: 1fr 1fr;">' +
+  '<div class="col"><div class="ch">Lo que empuja</div><div class="cb"><ul class="b">' +
+  '<li><b>Tarapoto es el motor:</b> +' + f0(GER[1].hl[3]-GER[1].hl[2]) + ' HL (+' + f1((GER[1].hl[3]/GER[1].hl[2]-1)*100) + '%), explica el ' + f0((GER[1].hl[3]-GER[1].hl[2])/dTot*100) + '% del crecimiento. Crece por volumen por POC, no por más POCs: Represent y Dist. del Norte +' + f0(GER[1].d[0].hl[3]-GER[1].d[0].hl[2]) + ' HL.</li>' +
+  '<li><b>Iquitos entra con fuerza:</b> Bonanza del Oriente suma ' + f0(GER[2].hl[3]) + ' HL en 2026 (+' + f0(GER[2].hl[3]-GER[2].hl[2]) + ' HL vs 25) y aporta el ' + f0((GER[2].hl[3]-GER[2].hl[2])/dTot*100) + '% del crecimiento.</li>' +
+  '<li><b>Pilsen Callao gana ' + f1((MARCA[0].hl[3]/T[3]-MARCA[0].hl[2]/T[2])*100) + ' pp de mix</b> (+' + f0(MARCA[0].hl[3]-MARCA[0].hl[2]) + ' HL, +' + f1((MARCA[0].hl[3]/MARCA[0].hl[2]-1)*100) + '%) y ya es el 46% del sell out. Los Rtds (Mike\'s) se multiplican x' + f1(CAT[2].hl[3]/CAT[2].hl[2]) + '.</li>' +
+  '<li><b>On Moderno +' + f1((CANAL[2].hl[3]/CANAL[2].hl[2]-1)*100) + '%</b> y eventeros ×' + f1(CANAL[3].s[3].hl[3]/CANAL[3].s[3].hl[2]) + ': la ocasión de consumo fuera de casa crece.</li>' +
+  '</ul></div></div>' +
+  '<div class="col"><div class="ch">Lo que preocupa</div><div class="cb"><ul class="b">' +
+  '<li class="r"><b>DA Jun Puc es la única GV que cae:</b> ' + f0(GER[0].hl[3]-GER[0].hl[2]) + ' HL (' + f1((GER[0].hl[3]/GER[0].hl[2]-1)*100) + '%), aunque sus POCs suben. Q2 y Q3 cayeron, pero Oct\'26 ya creció +9.1%.</li>' +
+  '<li class="r"><b>Dismar Cinco Huánuco explica la caída:</b> ' + f0(GER[0].d[0].hl[3]-GER[0].d[0].hl[2]) + ' HL (' + f1((GER[0].d[0].hl[3]/GER[0].d[0].hl[2]-1)*100) + '%) con +6% POCs. Cada POC compra ' + f1((hpp(GER[0].d[0],3)/hpp(GER[0].d[0],2)-1)*100) + '% menos. Pierde 26.7 mil HL de Cristal y Pilsen Callao recupera solo 15.9 mil.</li>' +
+  '<li class="r"><b>Cristal cae ' + f0(MARCA[2].hl[3]-MARCA[2].hl[2]) + ' HL (' + f1((MARCA[2].hl[3]/MARCA[2].hl[2]-1)*100) + '%)</b> y queda por debajo de 2023. La migración hacia Pilsen Callao es la principal dinámica de portafolio.</li>' +
+  '<li class="r"><b>Mayorista de atención al público cae ' + f1((CANAL[3].s[0].hl[3]/CANAL[3].s[0].hl[2]-1)*100) + '%</b> (' + f0(CANAL[3].s[0].hl[3]-CANAL[3].s[0].hl[2]) + ' HL), mientras crecen el mayorista mixto y el de reparto.</li>' +
+  '</ul></div></div></div>';
+b2 += '<div class="bar"><b>En síntesis</b>El sell out DAS crece +' + f1((T[3]/T[2]-1)*100) + '% en Beer+Rtds (+' + f0(dTot) + ' HL) gracias a Tarapoto e Iquitos. El reto 2027 es recuperar DA Jun Puc.</div>';
+H += slide('DAS Sell Out · Resumen ejecutivo', 'El sell out DAS crece +' + f1((T[3]/T[2]-1)*100) + '% con 15 mil POCs compradores al mes', 'YTD Ene-Oct 2026 en Beer+Rtds (Cervezas + Licores + Ready To Drink). Sell out = lo que el distribuidor (DAS) le vende a sus POCs.', b2, 2);
+
+// ---------- 3. Evolución mensual ----------
+function lineChart() {
+  var W = 760, Hh = 400, L = 54, R = 70, Tp = 16, B = 34, max = 100000;
+  var x = function (i) { return L + i * (W - L - R) / 11; }, y = function (v) { return Tp + (1 - v / max) * (Hh - Tp - B); };
+  var s = '<svg width="' + W + '" height="' + Hh + '" style="display:block;font-family:Barlow,sans-serif">';
+  for (var g = 0; g <= 100000; g += 20000) { s += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y(g) + '" y2="' + y(g) + '" stroke="#e6e6e6"/><text x="' + (L - 8) + '" y="' + (y(g) + 4) + '" text-anchor="end" font-size="11" fill="#8a8a8a">' + (g / 1000) + 'k</text>'; }
+  MESES.forEach(function (m, i) { s += '<text x="' + x(i) + '" y="' + (Hh - 12) + '" text-anchor="middle" font-size="11.5" fill="#6b6b6b">' + m + '</text>'; });
+  var sty = { 2023: ['#c9c9c9', 2], 2024: ['#9a9a9a', 2], 2025: ['#5c5c5c', 2], 2026: ['#111111', 3.5] };
+  [2023, 2024, 2025, 2026].forEach(function (yr) {
+    var d = MES.TOT[yr], pts = [];
+    d.forEach(function (v, i) { if (v != null) pts.push(x(i) + ',' + y(v)); });
+    s += '<polyline fill="none" stroke="' + sty[yr][0] + '" stroke-width="' + sty[yr][1] + '" stroke-linejoin="round" stroke-linecap="round" points="' + pts.join(' ') + '"/>';
+    var li = yr === 2026 ? 9 : 11;
+    s += '<text x="' + (x(li) + 8) + '" y="' + (y(d[li]) + 4) + '" font-size="12.5" font-weight="700" fill="' + (yr === 2026 ? '#111' : '#6b6b6b') + '">' + yr + '</text>';
+  });
+  MES.TOT[2026].forEach(function (v, i) { if (v != null) s += '<circle cx="' + x(i) + '" cy="' + y(v) + '" r="4.5" fill="#FFF200" stroke="#111" stroke-width="2"/>'; });
+  s += '<text x="' + x(9) + '" y="' + (y(MES.TOT[2026][9]) - 12) + '" text-anchor="middle" font-size="12" font-weight="700" fill="#111">' + f0(MES.TOT[2026][9]) + '</text>';
+  return s + '</svg>';
+}
+function qsum(a, i0, i1) { var s = 0; for (var i = i0; i <= i1; i++) s += (a[i] || 0); return s; }
+var QS = [['Q1', 0, 2], ['Q2', 3, 5], ['Q3', 6, 8], ['Oct', 9, 9]];
+var qt = '<table class="t"><tr><th>GV · vs 2025</th>' + QS.map(function (q) { return '<th>' + q[0] + '</th>'; }).join('') + '</tr>';
+[['DA Jun Puc', 'DAJP'], ['Tarapoto', 'TAR'], ['Iquitos', 'IQT'], ['Total', 'TOT']].forEach(function (g) {
+  qt += '<tr' + (g[1] === 'TOT' ? ' class="tt"' : '') + '><td>' + g[0] + '</td>' + QS.map(function (q) {
+    var a = qsum(MES[g[1]][2026], q[1], q[2]), b = qsum(MES[g[1]][2025], q[1], q[2]); return '<td>' + (g[1] === 'IQT' && q[0] !== 'Oct' && q[0] !== 'Q3' ? '<span class="mut">nuevo</span>' : pc(a, b)) + '</td>';
+  }).join('') + '</tr>';
+});
+qt += '</table>';
+var b3 = '<div class="grid" style="grid-template-columns: 790px 1fr;">' +
+  '<div><div class="legend"><span><i style="border-color:#111;border-top-width:4px"></i>2026</span><span><i style="border-color:#5c5c5c"></i>2025</span><span><i style="border-color:#9a9a9a"></i>2024</span><span><i style="border-color:#c9c9c9"></i>2023</span><span style="color:#8a8a8a">HL Beer+Rtds por mes · total Centro Oriente</span></div>' + lineChart() + '</div>' +
+  '<div><div class="st">Crecimiento por trimestre vs 2025</div>' + qt +
+  '<ul class="b" style="margin-top:14px">' +
+  '<li><b>2026 supera a 2025 en 9 de 10 meses.</b> Solo Ago\'26 queda abajo (−6.4%), por DA Jun Puc (−10%) y Tarapoto (−4%).</li>' +
+  '<li><b>Oct\'26 es el mejor octubre de la serie:</b> ' + f0(MES.TOT[2026][9]) + ' HL (+' + f1((MES.TOT[2026][9]/MES.TOT[2025][9]-1)*100) + '% vs Oct\'25) con récord de POCs compradores (' + f0(POCS_MES[2026][9]) + ').</li>' +
+  '<li><b>El crecimiento se desacelera</b> de Q1 a Q3 a medida que Iquitos deja de ser incremental (compara contra meses con venta desde Jun\'25). DA Jun Puc cae en Q2 y Q3, pero repunta en Oct.</li>' +
+  '<li class="k">Dic pesa ~1.45× un mes promedio (Dic\'25: 97 mil HL): será clave para cerrar el año.</li>' +
+  '</ul></div></div>';
+H += slide('DAS Sell Out · Evolución mensual', 'Cuatro años de crecimiento continuo; Oct\'26 cierra con el mejor octubre', null, b3, 3, 'Fuente: dm_das_venta + dm_das_cliente · Beer+Rtds · Ene\'23-Oct\'26 · Iquitos con DAS desde Jun\'25');
+
+// ---------- 4. Gerencia y distribuidor ----------
+function rowD(o, name, kind) {
+  var h3 = hpp(o, 3), h2 = hpp(o, 2);
+  return '<tr' + (kind ? ' class="' + kind + '"' : '') + '><td' + (kind ? '' : ' class="in"') + '>' + name + '</td><td>' + f0(o.hl[3]) + '</td><td>' + dHL(o.hl[3], o.hl[2]) + '</td><td>' + pc(o.hl[3], o.hl[2]) + '</td><td>' + pc(o.hl[3], o.hl[1]) + '</td><td>' + pc(o.hl[3], o.hl[0]) + '</td>' +
+    '<td>' + f0(o.p[3]) + '</td><td>' + pc(o.p[3], o.p[2]) + '</td><td>' + (h3 ? f2(h3) : '—') + '</td><td>' + (h2 ? pc(h3, h2) : '<span class="mut">nuevo</span>') + '</td></tr>';
+}
+var t4 = '<table class="t"><tr><th style="width:30%">GV / Distribuidor</th><th>HL YTD 26</th><th>Δ HL vs 25</th><th>vs 25</th><th>vs 24</th><th>vs 23</th><th>POCs/mes</th><th>Δ POCs</th><th>HL/POC/mes</th><th>Δ vs 25</th></tr>';
+GER.forEach(function (g) { t4 += rowD(g, g.n, 'sg'); g.d.forEach(function (d) { t4 += rowD(d, d.n); }); });
+t4 += rowD(TOT, 'Total DAS Centro Oriente', 'tt') + '</table>';
+t4 += '<div class="cap">POCs/mes = POCs compradores promedio por mes con venta. Iquitos 2025 y P&amp;A 2024 tienen menos meses (se promedian solo sus meses activos). Los subtotales de GV incluyen un residual menor de Dismar cruzado entre GV (máx. 1,313 HL en 2023). Δ POCs y Δ HL/POC vs 2025.</div>';
+var b4 = '<div class="grid" style="grid-template-columns: 860px 1fr;"><div>' + t4 + '</div>' +
+  '<div class="col"><div class="ch">Highlights</div><div class="cb"><ul class="b">' +
+  '<li><b>Tarapoto crece +14.2% con solo +2.5% POCs:</b> el volumen por POC sube +11.5%. Represent y Dist. del Norte (+16.5%) es el distribuidor que más crece en HL (+26,160).</li>' +
+  '<li class="r"><b>Dismar Cinco Huánuco:</b> −11,626 HL con +116 POCs. El drop se cae −14.8%: de 6.16 a 5.25 HL por POC al mes.</li>' +
+  '<li class="r"><b>Selva Oriente −11.0%</b> (−4,487 HL): cae San Juan (−6.4 mil HL) y su venta a mayoristas (−4.5 mil HL).</li>' +
+  '<li><b>Olarte (+9.4%) y Jhotogo (+8.1%)</b> compensan en parte la caída dentro de DA Jun Puc. P&amp;A crece +3.1%.</li>' +
+  '<li class="k"><b>Iquitos:</b> los POCs se mantienen en ~700-750 desde Set\'25. La palanca para 2027 es cobertura, no drop.</li>' +
+  '</ul></div></div></div>';
+H += slide('DAS Sell Out · Gerencia y distribuidor', 'Tarapoto acelera por volumen por POC; Dismar Huánuco frena a DA Jun Puc', null, b4, 4);
+
+// ---------- 5. Categoría y marca ----------
+function rowM(o, name, kind, den) {
+  var mx = function (i) { return o.hl[i] / den[i] * 100; };
+  return '<tr' + (kind ? ' class="' + kind + '"' : '') + '><td' + (kind === null ? ' class="in"' : '') + '>' + name + '</td><td>' + f0(o.hl[3]) + '</td><td>' + dHL(o.hl[3], o.hl[2]) + '</td><td>' + pc(o.hl[3], o.hl[2]) + '</td><td>' + pc(o.hl[3], o.hl[1]) + '</td><td>' + pc(o.hl[3], o.hl[0]) + '</td>' +
+    (den ? '<td>' + f1(mx(3)) + '%</td><td>' + pp(mx(3), mx(2)) + '</td><td>' + pp(mx(3), mx(1)) + '</td><td>' + pp(mx(3), mx(0)) + '</td>' : '<td colspan="4" class="mut" style="text-align:center">referencia, fuera del total</td>') + '</tr>';
+}
+var t5 = '<table class="t"><tr><th style="width:24%">Categoría / Marca</th><th>HL YTD 26</th><th>Δ HL vs 25</th><th>vs 25</th><th>vs 24</th><th>vs 23</th><th>Mix 26</th><th>Δ mix vs 25</th><th>vs 24</th><th>vs 23</th></tr>';
+t5 += '<tr class="sg"><td colspan="10">Por categoría</td></tr>';
+CAT.forEach(function (c) { t5 += rowM(c, c.n, null, T); });
+t5 += rowM({ hl: T }, 'Total Beer+Rtds', 'tt', T);
+t5 += rowM({ hl: NABS }, 'Nabs (Gaseosas, Agua sin San Mateo, Maltas)', 'ref', null);
+t5 += '<tr class="sg"><td colspan="10">Por marca (Beer+Rtds)</td></tr>';
+MARCA.forEach(function (c) { t5 += rowM(c, c.n, null, T); });
+t5 += rowM({ hl: T }, 'Total Beer+Rtds', 'tt', T) + '</table>';
+var pk = function (a, b) { return (a / b - 1) * 100; };
+var b5 = '<div class="grid" style="grid-template-columns: 860px 1fr;"><div>' + t5 + '<div class="cap">Mix = HL del corte / HL total Beer+Rtds del mismo año. Marca y pack desde revenue_maestro_sku (cobertura 100% del volumen Beer+Rtds).</div></div>' +
+  '<div class="col"><div class="ch">Highlights</div><div class="cb"><ul class="b">' +
+  '<li><b>Pilsen Callao explica más que todo el crecimiento:</b> +' + f0(MARCA[0].hl[3]-MARCA[0].hl[2]) + ' HL frente a +' + f0(dTot) + ' HL del total. Su mix sube de 39.0% a 46.1%.</li>' +
+  '<li class="r"><b>Cristal pierde ' + f1(Math.abs(MARCA[2].hl[3]/T[3]-MARCA[2].hl[2]/T[2])*100) + ' pp de mix</b> (−16,068 HL). La caída se concentra en Dismar Huánuco (−26.7 mil) y P&amp;A Huancayo (−10.2 mil), justo donde Pilsen Callao más crece.</li>' +
+  '<li><b>San Juan se sostiene (+1.3%)</b> pese a Selva Oriente. Cusqueña cae −3.7%, pero sigue +52% vs 2023.</li>' +
+  '<li><b>Rtds ×' + f1(CAT[2].hl[3]/CAT[2].hl[2]) + '</b> (Mike\'s +5,643 HL, 1.3% de mix). Licores (Golden) cae −30%.</li>' +
+  '<li class="k">Por pack, Latas crece +' + f1(pk(36680.3, 30429.7)) + '% y Litro +' + f1(pk(3015.9, 2265.9)) + '%. Core 6xx (+9.7%) mantiene el 83% del mix.</li>' +
+  '</ul></div></div></div>';
+H += slide('DAS Sell Out · Categoría y marca', 'Pilsen Callao gana 7 pp de mix y Cristal es la marca que más cae', null, b5, 5);
+
+// ---------- 6. Canal ----------
+function rowC(o, name, kind) {
+  var mx = function (i) { return o.hl[i] / T[i] * 100; };
+  return '<tr' + (kind ? ' class="' + kind + '"' : '') + '><td' + (kind === 'in' ? ' class="in"' : '') + '>' + name + '</td><td>' + f0(o.hl[3]) + '</td><td>' + dHL(o.hl[3], o.hl[2]) + '</td><td>' + pc(o.hl[3], o.hl[2]) + '</td><td>' + pc(o.hl[3], o.hl[1]) + '</td><td>' + pc(o.hl[3], o.hl[0]) + '</td><td>' + f1(mx(3)) + '%</td>' +
+    '<td>' + (o.p && o.p[3] ? f0(o.p[3]) : '<span class="mut">—</span>') + '</td><td>' + (o.p && o.p[3] ? pc(o.p[3], o.p[2]) : '<span class="mut">—</span>') + '</td></tr>';
+}
+var t6 = '<table class="t"><tr><th style="width:31%">Canal del POC</th><th>HL YTD 26</th><th>Δ HL vs 25</th><th>vs 25</th><th>vs 24</th><th>vs 23</th><th>Mix 26</th><th>POCs/mes</th><th>Δ POCs</th></tr>';
+CANAL.forEach(function (c) { t6 += rowC(c, c.n, c.s ? 'sg' : ''); if (c.s) c.s.forEach(function (s) { t6 += rowC(s, s.n, 'in'); }); });
+t6 += rowC(TOT, 'Total Beer+Rtds', 'tt') + '</table>';
+var gx = '<table class="t" style="margin-top:4px"><tr><th>Δ HL vs 25</th>' + GxC.cols.map(function (c) { return '<th>' + c + '</th>'; }).join('') + '<th>Total</th></tr>';
+var ct = [0, 0, 0, 0];
+GxC.rows.forEach(function (r) { var tot = 0; gx += '<tr><td>' + r.n + '</td>' + r.v.map(function (v, j) { ct[j] += v[1] - v[0]; tot += v[1] - v[0]; return '<td>' + dHL(v[1], v[0]) + '</td>'; }).join('') + '<td><b>' + dHL(tot, 0) + '</b></td></tr>'; });
+gx += '<tr class="tt"><td>Total</td>' + ct.map(function (v) { return '<td>' + dHL(v, 0) + '</td>'; }).join('') + '<td>' + dHL(ct.reduce(function (a, b) { return a + b; }, 0), 0) + '</td></tr></table>';
+var b6 = '<div class="grid" style="grid-template-columns: 730px 1fr;"><div>' + t6 + '<div class="cap">Subcanales de Terceros solo comparables 2025-2026 (en 2026 se reclasificaron subcanales; Minería y Territorio de riesgo pasaron a Terceros). "Otros / sin canal" = Minería, Off Moderno y Venta Catálogo antes de la reclasificación.</div></div>' +
+  '<div><div class="st">Δ HL vs 2025 por GV × canal</div>' + gx +
+  '<ul class="b" style="margin-top:12px">' +
+  '<li><b>Off Tradicional (bodegas) aporta +' + f0(CANAL[0].hl[3]-CANAL[0].hl[2]) + ' HL</b>, más de la mitad del crecimiento, con +3.5% POCs. Tarapoto e Iquitos lo explican; en DA Jun Puc queda plano.</li>' +
+  '<li><b>Terceros = 35% del sell out con solo 325 POCs.</b> Cambia de mix: los eventeros crecen (+23.3 mil HL) y el mayorista de atención al público cae (−17.9 mil).</li>' +
+  '<li class="r"><b>DA Jun Puc cae en Terceros (−6.8 mil) y On Tradicional (−2.0 mil).</b> Solo On Moderno crece (+2.7 mil).</li>' +
+  '</ul></div></div>';
+H += slide('DAS Sell Out · Canal', 'La bodega y la ocasión On Moderno empujan; los mayoristas cambian de mix', null, b6, 6);
+
+// ---------- 7. Sell in vs sell out ----------
+// Sell in = dm_venta a clientes DAs (dm_cliente.unidad_negocio_revenue_volumen_meta = 'DAs'); sell out = dm_das_venta. Beer+Rtds, YTD Ene-Oct.
+// Distribuidor emparejado por nombre (varios codigos de cliente por DAS). si/so = [2025, 2026].
+var SISO = [
+  { g: 'DA Jun Puc', d: [
+    { n: 'Dismar Cinco Huánuco', si: [120286, 108245], so: [119689, 108064] },
+    { n: 'P & A Logistic Huancayo', si: [62607, 64345], so: [62190, 64125] },
+    { n: 'Transblanco J & M', si: [62522, 59503], so: [59484, 59065] },
+    { n: 'Inv. Globales Olarte', si: [36433, 39125], so: [35285, 38613] },
+    { n: 'Rep. e Inv. Selva Oriente', si: [43781, 34855], so: [40718, 36232] },
+    { n: 'Jhotogo Inversiones', si: [24593, 23651], so: [23639, 25551] },
+    { n: 'Ucayali Beer (reporta desde Ago\'26)', si: [22766, 29094], so: [0, 3116], part: 1 } ] },
+  { g: 'Tarapoto', d: [
+    { n: 'Represent y Dist. del Norte', si: [161687, 186993], so: [158195, 184356] },
+    { n: 'Dismar Cinco (Tarapoto)', si: [124814, 138802], so: [123926, 137900] } ] },
+  { g: 'Iquitos', d: [
+    { n: 'Bonanza (reporta desde Jun\'25)', si: [49973, 59424], so: [16598, 43202], part: 1 } ] },
+  { g: 'Sin reporte de sell out', d: [
+    { n: '13 DAS chicos en 5 GV', si: [65202, 54868], so: [0, 0], part: 1 } ] } ];
+// Brecha mensual sell in − sell out (HL) de los DAS con reporte completo (8 + Bonanza desde Jun'25), Ene'25..Oct'26
+var GAP = [-2567, 7016, 1417, -7619, 5121, 6253, 2218, 4084, 3436, 1951, 3875, -7838, -3210, 1159, 479, 454, 3480, 5706, -3458, 2146, 3742, 7338];
+var GAP_BON = [0, 0, 0, 0, 0, 3217, 1516, 398, 643, 1941, 1220, -1930, -53, 1688, 1367, 2447, 1615, 564, 1385, 2038, 906, 4266];
+function gapChart() {
+  var W = 470, Hh = 250, L = 40, R = 6, Tp = 14, B = 34, mx = 9000, n = GAP.length, bw = (W - L - R) / n;
+  var y0 = Tp + (Hh - Tp - B) / 2, sc = (Hh - Tp - B) / 2 / mx;
+  var s = '<svg width="' + W + '" height="' + Hh + '" style="display:block;font-family:Barlow,sans-serif">';
+  [-8000, -4000, 0, 4000, 8000].forEach(function (g) { var yy = y0 - g * sc; s += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + yy + '" y2="' + yy + '" stroke="' + (g ? '#ececec' : '#9a9a9a') + '"/><text x="' + (L - 6) + '" y="' + (yy + 4) + '" text-anchor="end" font-size="10.5" fill="#8a8a8a">' + (g > 0 ? '+' : '') + (g / 1000) + 'k</text>'; });
+  GAP.forEach(function (v, i) {
+    var x = L + i * bw + 2, w = bw - 4, ex = v - GAP_BON[i];
+    // barra total (gris) y, encima, la parte sin Bonanza (negro / amarillo)
+    var h = Math.abs(v) * sc; s += '<rect x="' + x + '" y="' + (v >= 0 ? y0 - h : y0) + '" width="' + w + '" height="' + h + '" fill="#cfcfcf"/>';
+    var h2 = Math.abs(ex) * sc; s += '<rect x="' + (x + 3) + '" y="' + (ex >= 0 ? y0 - h2 : y0) + '" width="' + (w - 6) + '" height="' + h2 + '" fill="' + (ex >= 0 ? '#111' : '#FFF200') + '" stroke="' + (ex >= 0 ? 'none' : '#b5ab00') + '"/>';
+    var mi = i % 12; s += '<text x="' + (x + w / 2) + '" y="' + (Hh - 18) + '" text-anchor="middle" font-size="9.5" fill="#6b6b6b">' + MESES[mi].charAt(0) + '</text>';
+  });
+  s += '<text x="' + (L + 6 * bw) + '" y="' + (Hh - 3) + '" text-anchor="middle" font-size="11" font-weight="700" fill="#444">2025</text><text x="' + (L + 17 * bw) + '" y="' + (Hh - 3) + '" text-anchor="middle" font-size="11" font-weight="700" fill="#444">2026</text>';
+  s += '<line x1="' + (L + 12 * bw) + '" x2="' + (L + 12 * bw) + '" y1="' + Tp + '" y2="' + (Hh - B + 4) + '" stroke="#bdbdbd" stroke-dasharray="3 3"/>';
+  return s + '</svg>';
+}
+function nt(v, t) { return (v > 0 ? '+' : (v < 0 ? '−' : '')) + t; }
+var t7 = '<table class="t"><tr><th style="width:36%">Distribuidor</th><th>Sell in 26</th><th>Sell out 26</th><th>SO / SI</th><th>SI − SO</th><th>SI vs 25</th><th>SO vs 25</th></tr>';
+var tSI = [0, 0], tSO = [0, 0], cSI = 0, cSO = 0;
+SISO.forEach(function (g) {
+  t7 += '<tr class="sg"><td colspan="7">' + g.g + '</td></tr>';
+  g.d.forEach(function (d) {
+    tSI[0] += d.si[0]; tSI[1] += d.si[1]; tSO[0] += d.so[0]; tSO[1] += d.so[1];
+    if (!d.part) { cSI += d.si[1]; cSO += d.so[1]; }
+    var r = d.so[1] / d.si[1] * 100;
+    t7 += '<tr><td class="in">' + d.n + '</td><td>' + f0(d.si[1]) + '</td><td>' + (d.so[1] ? f0(d.so[1]) : '<span class="mut">—</span>') + '</td><td' + (d.part ? ' class="mut"' : '') + '>' + (d.so[1] ? f0(r) + '%' : '—') + '</td><td>' + (d.so[1] ? nt(d.si[1] - d.so[1], f0(Math.abs(d.si[1] - d.so[1]))) : '<span class="mut">—</span>') + '</td><td>' + pc(d.si[1], d.si[0]) + '</td><td>' + (d.part ? '<span class="mut">parcial</span>' : pc(d.so[1], d.so[0])) + '</td></tr>';
+  });
+});
+t7 += '<tr class="sg"><td>8 DAS con reporte completo</td><td>' + f0(cSI) + '</td><td>' + f0(cSO) + '</td><td>' + f1(cSO / cSI * 100) + '%</td><td>' + nt(cSI - cSO, f0(cSI - cSO)) + '</td><td colspan="2"></td></tr>';
+t7 += '<tr class="tt"><td>Total DAS Centro Oriente</td><td>' + f0(tSI[1]) + '</td><td>' + f0(tSO[1]) + '</td><td>' + f0(tSO[1] / tSI[1] * 100) + '%</td><td>' + nt(tSI[1] - tSO[1], f0(tSI[1] - tSO[1])) + '</td><td>' + pc(tSI[1], tSI[0]) + '</td><td>' + pc(tSO[1], tSO[0]) + '</td></tr></table>';
+t7 += '<div class="cap">Sell in = facturación Backus a clientes con canal DAs (dm_cliente vigente). Sell out = venta del DAS a sus POCs (dm_das_venta). Un DAS puede tener varios códigos de cliente; se agrupan por nombre. SI − SO positivo = el DAS compró más de lo que vendió (sube su inventario). En 2026 el total de sell out incluye 3,116 HL de Ucayali Beer.</div>';
+var b7s = '<div class="grid" style="grid-template-columns: 700px 1fr;"><div>' + t7 + '</div>' +
+  '<div><div class="st">Brecha mensual sell in − sell out (HL), DAS con reporte</div>' +
+  '<div class="legend" style="font-size:11.5px;gap:10px"><span><i style="border-top:8px solid #111;width:10px;vertical-align:-1px"></i>Sin Bonanza: carga</span><span><i style="border-top:8px solid #FFF200;outline:1px solid #b5ab00;width:10px;vertical-align:-1px"></i>Sin Bonanza: descarga</span><span><i style="border-top:8px solid #cfcfcf;width:10px;vertical-align:-1px"></i>Incluye Bonanza</span></div>' + gapChart() +
+  '<ul class="b" style="margin-top:8px">' +
+  '<li><b>Los DAS venden lo que compran:</b> sin Bonanza, los 8 DAS con reporte completo tienen un sell out del 99.8% de su sell in en 2026 (brecha de 1.6 mil HL). No hay sobrecarga de inventario.</li>' +
+  '<li class="r"><b>La caída de Dismar Huánuco es demanda real:</b> el sell in cae −10.0% y el sell out −9.7%. No es un desinventario.</li>' +
+  '<li class="r"><b>Bonanza (Iquitos) reporta solo el 73% de lo que compra</b> (+16.2 mil HL de brecha, +4.3 mil en Oct\'26). Puede ser stock o venta no reportada: validar con el DAS.</li>' +
+  '</ul></div></div>';
+H += slide('DAS Sell Out · Sell in vs sell out', 'Los DAS venden lo que les vendemos: el sell out es el 99.8% del sell in, salvo Bonanza', null, b7s, 7,
+  'Fuente: dm_venta + dm_cliente (sell in a canal DAs) vs dm_das_venta + dm_das_cliente (sell out) · Beer+Rtds · YTD Ene-Oct');
+
+// ---------- 8. Implicancias 1YP 2027 ----------
+var b7 = '' +
+  '<div class="act"><div class="nn">1</div><div class="tx"><b class="h">Recuperar el drop de Dismar Cinco Huánuco</b>Tiene más POCs que nunca (2,059), pero cada uno compra 15% menos. Volver a 6.16 HL/POC/mes (nivel 2025) con la base actual de POCs. Foco: Cristal en Off y On Tradicional.</div><div class="q"><div class="v">+22.6 mil</div><div class="l">HL/año potencial<br>(0.91 HL × 2,059 POCs × 12)</div></div></div>' +
+  '<div class="act"><div class="nn">2</div><div class="tx"><b class="h">Defender Cristal frente a Pilsen Callao</b>Cristal cae −16.1 mil HL y Pilsen Callao crece +73.2 mil, con el canibalismo concentrado en los DAS de Huánuco y Huancayo. Revisar el gap de precio al POC entre ambas marcas en el canal DAS antes de mover descuentos (hipótesis a validar con PTC).</div><div class="q"><div class="v">16.1 mil</div><div class="l">HL de Cristal en juego<br>(YTD Ene-Oct)</div></div></div>' +
+  '<div class="act"><div class="nn">3</div><div class="tx"><b class="h">Replicar el modelo Tarapoto en DA Jun Puc</b>Tarapoto subió +11% el volumen por POC con la misma base de clientes. Si DA Jun Puc capturara la mitad (+5% HL/POC sobre 7,821 POCs y 4.28 HL/POC/mes), el aporte sería el de la derecha.</div><div class="q"><div class="v">+20.1 mil</div><div class="l">HL/año potencial<br>(se superpone con la acción 1)</div></div></div>' +
+  '<div class="act"><div class="nn">4</div><div class="tx"><b class="h">Iquitos: del arranque a la cobertura</b>Bonanza del Oriente ya da ~4.3 mil HL/mes, pero sus POCs están planos (~700-750) desde Set\'25. En 2027 la base es completa, así que el crecimiento debe venir de sumar POCs. Cada 100 POCs nuevos al drop actual (6.0 HL/mes) aportan el volumen de la derecha.</div><div class="q"><div class="v">+7.2 mil</div><div class="l">HL/año por cada<br>100 POCs nuevos</div></div></div>' +
+  '<div class="act"><div class="nn">5</div><div class="tx"><b class="h">Capturar la ocasión fuera de casa</b>On Moderno (+67%) y eventeros (×4.9) son los segmentos más dinámicos. Incluir el calendario de eventos de los DAS en el plan 2027 y asegurar Rtds y Latas en esos puntos.</div><div class="q"><div class="v">+33.9 mil</div><div class="l">HL ya ganados YTD<br>en On Mod + eventeros</div></div></div>';
+H += slide('DAS Sell Out · Implicancias para el 1YP 2027', 'Cinco palancas para el sell out DAS 2027', 'Potenciales en HL Beer+Rtds anualizados. Son órdenes de magnitud para dimensionar el plan; no se suman entre sí.', b7, 8,
+  'Fuente: cálculo propio sobre dm_das_venta YTD Ene-Oct 2026 · drop = HL por POC comprador al mes · sell in vs sell out en lámina 7');
+
+document.getElementById('deck').innerHTML = H;
+</script>
+</body>
+</html>

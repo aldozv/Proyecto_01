@@ -1,0 +1,846 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Informe Overview Lima</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+@page { size: 1280px 720px; margin: 0; }
+:root { --y: #FFF200; --k: #111111; --g: #6b6b6b; --l: #e6e6e6; --up: #0f7b3e; --dn: #c62828; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: #ffffff; color: var(--k); font-family: "Barlow", "Segoe UI", Arial, sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+@media screen { body { background: #d9d9d9; padding: 20px 0; } .slide { margin: 0 auto 20px; box-shadow: 0 2px 10px rgba(0,0,0,.18); } }
+.slide { width: 1280px; height: 720px; position: relative; overflow: hidden; page-break-after: always; break-after: page; background: #ffffff; padding: 34px 40px 34px; }
+.slide:last-child { page-break-after: auto; break-after: auto; }
+.ybar { position: absolute; left: 0; right: 0; top: 0; height: 14px; background: var(--y); }
+h1.hd { font-family: "Barlow Condensed", "Arial Narrow", sans-serif; font-weight: 800; font-size: 31px; line-height: 1.08; margin: 12px 0 18px; text-transform: uppercase; letter-spacing: .005em; }
+.foot { position: absolute; left: 40px; right: 40px; bottom: 12px; font-size: 10px; font-weight: 700; display: flex; justify-content: space-between; text-transform: uppercase; letter-spacing: .03em; }
+.foot .src { font-weight: 400; text-transform: none; color: #8a8a8a; letter-spacing: 0; }
+.up { color: var(--up); } .dn { color: var(--dn); } .mut { color: #8a8a8a; }
+.cols { display: grid; gap: 16px; }
+.col { border: 1px solid #dcdcdc; display: flex; flex-direction: column; min-width: 0; }
+.col > .ch { background: var(--y); font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 18px; padding: 7px 12px; text-transform: uppercase; }
+.col > .cb { padding: 12px 14px; flex: 1; min-height: 0; }
+.blk { background: var(--k); color: #fff; padding: 16px 20px; }
+.blk .n { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 54px; line-height: 1; color: var(--y); }
+.blk .n small { font-size: 22px; color: #fff; font-weight: 600; margin-left: 6px; }
+.blk .t { font-size: 15px; margin-top: 8px; line-height: 1.3; font-weight: 600; }
+.blk .t2 { font-size: 13px; margin-top: 4px; color: #cfcfcf; line-height: 1.35; }
+.blk .t2 b { color: #fff; }
+.bar { position: absolute; left: 40px; right: 40px; bottom: 40px; background: var(--k); color: #fff; padding: 12px 18px; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 19px; text-transform: uppercase; letter-spacing: .01em; }
+.bar b { color: var(--y); margin-right: 12px; }
+ul.b { margin: 0; padding: 0; list-style: none; font-size: 14px; line-height: 1.4; }
+ul.b li { position: relative; padding-left: 18px; margin-bottom: 9px; }
+ul.b li:before { content: ""; position: absolute; left: 0; top: 5px; width: 10px; height: 10px; background: var(--y); }
+ul.b li.r:before { background: var(--dn); }
+ul.b li.k:before { background: var(--k); }
+table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; font-variant-numeric: tabular-nums; }
+table.t th { background: var(--k); color: #fff; font-family: "Barlow Condensed", sans-serif; font-weight: 600; font-size: 15px; padding: 6px 8px; text-align: right; }
+table.t td { padding: 6px 8px; border-bottom: 1px solid #e3e3e3; text-align: right; }
+table.t td:first-child, table.t th:first-child { text-align: left; }
+table.t tr.tt td { background: var(--y); font-weight: 700; border-bottom: none; }
+.cap { font-size: 11px; color: #8a8a8a; margin-top: 8px; line-height: 1.3; }
+table.t.sm { font-size: 12.5px; }
+table.t.sm th { font-size: 13.5px; padding: 4px 7px; }
+table.t.sm td { padding: 3.5px 7px; }
+table.t th.gh { text-align: center; background: #333; font-size: 13px; letter-spacing: .03em; text-transform: uppercase; }
+table.t .bl { border-left: 2px solid #111; }
+table.t th.bl { border-left: 2px solid #fff; }
+table.t td.mut { color: #9a9a9a; }
+table.t.hm td { text-align: center; font-weight: 700; padding: 6px 4px; line-height: 1.1; }
+table.t.hm td:first-child { text-align: left; font-weight: 600; padding-left: 8px; }
+table.t.hm th { text-align: center; font-size: 13.5px; padding: 6px 4px; }
+table.t.hm th:first-child { text-align: left; }
+table.t.hm td small { display: block; margin: 2px 0 0; font-size: 10.5px; font-weight: 500; color: #555; }
+table.t.hm.bp { font-size: 12.5px; }
+table.t.hm.bp th { font-size: 12.5px; line-height: 1.1; }
+table.t.hm tr.tt td small { color: #111; }
+td.hm-up2 { background: #bfe3c9; color: #0b5e2f; }
+td.hm-up1 { background: #e8f4eb; color: #0f7b3e; }
+td.hm-dn1 { background: #fbe7e4; color: #b3261e; }
+td.hm-dn2 { background: #f2bdb6; color: #8e1c16; }
+td.hm-n { background: #eef3fb; color: #2a5ca8; }
+ul.b.tight { font-size: 13px; line-height: 1.32; }
+ul.b.tight li { margin-bottom: 6px; }
+table.t.mb { font-size: 12px; }
+table.t.mb th { font-size: 12.5px; padding: 4px 5px; }
+table.t.mb td { padding: 3.5px 5px; }
+table.t.mb.xs { font-size: 11.5px; }
+table.t.mb.xs th { font-size: 12px; padding: 3px 5px; }
+table.t.mb.xs td { padding: 2.5px 5px; }
+.note2 { font-size: 12.5px; line-height: 1.32; margin-top: 7px; }
+.note2 b { font-weight: 700; }
+table.t.hm.cmp td { padding: 3px 4px; }
+table.t.hm.cmp th { padding: 4px; }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 12.5px; color: #444; margin: 0 0 6px; }
+.legend i { display: inline-block; width: 18px; height: 0; border-top: 3px solid; vertical-align: 3px; margin-right: 6px; }
+.legend i.sq { width: 12px; height: 12px; border: none; vertical-align: -1px; }
+.box { position: relative; }
+/* portada */
+.cover { padding: 0; background: #fff; }
+.cover .panel { position: absolute; left: 48px; top: 120px; width: 600px; bottom: 0; background: var(--k); border-top-right-radius: 120px; color: #fff; padding: 70px 48px; }
+.cover .panel h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 84px; line-height: .98; margin: 0 0 26px; text-transform: uppercase; }
+.cover .panel h2 span { color: var(--y); }
+.cover .panel p { font-size: 22px; font-weight: 300; margin: 6px 0; color: #e6e6e6; }
+.cover .brand { position: absolute; left: 48px; top: 40px; font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 30px; letter-spacing: .12em; }
+.cover .tag { position: absolute; right: 48px; top: 40px; background: var(--k); color: var(--y); font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 18px; padding: 8px 18px; border-radius: 0 0 0 24px; letter-spacing: .1em; }
+.cover .big { position: absolute; right: 70px; top: 190px; width: 470px; display: flex; flex-direction: column; gap: 22px; }
+.cover .big .k { border-left: 10px solid var(--y); padding: 4px 0 4px 20px; }
+.cover .big .k .v { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 64px; line-height: 1; }
+.cover .big .k .l { font-size: 16px; color: #444; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<!-- 1 · PORTADA -->
+<section class="slide cover">
+  <div class="brand">BACKUS</div>
+  <div class="tag">DIRECCIÓN LIMA</div>
+  <div class="panel">
+    <h2>Overview<br><span>Lima</span></h2>
+    <p>Volumen y Brand Distribution por gerencia, marca y brandpack</p>
+    <p>YTD 2026 a mes cerrado · Beer+Rtds</p>
+    <p style="margin-top:40px;font-size:16px;color:#9a9a9a">Corte 20.11.26</p>
+  </div>
+  <div class="big">
+    <div class="k"><div class="v up">+12.1%</div><div class="l">Volumen Beer+Rtds Ene-Oct vs 2025 (+385.6 mil HL)</div></div>
+    <div class="k"><div class="v up">+6.2%</div><div class="l">Brand Distribution Ene-Set vs 2025 (+181.2 mil)</div></div>
+  </div>
+</section>
+
+<!-- 2 · RESUMEN -->
+<section class="slide">
+  <div class="ybar"></div>
+  <h1 class="hd">Lima crece en volumen al doble de ritmo que en Brand Distribution</h1>
+  <div class="cols" style="grid-template-columns: 360px 1fr; gap: 22px;">
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="blk">
+        <div class="n">3,560.6<small>mil HL</small></div>
+        <div class="t">Volumen Beer+Rtds Ene-Oct 2026</div>
+        <div class="t2">vs LY <b>+12.1% (+385.6)</b> · vs 2024 <b>+11.4%</b> · vs 2023 <b>+2.5%</b></div>
+      </div>
+      <div class="blk">
+        <div class="n">3,087.4<small>mil</small></div>
+        <div class="t">Brand Distribution Ene-Set 2026</div>
+        <div class="t2">vs LY <b>+6.2% (+181.2)</b> · vs 2024 <b>+5.9%</b> · vs 2023 <b>+3.2%</b></div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="ch">Highlights</div>
+      <div class="cb">
+        <ul class="b">
+          <li><b>Volumen en Beer+Rtds +12.1% (+385.6 mil HL)</b> y por encima de 2023 (+2.5%): Lima recupera las caídas de 2024 y 2025.</li>
+          <li><b>Lima Centro y Lima Este explican el 43% del crecimiento en volumen</b>: ambas crecen alrededor de +20% (+84 mil HL cada una).</li>
+          <li><b>Lima Norte y Lima Oeste siguen debajo de 2023</b> en volumen (−6.1% y −8.5%) pese a crecer +12% vs LY: parte del crecimiento es rebote de base baja.</li>
+          <li><b>Mayoristas y Eventos crece solo +4.3%</b> con el 24% del volumen: es la gerencia que más frena el total, aunque ya está +13% sobre 2023.</li>
+          <li><b>Brand Distribution +6.2% (+181.2 mil)</b>, liderado por Lima Sur (+10.0%, 31% del aporte).</li>
+          <li class="r"><b>Brand Distribution se apaga en Ago-Set</b> (+2.6% y −0.1% vs LY) después de un Jun-Jul muy fuerte (+17% y +21%), mientras el volumen sigue creciendo a doble dígito.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="bar"><b>LECTURA</b>Lima crece más en profundidad (más volumen) que en amplitud de portafolio por cliente</div>
+  <div class="foot"><span class="src">Fuente: dm_venta y pe_portfolio_hm_brand_distribution (Databricks), corte 20.11.26. Beer+Rtds = Cervezas + Licores + Ready To Drink.</span><span>2</span></div>
+</section>
+
+<!-- 3 · VOLUMEN MENSUAL -->
+<section class="slide">
+  <div class="ybar"></div>
+  <h1 class="hd">Volumen Beer+Rtds: 9 de 10 meses sobre 2025, con pico en Jun-Jul</h1>
+  <div class="cols" style="grid-template-columns: 1fr 380px; gap: 22px;">
+    <div class="col">
+      <div class="ch">Volumen mensual Beer+Rtds (mil HL)</div>
+      <div class="cb">
+        <div class="legend"><span><i style="border-color:#111"></i>2026</span><span><i style="border-color:#d4c600"></i>2025</span><span><i style="border-color:#9a9a9a"></i>2024</span><span><i style="border-color:#cfcfcf;border-top-style:dashed"></i>2023</span></div>
+        <div class="box" style="height:400px"><canvas id="cVol"></canvas></div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="ch">Qué se ve</div>
+      <div class="cb">
+        <ul class="b">
+          <li><b>Jul +37.0% vs LY</b> (389.8 mil HL) y <b>Jun +22.9%</b>: los meses que más crecen, contra una base 2025 muy débil (Jun-Jul 2025 están entre los meses más bajos de la serie).</li>
+          <li>Aun contra 2023, Jul 2026 está <b>+17.1%</b>: no es solo rebote.</li>
+          <li><b>Abr es el único mes en negativo</b> (−2.8% vs LY).</li>
+          <li><b>Oct cierra +16.8%</b> (367.9 mil HL): el último trimestre arranca acelerando.</li>
+          <li class="k">Mar 2026 (396.1 mil HL) es el mes más alto de toda la serie 2023-2026.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="src">Fuente: dm_venta (Databricks), indicadores_comerciales = 1, gerencia vigente del cliente (dm_cliente). Ene-Oct de cada año.</span><span>3</span></div>
+</section>
+
+<!-- 4 · VOLUMEN POR GERENCIA -->
+<section class="slide">
+  <div class="ybar"></div>
+  <h1 class="hd">Volumen por gerencia: Centro y Este lideran, Mayoristas y Eventos frena</h1>
+  <div class="cols" style="grid-template-columns: 1fr 400px; gap: 22px;">
+    <div class="col">
+      <div class="ch">Volumen Beer+Rtds Ene-Oct (mil HL)</div>
+      <div class="cb">
+        <table class="t">
+          <thead><tr><th>Gerencia</th><th>2026</th><th>Δ vs LY</th><th>vs LY</th><th>vs 2024</th><th>vs 2023</th><th>Peso</th></tr></thead>
+          <tbody>
+            <tr><td>Mayoristas y Eventos</td><td>852.3</td><td class="up">+35.5</td><td class="up">+4.3%</td><td class="up">+15.1%</td><td class="up">+13.2%</td><td>23.9%</td></tr>
+            <tr><td>Lima Norte</td><td>579.7</td><td class="up">+63.9</td><td class="up">+12.4%</td><td class="up">+7.1%</td><td class="dn">−6.1%</td><td>16.3%</td></tr>
+            <tr><td>Lima Sur</td><td>531.0</td><td class="up">+58.1</td><td class="up">+12.3%</td><td class="up">+8.8%</td><td class="up">+1.6%</td><td>14.9%</td></tr>
+            <tr><td>Lima Centro</td><td>500.8</td><td class="up">+84.2</td><td class="up">+20.2%</td><td class="up">+15.4%</td><td class="up">+4.3%</td><td>14.1%</td></tr>
+            <tr><td>Lima Este</td><td>468.2</td><td class="up">+83.5</td><td class="up">+21.7%</td><td class="up">+16.8%</td><td class="up">+6.3%</td><td>13.2%</td></tr>
+            <tr><td>Lima Oeste</td><td>439.2</td><td class="up">+46.4</td><td class="up">+11.8%</td><td class="up">+3.4%</td><td class="dn">−8.5%</td><td>12.3%</td></tr>
+            <tr><td>Central KA</td><td>189.4</td><td class="up">+14.0</td><td class="up">+8.0%</td><td class="up">+12.4%</td><td class="up">+5.3%</td><td>5.3%</td></tr>
+            <tr class="tt"><td>Total Lima</td><td>3,560.6</td><td>+385.6</td><td>+12.1%</td><td>+11.4%</td><td>+2.5%</td><td>100%</td></tr>
+          </tbody>
+        </table>
+        <ul class="b" style="margin-top:16px">
+          <li><b>Norte y Oeste:</b> crecen +12% vs LY, pero siguen 6-9% debajo de 2023. Son las gerencias con más volumen por recuperar.</li>
+          <li><b>Mayoristas y Eventos:</b> es la más grande y la que menos crece vs LY; viene de un 2025 alto (+10% vs 2024).</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col">
+      <div class="ch">Aporte al crecimiento vs LY</div>
+      <div class="cb">
+        <div class="box" style="height:430px"><canvas id="cVolAp"></canvas></div>
+        <div class="cap">% del crecimiento total de Lima (+385.6 mil HL) que explica cada gerencia.</div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="src">Fuente: dm_venta (Databricks), gerencia vigente del cliente (dm_cliente). Beer+Rtds, Ene-Oct.</span><span>4</span></div>
+</section>
+
+<!-- 5 · BD MENSUAL -->
+<section class="slide">
+  <div class="ybar"></div>
+  <h1 class="hd">Brand Distribution: el crecimiento se concentró en Jun-Jul y se frena en Ago-Set</h1>
+  <div class="cols" style="grid-template-columns: 1fr 380px; gap: 22px;">
+    <div class="col">
+      <div class="ch">Brand Distribution mensual (mil)</div>
+      <div class="cb">
+        <div class="legend"><span><i style="border-color:#111"></i>2026</span><span><i style="border-color:#d4c600"></i>2025</span><span><i style="border-color:#9a9a9a"></i>2024</span><span><i style="border-color:#cfcfcf;border-top-style:dashed"></i>2023</span></div>
+        <div class="box" style="height:400px"><canvas id="cBd"></canvas></div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="ch">Qué se ve</div>
+      <div class="cb">
+        <ul class="b">
+          <li><b>Jun +17.0% y Jul +21.3% vs LY</b>: esos dos meses explican el <b>63%</b> del crecimiento de Brand Distribution del año (+114.5 de +181.2 mil).</li>
+          <li class="r"><b>Ago +2.6% y Set −0.1%</b>: Brand Distribution vuelve al nivel de 2025, mientras el volumen de esos meses crece +10% y +14%.</li>
+          <li><b>Feb es el otro mes negativo</b> (−1.2%).</li>
+          <li class="k">Lima solo reporta SELLIN. Octubre 2026 queda fuera porque la tabla aún está en carga parcial y marcaría una caída que no es real.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="src">Fuente: pe_portfolio_hm_brand_distribution (Databricks), SELLIN, Beer+Rtds. Ene-Set de cada año.</span><span>5</span></div>
+</section>
+
+<!-- 6 · BD POR GERENCIA -->
+<section class="slide">
+  <div class="ybar"></div>
+  <h1 class="hd">Brand Distribution por gerencia: Lima Sur aporta casi un tercio</h1>
+  <div class="cols" style="grid-template-columns: 1fr 400px; gap: 22px;">
+    <div class="col">
+      <div class="ch">Brand Distribution Ene-Set (mil)</div>
+      <div class="cb">
+        <table class="t">
+          <thead><tr><th>Gerencia</th><th>2026</th><th>Δ vs LY</th><th>vs LY</th><th>vs 2024</th><th>vs 2023</th><th>Peso</th></tr></thead>
+          <tbody>
+            <tr><td>Lima Norte</td><td>703.1</td><td class="up">+35.1</td><td class="up">+5.3%</td><td class="up">+6.7%</td><td class="up">+1.6%</td><td>22.8%</td></tr>
+            <tr><td>Lima Sur</td><td>628.2</td><td class="up">+56.9</td><td class="up">+10.0%</td><td class="up">+8.8%</td><td class="up">+6.0%</td><td>20.3%</td></tr>
+            <tr><td>Lima Este</td><td>577.7</td><td class="up">+34.1</td><td class="up">+6.3%</td><td class="up">+7.6%</td><td class="up">+5.6%</td><td>18.7%</td></tr>
+            <tr><td>Lima Centro</td><td>572.6</td><td class="up">+30.7</td><td class="up">+5.7%</td><td class="up">+3.7%</td><td class="up">+2.3%</td><td>18.5%</td></tr>
+            <tr><td>Lima Oeste</td><td>566.5</td><td class="up">+22.3</td><td class="up">+4.1%</td><td class="up">+2.9%</td><td class="up">+0.6%</td><td>18.3%</td></tr>
+            <tr><td>Mayoristas y Eventos</td><td>39.3</td><td class="up">+1.9</td><td class="up">+5.2%</td><td class="up">+2.2%</td><td class="up">+4.9%</td><td>1.3%</td></tr>
+            <tr class="tt"><td>Total Lima</td><td>3,087.4</td><td>+181.2</td><td>+6.2%</td><td>+5.9%</td><td>+3.2%</td><td>100%</td></tr>
+          </tbody>
+        </table>
+        <ul class="b" style="margin-top:16px">
+          <li><b>Lima Sur:</b> única gerencia que crece a doble dígito (+10.0%) y la de mejor tendencia vs 2023 (+6.0%).</li>
+          <li><b>Lima Oeste:</b> la de menor crecimiento (+4.1%) y prácticamente igual a 2023 (+0.6%).</li>
+          <li class="k">Central KA no tiene Brand Distribution.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col">
+      <div class="ch">Aporte al crecimiento vs LY</div>
+      <div class="cb">
+        <div class="box" style="height:430px"><canvas id="cBdAp"></canvas></div>
+        <div class="cap">% del crecimiento total de Lima (+181.2 mil) que explica cada gerencia.</div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="src">Fuente: pe_portfolio_hm_brand_distribution (Databricks), SELLIN, Beer+Rtds, Ene-Set. Gerencia según la tabla de Brand Distribution.</span><span>6</span></div>
+</section>
+
+<!-- 7 · LECTURA CRUZADA -->
+<section class="slide">
+  <div class="ybar"></div>
+  <h1 class="hd">Volumen vs Brand Distribution: en todas las gerencias el volumen crece más</h1>
+  <div class="cols" style="grid-template-columns: 1fr 400px; gap: 22px;">
+    <div class="col">
+      <div class="ch">Crecimiento vs LY por gerencia (%)</div>
+      <div class="cb">
+        <div class="legend"><span><i class="sq" style="background:#111"></i>Volumen Beer+Rtds (Ene-Oct)</span><span><i class="sq" style="background:#FFF200;outline:1px solid #b5ab00"></i>Brand Distribution (Ene-Set)</span></div>
+        <div class="box" style="height:420px"><canvas id="cCross"></canvas></div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="ch">Lectura</div>
+      <div class="cb">
+        <ul class="b">
+          <li><b>Lima Este y Lima Centro</b> crecen +20% en volumen pero solo +6% en Brand Distribution: venden más de los mismos SKUs, sin ampliar el portafolio por cliente.</li>
+          <li><b>Lima Sur es la más equilibrada</b> (+12.3% volumen, +10.0% Brand Distribution): crece en ambas dimensiones.</li>
+          <li><b>Lima Norte y Lima Oeste</b> repiten el patrón de Este y Centro a menor escala (+12% vs +4-5%).</li>
+          <li class="r"><b>Punto de atención:</b> con Brand Distribution plano en Ago-Set, el crecimiento de cierre de año depende casi solo del volumen por SKU.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="bar"><b>A VALIDAR</b>Si el crecimiento sin amplitud viene de precio, mix de packs o pocos clientes grandes</div>
+  <div class="foot"><span class="src">Fuente: dm_venta y pe_portfolio_hm_brand_distribution (Databricks), corte 20.11.26. Mayoristas y Eventos y Central KA sin Brand Distribution comparable.</span><span>7</span></div>
+</section>
+
+
+<!-- 8 · MARCAS DIRECCION -->
+<section class="slide">
+  <div class="ybar"></div>
+  <h1 class="hd">Marcas: Pilsen Callao explica el 69% del crecimiento en volumen y Mike's el 82% del de Brand Distribution</h1>
+  <table class="t sm">
+    <thead>
+      <tr><th></th><th colspan="7" class="gh">Volumen Beer+Rtds · Ene-Oct (mil HL)</th><th colspan="3" class="gh bl">Brand Distribution · Ene-Set (mil)</th></tr>
+      <tr><th>Marca</th><th>2026</th><th>Δ vs LY</th><th>vs LY</th><th>vs 2024</th><th>vs 2023</th><th>Mix</th><th>Δ mix</th><th class="bl">2026</th><th>Δ vs LY</th><th>vs LY</th></tr>
+    </thead>
+    <tbody>
+<tr><td>P.Callao</td><td>2,375.1</td><td class="up">+267.5</td><td class="up">+12.7%</td><td class="up">+7.8%</td><td class="dn">−4.4%</td><td>66.7%</td><td class="up">+0.3 pp</td><td class="bl">1,191.7</td><td class="up">+25.1</td><td class="up">+2.2%</td></tr>
+<tr><td>Cusqueña</td><td>522.3</td><td class="up">+6.5</td><td class="up">+1.3%</td><td class="up">+21.8%</td><td class="up">+30.5%</td><td>14.7%</td><td class="dn">−1.6 pp</td><td class="bl">919.0</td><td class="dn">−39.5</td><td class="dn">−4.1%</td></tr>
+<tr><td>Cristal</td><td>330.0</td><td class="up">+4.0</td><td class="up">+1.2%</td><td class="dn">−12.0%</td><td class="dn">−17.3%</td><td>9.3%</td><td class="dn">−1.0 pp</td><td class="bl">305.0</td><td class="up">+12.2</td><td class="up">+4.2%</td></tr>
+<tr><td>Mike's</td><td>134.2</td><td class="up">+74.6</td><td class="up">+125.1%</td><td class="up">+301.7%</td><td class="up">+457.0%</td><td>3.8%</td><td class="up">+1.9 pp</td><td class="bl">348.2</td><td class="up">+149.4</td><td class="up">+75.1%</td></tr>
+<tr><td>Corona</td><td>81.8</td><td class="up">+10.9</td><td class="up">+15.4%</td><td class="up">+22.1%</td><td class="up">+23.1%</td><td>2.3%</td><td class="up">+0.1 pp</td><td class="bl">163.3</td><td class="up">+20.1</td><td class="up">+14.0%</td></tr>
+<tr><td>Golden</td><td>52.2</td><td class="up">+5.5</td><td class="up">+11.7%</td><td class="dn">−7.5%</td><td class="up">+5.1%</td><td>1.5%</td><td class="mut">0.0 pp</td><td class="bl">89.7</td><td class="dn">−18.2</td><td class="dn">−16.9%</td></tr>
+<tr><td>Kauffmann</td><td>25.0</td><td class="dn">−1.9</td><td class="dn">−7.0%</td><td class="up">+862.6%</td><td class="up">+599.5%</td><td>0.7%</td><td class="dn">−0.1 pp</td><td class="bl">—</td><td class="mut">—</td><td class="mut">—</td></tr>
+<tr><td>Budweiser</td><td>13.8</td><td class="up">+6.2</td><td class="up">+81.4%</td><td class="up">+286.3%</td><td class="up">+21.3%</td><td>0.4%</td><td class="up">+0.1 pp</td><td class="bl">7.3</td><td class="up">+2.4</td><td class="up">+50.1%</td></tr>
+<tr><td>Stella Artois</td><td>11.0</td><td class="up">+0.6</td><td class="up">+5.8%</td><td class="dn">−10.6%</td><td class="dn">−27.8%</td><td>0.3%</td><td class="mut">0.0 pp</td><td class="bl">17.1</td><td class="up">+0.6</td><td class="up">+3.6%</td></tr>
+<tr><td>Flying Fish</td><td>8.5</td><td class="up">+6.8</td><td class="up">+407.4%</td><td class="mut">nuevo</td><td class="mut">nuevo</td><td>0.2%</td><td class="up">+0.2 pp</td><td class="bl">41.8</td><td class="up">+30.1</td><td class="up">+257.5%</td></tr>
+<tr><td>Otras</td><td>6.7</td><td class="up">+4.9</td><td class="mut">—</td><td class="mut">—</td><td class="mut">—</td><td>0.2%</td><td class="mut">—</td><td class="bl">4.2</td><td class="dn">−1.0</td><td class="mut">—</td></tr>
+<tr class="tt"><td>Total Lima</td><td>3,560.6</td><td>+385.6</td><td>+12.1%</td><td>+11.4%</td><td>+2.5%</td><td>100%</td><td></td><td class="bl">3,087.4</td><td>+181.2</td><td>+6.2%</td></tr>
+    </tbody>
+  </table>
+  <div class="cols" style="grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px;">
+    <ul class="b">
+      <li><b>Pilsen Callao +267.5 mil HL (+12.7%)</b>: 69% del crecimiento de Lima y gana +0.3 pp de mix. En Brand Distribution sube solo +2.2%: vende más a los mismos clientes.</li>
+      <li><b>Mike's +74.6 mil HL (+125%) y +149.4 mil de Brand Distribution (+75%)</b>. Sin Mike's, el Brand Distribution de Lima crecería apenas +1.2%.</li>
+      <li><b>Corona crece en ambas</b>: +15.4% en volumen y +14.0% en Brand Distribution.</li>
+    </ul>
+    <ul class="b">
+      <li class="r"><b>Cusqueña y Cristal, planas en volumen</b> (+1.3% y +1.2%), pierden 1.6 y 1.0 pp de mix. Cusqueña es la que más cae en Brand Distribution (−39.5 mil, −4.1%).</li>
+      <li class="r"><b>Golden se concentra</b>: volumen +11.7%, pero Brand Distribution −16.9%. La compran menos clientes, en mayor cantidad.</li>
+      <li class="k"><b>Flying Fish</b> ya suma 41.8 mil de Brand Distribution (+30.1 mil) con solo 8.5 mil HL: entra en muchos clientes con poco volumen.</li>
+    </ul>
+  </div>
+  <div class="foot"><span class="src">Fuente: dm_venta y pe_portfolio_hm_brand_distribution (Databricks), corte 20.11.26. Marca según pe_portfolio_material. Mix = volumen de la marca / volumen Beer+Rtds.</span><span>8</span></div>
+</section>
+
+<!-- 9 · MARCAS x GV VOLUMEN -->
+<section class="slide">
+  <div class="ybar"></div>
+  <h1 class="hd">Marcas por gerencia (volumen): Pilsen Callao crece en todas, Cusqueña y Cristal se estancan</h1>
+  <div class="cols" style="grid-template-columns: 1fr 400px; gap: 22px;">
+    <div class="col">
+      <div class="ch">Volumen Beer+Rtds Ene-Oct · % vs LY (Δ mil HL)</div>
+      <div class="cb">
+        <table class="t hm">
+          <thead><tr><th>Gerencia</th><th>P.Callao</th><th>Cusqueña</th><th>Cristal</th><th>Mike's</th><th>Corona</th><th>Golden</th><th>Total</th></tr></thead>
+          <tbody>
+<tr><td>Lima Norte</td><td class="hm-up2">+19%<small>+52.6</small></td><td class="hm-dn1">−1%<small>−1.0</small></td><td class="hm-dn1">−1%<small>−1.6</small></td><td class="hm-up2">+147%<small>+9.5</small></td><td class="hm-up2">+29%<small>+2.0</small></td><td class="hm-up1">+9%<small>+0.7</small></td><td class="hm-up1">+12%<small>+63.9</small></td></tr>
+<tr><td>Lima Sur</td><td class="hm-up1">+9%<small>+31.0</small></td><td class="hm-up1">+3%<small>+2.0</small></td><td class="hm-up1">+10%<small>+3.1</small></td><td class="hm-up2">+184%<small>+11.5</small></td><td class="hm-up2">+59%<small>+5.7</small></td><td class="hm-up1">+11%<small>+0.6</small></td><td class="hm-up1">+12%<small>+58.1</small></td></tr>
+<tr><td>Lima Centro</td><td class="hm-up2">+25%<small>+69.4</small></td><td class="hm-up1">+0%<small>+0.3</small></td><td class="hm-up1">+2%<small>+0.7</small></td><td class="hm-up2">+102%<small>+6.8</small></td><td class="hm-up2">+25%<small>+2.6</small></td><td class="hm-up2">+18%<small>+1.1</small></td><td class="hm-up2">+20%<small>+84.2</small></td></tr>
+<tr><td>Lima Este</td><td class="hm-up2">+25%<small>+57.8</small></td><td class="hm-up1">+8%<small>+6.0</small></td><td class="hm-up1">+8%<small>+3.5</small></td><td class="hm-up2">+165%<small>+9.5</small></td><td class="hm-up2">+20%<small>+1.9</small></td><td class="hm-up2">+27%<small>+1.5</small></td><td class="hm-up2">+22%<small>+83.5</small></td></tr>
+<tr><td>Lima Oeste</td><td class="hm-up1">+12%<small>+35.3</small></td><td class="hm-up1">+2%<small>+1.2</small></td><td class="hm-dn1">−4%<small>−0.9</small></td><td class="hm-up2">+119%<small>+5.8</small></td><td class="hm-up2">+34%<small>+2.4</small></td><td class="hm-up1">+4%<small>+0.2</small></td><td class="hm-up1">+12%<small>+46.4</small></td></tr>
+<tr><td>May. y Eventos</td><td class="hm-up1">+3%<small>+18.4</small></td><td class="hm-dn1">−3%<small>−3.6</small></td><td class="hm-dn1">−5%<small>−3.5</small></td><td class="hm-up2">+113%<small>+23.7</small></td><td class="hm-dn1">−7%<small>−0.9</small></td><td class="hm-up1">+6%<small>+0.5</small></td><td class="hm-up1">+4%<small>+35.5</small></td></tr>
+<tr><td>Central KA</td><td class="hm-up1">+4%<small>+3.0</small></td><td class="hm-up1">+5%<small>+1.5</small></td><td class="hm-up2">+58%<small>+2.6</small></td><td class="hm-up2">+91%<small>+7.7</small></td><td class="hm-dn2">−21%<small>−2.8</small></td><td class="hm-up1">+11%<small>+0.8</small></td><td class="hm-up1">+8%<small>+14.0</small></td></tr>
+<tr class="tt"><td>Total Lima</td><td class="hm-up1">+13%<small>+267.5</small></td><td class="hm-up1">+1%<small>+6.5</small></td><td class="hm-up1">+1%<small>+4.0</small></td><td class="hm-up2">+125%<small>+74.6</small></td><td class="hm-up2">+15%<small>+10.9</small></td><td class="hm-up1">+12%<small>+5.5</small></td><td class="hm-up1">+12%<small>+385.6</small></td></tr>
+          </tbody>
+        </table>
+        <div class="cap">Verde intenso: +15% o más · verde claro: 0% a +15% · rojo claro: 0% a −10% · rojo intenso: −10% o menos.</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="ch">Insights</div>
+      <div class="cb">
+        <ul class="b">
+          <li><b>Lima Centro y Lima Este crecen con Pilsen Callao</b> (+25% en ambas): explica el 82% y el 69% de su crecimiento.</li>
+          <li class="r"><b>Lima Norte</b> es la gerencia más grande de Cristal (118 mil HL, 36% de Lima) y ahí Cristal cae −1.3%; Cusqueña también cae (−1.0%).</li>
+          <li><b>Mayoristas y Eventos crece por Mike's</b> (+23.7 mil HL), más que por Pilsen Callao (+18.4). Cusqueña, Cristal y Corona caen.</li>
+          <li><b>Lima Sur es la más pareja</b>: crecen todas sus marcas grandes y Corona sube +59%.</li>
+          <li class="r"><b>Central KA</b>: Corona −21% (−2.8 mil HL).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="src">Fuente: dm_venta (Databricks), gerencia vigente del cliente (dm_cliente). Marca según pe_portfolio_material.</span><span>9</span></div>
+</section>
+
+<!-- 10 · MARCAS x GV BD -->
+<section class="slide">
+  <div class="ybar"></div>
+  <h1 class="hd">Marcas por gerencia (Brand Distribution): Mike's empuja en todas, Cusqueña y Golden retroceden</h1>
+  <div class="cols" style="grid-template-columns: 1fr 400px; gap: 22px;">
+    <div class="col">
+      <div class="ch">Brand Distribution Ene-Set · % vs LY (Δ mil)</div>
+      <div class="cb">
+        <table class="t hm">
+          <thead><tr><th>Gerencia</th><th>P.Callao</th><th>Cusqueña</th><th>Cristal</th><th>Mike's</th><th>Corona</th><th>Golden</th><th>Total</th></tr></thead>
+          <tbody>
+<tr><td>Lima Norte</td><td class="hm-up1">+4%<small>+10.7</small></td><td class="hm-dn1">−8%<small>−16.6</small></td><td class="hm-up1">+1%<small>+1.1</small></td><td class="hm-up2">+74%<small>+34.1</small></td><td class="hm-up1">+6%<small>+1.7</small></td><td class="hm-dn2">−16%<small>−4.3</small></td><td class="hm-up1">+5%<small>+35.1</small></td></tr>
+<tr><td>Lima Sur</td><td class="hm-up1">+3%<small>+7.8</small></td><td class="hm-up1">+1%<small>+1.6</small></td><td class="hm-up2">+21%<small>+8.5</small></td><td class="hm-up2">+82%<small>+29.9</small></td><td class="hm-up2">+28%<small>+7.2</small></td><td class="hm-dn2">−23%<small>−5.0</small></td><td class="hm-up1">+10%<small>+56.9</small></td></tr>
+<tr><td>Lima Centro</td><td class="hm-up1">+2%<small>+3.4</small></td><td class="hm-dn1">−4%<small>−6.8</small></td><td class="hm-up1">+1%<small>+0.4</small></td><td class="hm-up2">+75%<small>+27.6</small></td><td class="hm-up1">+13%<small>+3.6</small></td><td class="hm-dn2">−14%<small>−2.6</small></td><td class="hm-up1">+6%<small>+30.7</small></td></tr>
+<tr><td>Lima Este</td><td class="hm-up1">+2%<small>+5.1</small></td><td class="hm-dn1">−5%<small>−9.2</small></td><td class="hm-up1">+1%<small>+0.6</small></td><td class="hm-up2">+74%<small>+30.2</small></td><td class="hm-up1">+13%<small>+3.8</small></td><td class="hm-dn2">−12%<small>−2.3</small></td><td class="hm-up1">+6%<small>+34.1</small></td></tr>
+<tr><td>Lima Oeste</td><td class="hm-dn1">−1%<small>−3.0</small></td><td class="hm-dn1">−4%<small>−7.4</small></td><td class="hm-up1">+6%<small>+2.0</small></td><td class="hm-up2">+72%<small>+25.6</small></td><td class="hm-up1">+14%<small>+3.8</small></td><td class="hm-dn2">−17%<small>−3.5</small></td><td class="hm-up1">+4%<small>+22.3</small></td></tr>
+<tr><td>May. y Eventos</td><td class="hm-up1">+10%<small>+1.1</small></td><td class="hm-dn1">−9%<small>−1.1</small></td><td class="hm-dn1">−4%<small>−0.2</small></td><td class="hm-up2">+66%<small>+2.0</small></td><td class="hm-up1">+2%<small>+0.1</small></td><td class="hm-dn2">−35%<small>−0.4</small></td><td class="hm-up1">+5%<small>+1.9</small></td></tr>
+<tr class="tt"><td>Total Lima</td><td class="hm-up1">+2%<small>+25.1</small></td><td class="hm-dn1">−4%<small>−39.5</small></td><td class="hm-up1">+4%<small>+12.2</small></td><td class="hm-up2">+75%<small>+149.4</small></td><td class="hm-up1">+14%<small>+20.1</small></td><td class="hm-dn2">−17%<small>−18.2</small></td><td class="hm-up1">+6%<small>+181.2</small></td></tr>
+          </tbody>
+        </table>
+        <div class="cap">Central KA no tiene Brand Distribution. Misma escala de color que la slide anterior.</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="ch">Insights</div>
+      <div class="cb">
+        <ul class="b">
+          <li><b>Mike's crece entre +66% y +82% en todas las gerencias</b>: es el motor del Brand Distribution en cada una.</li>
+          <li class="r"><b>Cusqueña cae en 5 de 6 gerencias</b>. La peor es Lima Norte (−7.6%, −16.6 mil); solo Lima Sur sube (+0.9%).</li>
+          <li class="r"><b>Golden cae en las 6</b> (de −12% a −35%), aunque su volumen crece.</li>
+          <li><b>Lima Sur lidera porque suma Cristal (+21%) y Corona (+28%)</b>, además de Mike's.</li>
+          <li class="r"><b>Lima Oeste</b> es la única gerencia con Pilsen Callao en negativo (−1.2%).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="src">Fuente: pe_portfolio_hm_brand_distribution (Databricks), SELLIN, Beer+Rtds, Ene-Set. Gerencia según la tabla de Brand Distribution.</span><span>10</span></div>
+</section>
+
+
+<!-- MARCA -> BRANDPACK (1) -->
+<section class="slide">
+  <div class="ybar"></div>
+  <h1 class="hd">Marca → brandpack: Pilsen Callao crece con el 630 y la lata 473; Cusqueña se frena por su 620</h1>
+  <div class="cols" style="grid-template-columns: 1fr 1fr; gap: 18px;">
+    <div class="col">
+      <div class="ch">Pilsen Callao</div>
+      <div class="cb">
+        <table class="t mb">
+          <thead><tr><th></th><th colspan="5" class="gh">Volumen Ene-Oct (mil HL)</th><th colspan="3" class="gh bl">BD Ene-Set (mil)</th></tr>
+          <tr><th>Brandpack</th><th>2026</th><th>Δ LY</th><th>vs LY</th><th>Peso</th><th>Δ peso</th><th class="bl">2026</th><th>Δ LY</th><th>vs LY</th></tr></thead>
+          <tbody>
+<tr><td>630 RB</td><td>1,478.5</td><td class="up">+172.0</td><td class="up">+13.2%</td><td>62.3%</td><td class="up">+0.3 pp</td><td class="bl">479.8</td><td class="dn">−5.5</td><td class="dn">−1.1%</td></tr>
+<tr><td>473 CAN</td><td>346.7</td><td class="up">+85.9</td><td class="up">+32.9%</td><td>14.6%</td><td class="up">+2.2 pp</td><td class="bl">400.7</td><td class="up">+73.5</td><td class="up">+22.4%</td></tr>
+<tr><td>1000 RB</td><td>248.2</td><td class="dn">−27.1</td><td class="dn">−9.8%</td><td>10.5%</td><td class="dn">−2.6 pp</td><td class="bl">203.6</td><td class="dn">−21.6</td><td class="dn">−9.6%</td></tr>
+<tr><td>355 CAN</td><td>169.1</td><td class="up">+32.5</td><td class="up">+23.8%</td><td>7.1%</td><td class="up">+0.6 pp</td><td class="bl">66.2</td><td class="dn">−16.2</td><td class="dn">−19.6%</td></tr>
+<tr><td>305 RB</td><td>100.7</td><td class="dn">−0.9</td><td class="dn">−0.9%</td><td>4.2%</td><td class="dn">−0.6 pp</td><td class="bl">23.4</td><td class="dn">−16.2</td><td class="dn">−40.9%</td></tr>
+<tr><td>305 NRB</td><td>27.5</td><td class="up">+11.0</td><td class="up">+66.6%</td><td>1.2%</td><td class="up">+0.4 pp</td><td class="bl">16.0</td><td class="up">+10.6</td><td class="up">+198.7%</td></tr>
+<tr><td>269 CAN</td><td>3.3</td><td class="dn">−6.7</td><td class="dn">−67.2%</td><td>0.1%</td><td class="dn">−0.3 pp</td><td class="bl">2.0</td><td class="up">+0.4</td><td class="up">+24.7%</td></tr>
+<tr><td>Otros</td><td>1.2</td><td class="up">+0.8</td><td class="mut">—</td><td>0.0%</td><td class="mut">—</td><td class="bl">0.1</td><td class="up">+0.1</td><td class="mut">—</td></tr>
+<tr class="tt"><td>Total P.Callao</td><td>2,375.1</td><td>+267.5</td><td>+12.7%</td><td>100%</td><td></td><td class="bl">1,191.7</td><td>+25.1</td><td>+2.2%</td></tr>
+          </tbody>
+        </table>
+        <ul class="b tight" style="margin-top:10px">
+          <li><b>630 RB</b> pesa el 62% de la marca y aporta +172.0 de los +267.5 mil HL (64%), pero no suma clientes (−1.1% en BD).</li>
+          <li><b>473 CAN</b> gana +2.2 pp de peso y es el que más clientes suma (+73.5 mil BD). <b>1000 RB</b> pierde −2.6 pp.</li>
+          <li class="r"><b>355 CAN</b> crece +23.8% en volumen pero pierde −19.6% de clientes; <b>305 RB</b> cae −40.9% en BD.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col">
+      <div class="ch">Cusqueña</div>
+      <div class="cb">
+        <table class="t mb">
+          <thead><tr><th></th><th colspan="5" class="gh">Volumen Ene-Oct (mil HL)</th><th colspan="3" class="gh bl">BD Ene-Set (mil)</th></tr>
+          <tr><th>Brandpack</th><th>2026</th><th>Δ LY</th><th>vs LY</th><th>Peso</th><th>Δ peso</th><th class="bl">2026</th><th>Δ LY</th><th>vs LY</th></tr></thead>
+          <tbody>
+<tr><td>620 RB</td><td>340.5</td><td class="dn">−13.4</td><td class="dn">−3.8%</td><td>65.2%</td><td class="dn">−3.4 pp</td><td class="bl">464.2</td><td class="dn">−47.0</td><td class="dn">−9.2%</td></tr>
+<tr><td>473 CAN</td><td>96.2</td><td class="up">+24.8</td><td class="up">+34.8%</td><td>18.4%</td><td class="up">+4.6 pp</td><td class="bl">271.0</td><td class="up">+28.7</td><td class="up">+11.9%</td></tr>
+<tr><td>310 NRB</td><td>54.1</td><td class="up">+3.5</td><td class="up">+7.0%</td><td>10.4%</td><td class="up">+0.6 pp</td><td class="bl">103.6</td><td class="dn">−3.7</td><td class="dn">−3.4%</td></tr>
+<tr><td>355 CAN</td><td>23.6</td><td class="up">+0.5</td><td class="up">+2.0%</td><td>4.5%</td><td class="mut">0.0 pp</td><td class="bl">66.7</td><td class="up">+3.2</td><td class="up">+5.1%</td></tr>
+<tr><td>310 RB</td><td>7.9</td><td class="dn">−7.6</td><td class="dn">−49.0%</td><td>1.5%</td><td class="dn">−1.5 pp</td><td class="bl">13.5</td><td class="dn">−20.6</td><td class="dn">−60.4%</td></tr>
+<tr><td>Otros</td><td>0.0</td><td class="dn">−1.3</td><td class="mut">—</td><td>0.0%</td><td class="mut">—</td><td class="bl">0.0</td><td class="dn">−0.2</td><td class="mut">—</td></tr>
+<tr class="tt"><td>Total Cusqueña</td><td>522.3</td><td>+6.5</td><td>+1.3%</td><td>100%</td><td></td><td class="bl">919.0</td><td>−39.5</td><td>-4.1%</td></tr>
+          </tbody>
+        </table>
+        <ul class="b tight" style="margin-top:10px">
+          <li class="r"><b>620 RB</b> (65% de la marca) cae −13.4 mil HL y −47.0 mil de BD: explica por qué Cusqueña está plana.</li>
+          <li><b>473 CAN</b> compensa: +24.8 mil HL (+34.8%), +4.6 pp de peso y +28.7 mil de BD.</li>
+          <li class="r"><b>310 RB</b> casi desaparece (−49% en volumen, −60% en BD).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="src">Fuente: dm_venta y pe_portfolio_hm_brand_distribution (Databricks), corte 20.11.26. Peso = volumen del brandpack / volumen de su marca.</span><span>11</span></div>
+</section>
+
+<!-- MARCA -> BRANDPACK (2) -->
+<section class="slide">
+  <div class="ybar"></div>
+  <h1 class="hd">Marca → brandpack: en Cristal, Corona y Golden las latas compensan la caída de los retornables</h1>
+  <div class="cols" style="grid-template-columns: 1fr 1fr; gap: 12px 18px;">
+    <div class="col">
+      <div class="ch">Cristal</div>
+      <div class="cb">
+        <table class="t mb xs">
+          <thead><tr><th>Brandpack</th><th>2026</th><th>Δ LY</th><th>vs LY</th><th>Peso</th><th>Δ peso</th><th class="bl">BD 26</th><th>Δ LY</th><th>vs LY</th></tr></thead>
+          <tbody>
+<tr><td>650 RB</td><td>208.8</td><td class="dn">−15.1</td><td class="dn">−6.7%</td><td>63.3%</td><td class="dn">−5.4 pp</td><td class="bl">133.2</td><td class="dn">−8.3</td><td class="dn">−5.9%</td></tr>
+<tr><td>1000 RB</td><td>62.5</td><td class="dn">−12.1</td><td class="dn">−16.2%</td><td>18.9%</td><td class="dn">−3.9 pp</td><td class="bl">57.2</td><td class="dn">−12.3</td><td class="dn">−17.7%</td></tr>
+<tr><td>473 CAN</td><td>41.9</td><td class="up">+24.4</td><td class="up">+139.8%</td><td>12.7%</td><td class="up">+7.3 pp</td><td class="bl">108.4</td><td class="up">+35.9</td><td class="up">+49.4%</td></tr>
+<tr><td>355 CAN</td><td>13.9</td><td class="up">+6.9</td><td class="up">+98.3%</td><td>4.2%</td><td class="up">+2.1 pp</td><td class="bl">4.2</td><td class="dn">−2.6</td><td class="dn">−38.2%</td></tr>
+<tr><td>305 RB</td><td>2.9</td><td class="dn">−0.2</td><td class="dn">−7.0%</td><td>0.9%</td><td class="dn">−0.1 pp</td><td class="bl">1.9</td><td class="dn">−0.4</td><td class="dn">−17.7%</td></tr>
+<tr class="tt"><td>Total Cristal</td><td>330.0</td><td>+4.0</td><td>+1.2%</td><td>100%</td><td></td><td class="bl">305.0</td><td>+12.2</td><td>+4.2%</td></tr>
+          </tbody>
+        </table>
+        <div class="note2"><b>650 RB y 1000 RB pierden −27.2 mil HL</b>; las latas 473 (+140%) y 355 suman +31.3 mil HL y sostienen la marca.</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="ch">Corona</div>
+      <div class="cb">
+        <table class="t mb xs">
+          <thead><tr><th>Brandpack</th><th>2026</th><th>Δ LY</th><th>vs LY</th><th>Peso</th><th>Δ peso</th><th class="bl">BD 26</th><th>Δ LY</th><th>vs LY</th></tr></thead>
+          <tbody>
+<tr><td>330 NRB</td><td>44.8</td><td class="up">+4.9</td><td class="up">+12.4%</td><td>54.8%</td><td class="dn">−1.5 pp</td><td class="bl">84.0</td><td class="dn">−12.4</td><td class="dn">−12.9%</td></tr>
+<tr><td>210 NRB</td><td>27.0</td><td class="up">+6.6</td><td class="up">+32.1%</td><td>33.0%</td><td class="up">+4.2 pp</td><td class="bl">21.6</td><td class="dn">−1.4</td><td class="dn">−6.1%</td></tr>
+<tr><td>355 NRB</td><td>6.0</td><td class="up">+1.1</td><td class="up">+22.1%</td><td>7.4%</td><td class="up">+0.4 pp</td><td class="bl">26.6</td><td class="up">+6.3</td><td class="up">+30.8%</td></tr>
+<tr><td>473 CAN</td><td>3.8</td><td class="up">+3.8</td><td class="mut">nuevo</td><td>4.7%</td><td class="up">+4.7 pp</td><td class="bl">31.1</td><td class="up">+31.1</td><td class="mut">nuevo</td></tr>
+<tr><td>355 CAN</td><td>0.0</td><td class="dn">−5.6</td><td class="dn">−100.5%</td><td>0.0%</td><td class="dn">−7.9 pp</td><td class="bl">0.0</td><td class="dn">−3.4</td><td class="dn">−99.9%</td></tr>
+<tr><td>Otros</td><td>0.1</td><td class="up">+0.1</td><td class="mut">—</td><td>0.1%</td><td class="mut">—</td><td class="bl">0.0</td><td class="up">0.0</td><td class="mut">—</td></tr>
+<tr class="tt"><td>Total Corona</td><td>81.8</td><td>+10.9</td><td>+15.4%</td><td>100%</td><td></td><td class="bl">163.3</td><td>+20.1</td><td>+14.0%</td></tr>
+          </tbody>
+        </table>
+        <div class="note2"><b>473 CAN es nueva</b> y ya suma 31.1 mil de BD; la 210 NRB crece +32%. La 330 NRB crece en volumen, pero pierde clientes (−12.9%).</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="ch">Golden</div>
+      <div class="cb">
+        <table class="t mb xs">
+          <thead><tr><th>Brandpack</th><th>2026</th><th>Δ LY</th><th>vs LY</th><th>Peso</th><th>Δ peso</th><th class="bl">BD 26</th><th>Δ LY</th><th>vs LY</th></tr></thead>
+          <tbody>
+<tr><td>473 CAN</td><td>44.4</td><td class="up">+8.8</td><td class="up">+24.7%</td><td>85.1%</td><td class="up">+8.9 pp</td><td class="bl">80.6</td><td class="dn">−8.9</td><td class="dn">−10.0%</td></tr>
+<tr><td>650 RB</td><td>7.7</td><td class="up">+2.1</td><td class="up">+37.8%</td><td>14.7%</td><td class="up">+2.8 pp</td><td class="bl">8.3</td><td class="dn">−1.7</td><td class="dn">−17.1%</td></tr>
+<tr><td>355 CAN</td><td>0.1</td><td class="dn">−2.4</td><td class="dn">−95.8%</td><td>0.2%</td><td class="dn">−5.3 pp</td><td class="bl">0.7</td><td class="dn">−4.3</td><td class="dn">−86.4%</td></tr>
+<tr><td>620 RB</td><td>0.0</td><td class="dn">−2.3</td><td class="dn">−100.0%</td><td>0.0%</td><td class="dn">−4.9 pp</td><td class="bl">0.0</td><td class="dn">−3.1</td><td class="dn">−100.0%</td></tr>
+<tr><td>Otros</td><td>0.0</td><td class="dn">−0.7</td><td class="mut">—</td><td>0.0%</td><td class="mut">—</td><td class="bl">0.1</td><td class="dn">−0.1</td><td class="mut">—</td></tr>
+<tr class="tt"><td>Total Golden</td><td>52.2</td><td>+5.5</td><td>+11.7%</td><td>100%</td><td></td><td class="bl">89.7</td><td>−18.2</td><td>-16.9%</td></tr>
+          </tbody>
+        </table>
+        <div class="note2"><b>La caída de BD de Golden es de portafolio</b>: salen la 355 CAN y la 620 RB (−7.4 mil BD), y la 473 CAN crece en volumen (+24.7%) con menos clientes (−10%).</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="ch">Mike's</div>
+      <div class="cb">
+        <table class="t mb xs">
+          <thead><tr><th>Brandpack</th><th>2026</th><th>Δ LY</th><th>vs LY</th><th>Peso</th><th>Δ peso</th><th class="bl">BD 26</th><th>Δ LY</th><th>vs LY</th></tr></thead>
+          <tbody>
+<tr><td>355 CAN</td><td>134.0</td><td class="up">+74.8</td><td class="up">+126.4%</td><td>99.9%</td><td class="up">+0.6 pp</td><td class="bl">347.2</td><td class="up">+151.4</td><td class="up">+77.3%</td></tr>
+<tr><td>473 CAN</td><td>0.2</td><td class="dn">−0.3</td><td class="dn">−61.8%</td><td>0.1%</td><td class="dn">−0.6 pp</td><td class="bl">1.1</td><td class="dn">−2.0</td><td class="dn">−65.0%</td></tr>
+<tr class="tt"><td>Total Mike's</td><td>134.2</td><td>+74.6</td><td>+125.1%</td><td>100%</td><td></td><td class="bl">348.2</td><td>+149.4</td><td>+75.1%</td></tr>
+          </tbody>
+        </table>
+        <div class="note2"><b>Todo el crecimiento es la 355 CAN</b> (+74.8 mil HL y +151.4 mil de BD). La 473 CAN sale (−65% en BD).</div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="src">Fuente: dm_venta y pe_portfolio_hm_brand_distribution (Databricks), corte 20.11.26. Volumen Ene-Oct en mil HL; BD Ene-Set en miles.</span><span>12</span></div>
+</section>
+
+<!-- 11 · BRANDPACKS DIRECCION -->
+<section class="slide">
+  <div class="ybar"></div>
+  <h1 class="hd">Brandpacks: ganan las latas de 473 y Pilsen Callao 630; pierden los litros y Cristal 650</h1>
+  <table class="t sm">
+    <thead>
+      <tr><th></th><th colspan="7" class="gh">Volumen Beer+Rtds · Ene-Oct (mil HL)</th><th colspan="3" class="gh bl">Brand Distribution · Ene-Set (mil)</th></tr>
+      <tr><th>Brandpack</th><th>2026</th><th>Δ vs LY</th><th>vs LY</th><th>vs 2024</th><th>vs 2023</th><th>Mix</th><th>Δ mix</th><th class="bl">2026</th><th>Δ vs LY</th><th>vs LY</th></tr>
+    </thead>
+    <tbody>
+<tr><td>P.Callao 630 RB</td><td>1,478.5</td><td class="up">+172.0</td><td class="up">+13.2%</td><td class="up">+12.4%</td><td class="dn">−6.1%</td><td>41.5%</td><td class="up">+0.4 pp</td><td class="bl">479.8</td><td class="dn">−5.5</td><td class="dn">−1.1%</td></tr>
+<tr><td>P.Callao 473 CAN</td><td>346.7</td><td class="up">+85.9</td><td class="up">+32.9%</td><td class="up">+23.2%</td><td class="up">+41.1%</td><td>9.7%</td><td class="up">+1.5 pp</td><td class="bl">400.7</td><td class="up">+73.5</td><td class="up">+22.4%</td></tr>
+<tr><td>Cusqueña 620 RB</td><td>340.5</td><td class="dn">−13.4</td><td class="dn">−3.8%</td><td class="up">+14.5%</td><td class="up">+14.6%</td><td>9.6%</td><td class="dn">−1.6 pp</td><td class="bl">464.2</td><td class="dn">−47.0</td><td class="dn">−9.2%</td></tr>
+<tr><td>P.Callao 1000 RB</td><td>248.2</td><td class="dn">−27.1</td><td class="dn">−9.8%</td><td class="dn">−22.8%</td><td class="dn">−26.2%</td><td>7.0%</td><td class="dn">−1.7 pp</td><td class="bl">203.6</td><td class="dn">−21.6</td><td class="dn">−9.6%</td></tr>
+<tr><td>Cristal 650 RB</td><td>208.8</td><td class="dn">−15.1</td><td class="dn">−6.7%</td><td class="dn">−17.6%</td><td class="dn">−23.9%</td><td>5.9%</td><td class="dn">−1.2 pp</td><td class="bl">133.2</td><td class="dn">−8.3</td><td class="dn">−5.9%</td></tr>
+<tr><td>P.Callao 355 CAN</td><td>169.1</td><td class="up">+32.5</td><td class="up">+23.8%</td><td class="up">+15.4%</td><td class="dn">−10.0%</td><td>4.7%</td><td class="up">+0.4 pp</td><td class="bl">66.2</td><td class="dn">−16.2</td><td class="dn">−19.6%</td></tr>
+<tr><td>Mike's 355 CAN</td><td>134.0</td><td class="up">+74.8</td><td class="up">+126.4%</td><td class="up">+305.8%</td><td class="up">+456.2%</td><td>3.8%</td><td class="up">+1.9 pp</td><td class="bl">347.2</td><td class="up">+151.4</td><td class="up">+77.3%</td></tr>
+<tr><td>P.Callao 305 RB</td><td>100.7</td><td class="dn">−0.9</td><td class="dn">−0.9%</td><td class="dn">−7.3%</td><td class="dn">−9.8%</td><td>2.8%</td><td class="dn">−0.4 pp</td><td class="bl">23.4</td><td class="dn">−16.2</td><td class="dn">−40.9%</td></tr>
+<tr><td>Cusqueña 473 CAN</td><td>96.2</td><td class="up">+24.8</td><td class="up">+34.8%</td><td class="up">+180.6%</td><td class="mut">nuevo</td><td>2.7%</td><td class="up">+0.5 pp</td><td class="bl">271.0</td><td class="up">+28.7</td><td class="up">+11.9%</td></tr>
+<tr><td>Cristal 1000 RB</td><td>62.5</td><td class="dn">−12.1</td><td class="dn">−16.2%</td><td class="dn">−31.5%</td><td class="dn">−32.0%</td><td>1.8%</td><td class="dn">−0.6 pp</td><td class="bl">57.2</td><td class="dn">−12.3</td><td class="dn">−17.7%</td></tr>
+<tr><td>Cusqueña 310 NRB</td><td>54.1</td><td class="up">+3.5</td><td class="up">+7.0%</td><td class="up">+7.4%</td><td class="up">+16.1%</td><td>1.5%</td><td class="dn">−0.1 pp</td><td class="bl">103.6</td><td class="dn">−3.7</td><td class="dn">−3.4%</td></tr>
+<tr><td>Corona 330 NRB</td><td>44.8</td><td class="up">+4.9</td><td class="up">+12.4%</td><td class="up">+1.4%</td><td class="up">+296.6%</td><td>1.3%</td><td class="mut">0.0 pp</td><td class="bl">84.0</td><td class="dn">−12.4</td><td class="dn">−12.9%</td></tr>
+<tr><td>Golden 473 CAN</td><td>44.4</td><td class="up">+8.8</td><td class="up">+24.7%</td><td class="up">+6.6%</td><td class="up">+67.3%</td><td>1.2%</td><td class="up">+0.1 pp</td><td class="bl">80.6</td><td class="dn">−8.9</td><td class="dn">−10.0%</td></tr>
+<tr><td>Cristal 473 CAN</td><td>41.9</td><td class="up">+24.4</td><td class="up">+139.8%</td><td class="up">+158.7%</td><td class="up">+194.7%</td><td>1.2%</td><td class="up">+0.6 pp</td><td class="bl">108.4</td><td class="up">+35.9</td><td class="up">+49.4%</td></tr>
+<tr><td>Otros brandpacks</td><td>190.2</td><td class="up">+22.4</td><td class="up">+13.3%</td><td class="mut">—</td><td class="mut">—</td><td>5.3%</td><td class="mut">—</td><td class="bl">264.3</td><td class="up">+43.9</td><td class="up">+19.9%</td></tr>
+<tr class="tt"><td>Total Lima</td><td>3,560.6</td><td>+385.6</td><td>+12.1%</td><td>+11.4%</td><td>+2.5%</td><td>100%</td><td></td><td class="bl">3,087.4</td><td>+181.2</td><td>+6.2%</td></tr>
+    </tbody>
+  </table>
+  <div class="cols" style="grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 10px;">
+    <ul class="b tight">
+      <li><b>Pilsen Callao 630 RB +172.0 mil HL</b>: 45% del crecimiento de Lima. Su Brand Distribution baja −1.1%: crece por más cajas por cliente.</li>
+      <li><b>Latas de 473 +143.9 mil HL</b> (Pilsen Callao, Cusqueña, Cristal y Golden), y también suman clientes: Pilsen Callao 473 +73.5 mil y Cristal 473 +35.9 mil de Brand Distribution.</li>
+    </ul>
+    <ul class="b tight">
+      <li class="r"><b>Los litros caen</b>: Pilsen Callao 1000 RB −27.1 mil HL (−9.8%) y Cristal 1000 RB −12.1 (−16.2%), con caída similar en Brand Distribution.</li>
+      <li class="r"><b>Cusqueña 620 RB pierde −47.0 mil de Brand Distribution</b> (−9.2%), la mayor caída del portafolio. Pilsen Callao 355 CAN crece +23.8% en volumen pero cae −19.6% en Brand Distribution.</li>
+    </ul>
+  </div>
+  <div class="foot"><span class="src">Fuente: dm_venta y pe_portfolio_hm_brand_distribution (Databricks), corte 20.11.26. Brandpack según pe_portfolio_material. Top 14 por volumen.</span><span>13</span></div>
+</section>
+
+<!-- 12 · BRANDPACKS x GV VOLUMEN -->
+<section class="slide">
+  <div class="ybar"></div>
+  <h1 class="hd">Brandpacks por gerencia (volumen): el 630 y las latas suben en todas; litros y Cristal 650 caen</h1>
+  <div class="cols" style="grid-template-columns: 1fr 360px; gap: 20px;">
+    <div class="col">
+      <div class="ch">Volumen Beer+Rtds Ene-Oct · % vs LY (Δ mil HL)</div>
+      <div class="cb">
+        <table class="t hm bp">
+          <thead><tr><th>Gerencia</th><th>PC 630 RB</th><th>PC 473 CAN</th><th>PC 1000 RB</th><th>PC 355 CAN</th><th>CSQ 620 RB</th><th>CSQ 473 CAN</th><th>CR 650 RB</th><th>Mike's 355</th></tr></thead>
+          <tbody>
+<tr><td>Lima Norte</td><td class="hm-up2">+22%<small>+44.5</small></td><td class="hm-up2">+53%<small>+11.3</small></td><td class="hm-dn2">−15%<small>−4.1</small></td><td class="hm-up2">+15%<small>+1.3</small></td><td class="hm-dn1">−4%<small>−3.2</small></td><td class="hm-up2">+37%<small>+3.3</small></td><td class="hm-dn1">−6%<small>−6.6</small></td><td class="hm-up2">+148%<small>+9.6</small></td></tr>
+<tr><td>Lima Sur</td><td class="hm-up1">+14%<small>+23.9</small></td><td class="hm-up2">+48%<small>+15.9</small></td><td class="hm-dn1">−10%<small>−8.6</small></td><td class="hm-up1">+14%<small>+3.1</small></td><td class="hm-dn1">−2%<small>−0.8</small></td><td class="hm-up2">+42%<small>+4.5</small></td><td class="hm-dn2">−17%<small>−2.2</small></td><td class="hm-up2">+187%<small>+11.6</small></td></tr>
+<tr><td>Lima Centro</td><td class="hm-up2">+31%<small>+50.1</small></td><td class="hm-up2">+42%<small>+12.2</small></td><td class="hm-dn1">−7%<small>−3.7</small></td><td class="hm-up2">+22%<small>+3.0</small></td><td class="hm-dn1">−1%<small>−0.3</small></td><td class="hm-up2">+42%<small>+3.8</small></td><td class="hm-dn2">−14%<small>−2.8</small></td><td class="hm-up2">+104%<small>+6.9</small></td></tr>
+<tr><td>Lima Este</td><td class="hm-up2">+21%<small>+28.2</small></td><td class="hm-up2">+55%<small>+15.3</small></td><td class="hm-dn1">−7%<small>−2.3</small></td><td class="hm-up2">+85%<small>+17.6</small></td><td class="hm-dn1">−1%<small>−0.5</small></td><td class="hm-up2">+54%<small>+5.4</small></td><td class="hm-dn2">−10%<small>−2.8</small></td><td class="hm-up2">+171%<small>+9.6</small></td></tr>
+<tr><td>Lima Oeste</td><td class="hm-up1">+14%<small>+25.8</small></td><td class="hm-up2">+44%<small>+13.7</small></td><td class="hm-dn2">−16%<small>−7.6</small></td><td class="hm-up2">+16%<small>+2.8</small></td><td class="hm-dn1">−3%<small>−1.0</small></td><td class="hm-up2">+40%<small>+3.0</small></td><td class="hm-dn2">−26%<small>−2.5</small></td><td class="hm-up2">+119%<small>+5.8</small></td></tr>
+<tr><td>May. y Eventos</td><td class="hm-up1">+0%<small>+1.9</small></td><td class="hm-up1">+13%<small>+13.3</small></td><td class="hm-dn1">0%<small>−0.1</small></td><td class="hm-up1">+6%<small>+0.4</small></td><td class="hm-dn1">−7%<small>−5.8</small></td><td class="hm-up2">+21%<small>+4.8</small></td><td class="hm-up1">+5%<small>+2.4</small></td><td class="hm-up2">+113%<small>+23.7</small></td></tr>
+<tr><td>Central KA</td><td class="hm-dn2">−35%<small>−2.3</small></td><td class="hm-up2">+25%<small>+4.3</small></td><td class="hm-dn2">−99%<small>−0.7</small></td><td class="hm-up1">+9%<small>+4.4</small></td><td class="hm-dn2">−91%<small>−1.9</small></td><td class="hm-dn1">−6%<small>−0.1</small></td><td class="hm-dn2">−81%<small>−0.5</small></td><td class="hm-up2">+91%<small>+7.7</small></td></tr>
+<tr class="tt"><td>Total Lima</td><td class="hm-up1">+13%<small>+172.0</small></td><td class="hm-up2">+33%<small>+85.9</small></td><td class="hm-dn1">−10%<small>−27.1</small></td><td class="hm-up2">+24%<small>+32.5</small></td><td class="hm-dn1">−4%<small>−13.4</small></td><td class="hm-up2">+35%<small>+24.8</small></td><td class="hm-dn1">−7%<small>−15.1</small></td><td class="hm-up2">+126%<small>+74.8</small></td></tr>
+          </tbody>
+        </table>
+        <div class="cap">PC = Pilsen Callao · CSQ = Cusqueña · CR = Cristal. En Central KA varios brandpacks retornables tienen base muy chica: sus % no son representativos.</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="ch">Insights</div>
+      <div class="cb">
+        <ul class="b">
+          <li><b>Pilsen Callao 630 RB crece en las 5 gerencias territoriales</b> (+14% a +31%). Lima Centro lidera: +50.1 mil HL.</li>
+          <li><b>Pilsen Callao 473 CAN sube más de +40%</b> en las 5 territoriales.</li>
+          <li><b>Lima Este suma Pilsen Callao 355 CAN</b> (+85%, +17.6 mil HL).</li>
+          <li class="r"><b>Pilsen Callao 1000 RB y Cristal 650 RB caen en las 5 territoriales.</b> Lima Oeste es la peor en ambos (−16% y −26%).</li>
+          <li><b>Mayoristas y Eventos crece por latas</b>: Mike's +23.7, PC 473 +13.3 y CSQ 473 +4.8 mil HL; CSQ 620 RB −7%.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="src">Fuente: dm_venta (Databricks), gerencia vigente del cliente (dm_cliente). Brandpack según pe_portfolio_material.</span><span>14</span></div>
+</section>
+
+<!-- 13 · BRANDPACKS x GV BD -->
+<section class="slide">
+  <div class="ybar"></div>
+  <h1 class="hd">Brandpacks por gerencia (Brand Distribution): las latas suman clientes, los retornables los pierden</h1>
+  <div class="cols" style="grid-template-columns: 1fr 360px; gap: 20px;">
+    <div class="col">
+      <div class="ch">Brand Distribution Ene-Set · % vs LY (Δ mil)</div>
+      <div class="cb">
+        <table class="t hm bp">
+          <thead><tr><th>Gerencia</th><th>PC 630 RB</th><th>PC 473 CAN</th><th>PC 1000 RB</th><th>PC 355 CAN</th><th>CSQ 620 RB</th><th>CSQ 473 CAN</th><th>CR 650 RB</th><th>Mike's 355</th></tr></thead>
+          <tbody>
+<tr><td>Lima Norte</td><td class="hm-up1">+1%<small>+1.1</small></td><td class="hm-up2">+27%<small>+18.9</small></td><td class="hm-dn2">−13%<small>−4.2</small></td><td class="hm-dn2">−28%<small>−4.2</small></td><td class="hm-dn2">−11%<small>−13.9</small></td><td class="hm-up1">+1%<small>+0.4</small></td><td class="hm-dn1">−1%<small>−0.8</small></td><td class="hm-up2">+75%<small>+34.2</small></td></tr>
+<tr><td>Lima Sur</td><td class="hm-dn1">−1%<small>−0.8</small></td><td class="hm-up2">+23%<small>+15.4</small></td><td class="hm-dn1">−7%<small>−4.3</small></td><td class="hm-dn2">−12%<small>−2.1</small></td><td class="hm-dn1">−7%<small>−7.1</small></td><td class="hm-up2">+19%<small>+8.9</small></td><td class="hm-dn1">−3%<small>−0.4</small></td><td class="hm-up2">+85%<small>+30.4</small></td></tr>
+<tr><td>Lima Centro</td><td class="hm-dn1">−1%<small>−0.5</small></td><td class="hm-up2">+19%<small>+11.5</small></td><td class="hm-dn1">−9%<small>−3.9</small></td><td class="hm-dn2">−17%<small>−2.2</small></td><td class="hm-dn1">−9%<small>−7.8</small></td><td class="hm-up2">+15%<small>+6.7</small></td><td class="hm-dn2">−11%<small>−2.7</small></td><td class="hm-up2">+78%<small>+28.0</small></td></tr>
+<tr><td>Lima Este</td><td class="hm-dn1">−3%<small>−2.1</small></td><td class="hm-up2">+26%<small>+15.5</small></td><td class="hm-dn2">−11%<small>−3.5</small></td><td class="hm-dn2">−21%<small>−3.7</small></td><td class="hm-dn2">−10%<small>−9.3</small></td><td class="hm-up1">+14%<small>+6.8</small></td><td class="hm-dn1">−10%<small>−2.3</small></td><td class="hm-up2">+77%<small>+31.0</small></td></tr>
+<tr><td>Lima Oeste</td><td class="hm-dn1">−3%<small>−2.9</small></td><td class="hm-up2">+16%<small>+11.1</small></td><td class="hm-dn2">−12%<small>−5.7</small></td><td class="hm-dn2">−22%<small>−4.1</small></td><td class="hm-dn1">−9%<small>−8.2</small></td><td class="hm-up1">+13%<small>+5.6</small></td><td class="hm-dn2">−17%<small>−2.5</small></td><td class="hm-up2">+74%<small>+25.8</small></td></tr>
+<tr><td>May. y Eventos</td><td class="hm-dn1">−4%<small>−0.2</small></td><td class="hm-up2">+38%<small>+1.0</small></td><td class="hm-up1">+1%<small>+0.0</small></td><td class="hm-up1">+4%<small>+0.0</small></td><td class="hm-dn2">−12%<small>−0.8</small></td><td class="hm-up1">+6%<small>+0.2</small></td><td class="hm-up2">+16%<small>+0.4</small></td><td class="hm-up2">+67%<small>+2.0</small></td></tr>
+<tr class="tt"><td>Total Lima</td><td class="hm-dn1">−1%<small>−5.5</small></td><td class="hm-up2">+22%<small>+73.5</small></td><td class="hm-dn1">−10%<small>−21.6</small></td><td class="hm-dn2">−20%<small>−16.2</small></td><td class="hm-dn1">−9%<small>−47.0</small></td><td class="hm-up1">+12%<small>+28.7</small></td><td class="hm-dn1">−6%<small>−8.3</small></td><td class="hm-up2">+77%<small>+151.4</small></td></tr>
+          </tbody>
+        </table>
+        <div class="cap">Central KA no tiene Brand Distribution.</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="ch">Insights</div>
+      <div class="cb">
+        <ul class="b">
+          <li><b>Mike's 355 y Pilsen Callao 473 CAN</b> suman clientes en todas las gerencias (+16% a +38% en PC 473).</li>
+          <li class="r"><b>Cusqueña 620 RB cae en todas</b>; la peor es Lima Norte (−13.9 mil, −11%).</li>
+          <li class="r"><b>Pilsen Callao 630 RB no suma clientes</b>: queda entre −4% y +1% en todas, pese a crecer en volumen.</li>
+          <li class="r"><b>Pilsen Callao 1000 RB y 355 CAN</b> pierden clientes en las 5 territoriales.</li>
+          <li class="k"><b>Oportunidad</b>: ampliar Pilsen Callao 630 RB y Cusqueña a más clientes, donde hoy el crecimiento es solo de volumen.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="src">Fuente: pe_portfolio_hm_brand_distribution (Databricks), SELLIN, Beer+Rtds, Ene-Set. Gerencia según la tabla de Brand Distribution.</span><span>15</span></div>
+</section>
+
+
+<!-- CANALES DIRECCION -->
+<section class="slide">
+  <div class="ybar"></div>
+  <h1 class="hd">Canales: Key Accounts y DSD OFF explican el 82% del crecimiento; Eventos es el único que cae</h1>
+  <table class="t sm">
+    <thead>
+      <tr><th></th><th colspan="7" class="gh">Volumen Beer+Rtds · Ene-Oct (mil HL)</th><th colspan="3" class="gh bl">Brand Distribution · Ene-Set (mil)</th></tr>
+      <tr><th>Canal</th><th>2026</th><th>Δ vs LY</th><th>vs LY</th><th>vs 2024</th><th>vs 2023</th><th>Mix</th><th>Δ mix</th><th class="bl">2026</th><th>Δ vs LY</th><th>vs LY</th></tr>
+    </thead>
+    <tbody>
+<tr><td>DSD OFF</td><td>1,518.9</td><td class="up">+159.2</td><td class="up">+11.7%</td><td class="up">+2.1%</td><td class="dn">−12.5%</td><td>42.7%</td><td class="dn">−0.2 pp</td><td class="bl">2,772.4</td><td class="up">+155.3</td><td class="up">+5.9%</td></tr>
+<tr><td>Key Accounts</td><td>858.8</td><td class="up">+158.3</td><td class="up">+22.6%</td><td class="up">+23.4%</td><td class="up">+19.4%</td><td>24.1%</td><td class="up">+2.1 pp</td><td class="bl">0.1</td><td class="dn">−0.8</td><td class="dn">−93.8%</td></tr>
+<tr><td>Mayoristas</td><td>634.2</td><td class="up">+40.6</td><td class="up">+6.8%</td><td class="up">+20.8%</td><td class="up">+25.7%</td><td>17.8%</td><td class="dn">−0.9 pp</td><td class="bl">32.5</td><td class="up">+1.0</td><td class="up">+3.1%</td></tr>
+<tr><td>DSD ON</td><td>316.8</td><td class="up">+32.3</td><td class="up">+11.4%</td><td class="up">+21.3%</td><td class="up">+24.8%</td><td>8.9%</td><td class="dn">−0.1 pp</td><td class="bl">274.6</td><td class="up">+25.2</td><td class="up">+10.1%</td></tr>
+<tr><td>Eventos</td><td>218.2</td><td class="dn">−5.4</td><td class="dn">−2.4%</td><td class="dn">−0.3%</td><td class="dn">−13.4%</td><td>6.1%</td><td class="dn">−0.9 pp</td><td class="bl">7.7</td><td class="up">+0.5</td><td class="up">+6.5%</td></tr>
+<tr><td>DAs</td><td>13.7</td><td class="up">+0.5</td><td class="up">+4.0%</td><td class="up">+55.2%</td><td class="up">+84.1%</td><td>0.4%</td><td class="mut">0.0 pp</td><td class="bl">0.1</td><td class="up">0.0</td><td class="up">+11.4%</td></tr>
+<tr class="tt"><td>Total Lima</td><td>3,560.6</td><td>+385.6</td><td>+12.1%</td><td>+11.4%</td><td>+2.5%</td><td>100%</td><td></td><td class="bl">3,087.4</td><td>+181.2</td><td>+6.2%</td></tr>
+    </tbody>
+  </table>
+  <div class="cols" style="grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px;">
+    <ul class="b">
+      <li><b>Key Accounts +158.3 mil HL (+22.6%)</b>: 41% del crecimiento y +2.1 pp de mix. Casi no tiene Brand Distribution (las cadenas no entran en el SELLIN), así que explica parte de la brecha entre volumen y BD: <b>sin Key Accounts, Lima crece +9.2% en volumen</b>.</li>
+      <li><b>DSD OFF +159.2 mil HL (+11.7%)</b> y +5.9% en BD, pero sigue −12.5% debajo de 2023: el canal tradicional todavía no recupera su nivel.</li>
+    </ul>
+    <ul class="b">
+      <li><b>Mayoristas (+6.8%) y DSD ON (+11.4%)</b> ya están unos +25% sobre 2023. En BD, DSD ON (+10.1%) crece más rápido que DSD OFF.</li>
+      <li class="r"><b>Eventos cae −2.4% (−5.4 mil HL)</b>: es el único canal en negativo y está −13.4% debajo de 2023.</li>
+      <li class="k">Canal = canal vigente del cliente en dm_cliente; High End se suma a DSD ON.</li>
+    </ul>
+  </div>
+  <div class="foot"><span class="src">Fuente: dm_venta, dm_cliente y pe_portfolio_hm_brand_distribution (Databricks), corte 20.11.26. Beer+Rtds.</span><span>16</span></div>
+</section>
+
+<!-- CANALES x GV -->
+<section class="slide">
+  <div class="ybar"></div>
+  <h1 class="hd">Canales por gerencia: Lima Centro y Lima Este crecen por Key Accounts; el tradicional sube parejo</h1>
+  <div class="col">
+    <div class="ch">% vs LY (Δ en mil HL o mil BD) por gerencia y canal</div>
+    <div class="cb">
+      <table class="t hm cmp">
+        <thead>
+          <tr><th></th><th colspan="7" class="gh">Volumen Beer+Rtds · Ene-Oct</th><th colspan="2" class="gh bl">BD · Ene-Set</th></tr>
+          <tr><th>Gerencia</th><th>DSD OFF</th><th>Key Accounts</th><th>Mayoristas</th><th>DSD ON</th><th>Eventos</th><th>DAs</th><th>Total</th><th class="bl">DSD OFF</th><th>DSD ON</th></tr>
+        </thead>
+        <tbody>
+<tr><td>Lima Norte</td><td class="hm-up1">+11%<small>+35.8</small></td><td class="hm-up2">+17%<small>+20.2</small></td><td class="mut">—</td><td class="hm-up1">+13%<small>+7.6</small></td><td class="mut">—</td><td class="hm-up1">+4%<small>+0.5</small></td><td class="hm-up1">+12%<small>+63.9</small></td><td style="border-left:2px solid #111" class="hm-up1">+5%<small>+28.7</small></td><td class="hm-up1">+12%<small>+6.5</small></td></tr>
+<tr><td>Lima Sur</td><td class="hm-up1">+13%<small>+36.7</small></td><td class="hm-up1">+11%<small>+16.8</small></td><td class="mut">—</td><td class="hm-up1">+10%<small>+4.6</small></td><td class="mut">—</td><td class="mut">—</td><td class="hm-up1">+12%<small>+58.1</small></td><td style="border-left:2px solid #111" class="hm-up1">+10%<small>+50.5</small></td><td class="hm-up2">+16%<small>+6.5</small></td></tr>
+<tr><td>Lima Centro</td><td class="hm-up1">+11%<small>+28.3</small></td><td class="hm-up2">+53%<small>+46.0</small></td><td class="mut">—</td><td class="hm-up1">+12%<small>+9.9</small></td><td class="mut">—</td><td class="mut">—</td><td class="hm-up2">+20%<small>+84.2</small></td><td style="border-left:2px solid #111" class="hm-up1">+6%<small>+28.9</small></td><td class="hm-up1">+4%<small>+2.3</small></td></tr>
+<tr><td>Lima Este</td><td class="hm-up1">+14%<small>+33.6</small></td><td class="hm-up2">+56%<small>+42.2</small></td><td class="mut">—</td><td class="hm-up1">+10%<small>+7.6</small></td><td class="mut">—</td><td class="mut">—</td><td class="hm-up2">+22%<small>+83.5</small></td><td style="border-left:2px solid #111" class="hm-up1">+6%<small>+27.3</small></td><td class="hm-up1">+10%<small>+7.0</small></td></tr>
+<tr><td>Lima Oeste</td><td class="hm-up1">+9%<small>+24.7</small></td><td class="hm-up2">+20%<small>+19.1</small></td><td class="mut">—</td><td class="hm-up1">+9%<small>+2.7</small></td><td class="mut">—</td><td class="mut">—</td><td class="hm-up1">+12%<small>+46.4</small></td><td style="border-left:2px solid #111" class="hm-up1">+4%<small>+19.9</small></td><td class="hm-up1">+10%<small>+2.9</small></td></tr>
+<tr><td>May. y Eventos</td><td class="mut">—</td><td class="mut">—</td><td class="hm-up1">+7%<small>+40.6</small></td><td class="mut">—</td><td class="hm-dn1">−2%<small>−5.1</small></td><td class="mut">—</td><td class="hm-up1">+4%<small>+35.5</small></td><td style="border-left:2px solid #111" class="mut">—</td><td class="mut">—</td></tr>
+<tr><td>Central KA</td><td class="mut">—</td><td class="hm-up1">+8%<small>+14.0</small></td><td class="mut">—</td><td class="mut">—</td><td class="mut">—</td><td class="mut">—</td><td class="hm-up1">+8%<small>+14.0</small></td><td style="border-left:2px solid #111" class="mut">—</td><td class="mut">—</td></tr>
+<tr class="tt"><td>Total Lima</td><td class="hm-up1">+12%<small>+159.2</small></td><td class="hm-up2">+23%<small>+158.3</small></td><td class="hm-up1">+7%<small>+40.6</small></td><td class="hm-up1">+11%<small>+32.3</small></td><td class="hm-dn1">−2%<small>−5.4</small></td><td class="hm-up1">+4%<small>+0.5</small></td><td class="hm-up1">+12%<small>+385.6</small></td><td style="border-left:2px solid #111" class="hm-up1">+6%<small>+155.3</small></td><td class="hm-up1">+10%<small>+25.2</small></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="cols" style="grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px;">
+    <ul class="b">
+      <li><b>Lima Centro y Lima Este: Key Accounts crece +53% y +56%</b> (+46.0 y +42.2 mil HL), entre el 51% y el 55% de su crecimiento. En DSD OFF crecen parecido al resto (+11% y +14%).</li>
+      <li><b>DSD OFF crece en las 5 territoriales</b> (+9% a +14%). Lima Sur es la que más suma clientes ahí (+10% en BD, +50.5 mil).</li>
+    </ul>
+    <ul class="b">
+      <li><b>Mayoristas y Eventos</b>: Mayoristas aporta +40.6 mil HL (+6.8%); Eventos cae −2.3%.</li>
+      <li class="r"><b>Lima Oeste</b> es la más floja en DSD OFF (+9% en volumen y +4% en BD).</li>
+      <li class="k">El crecimiento de Centro y Este depende de cadenas: validar si es apertura de tiendas o reasignación de clientes a Key Accounts.</li>
+    </ul>
+  </div>
+  <div class="foot"><span class="src">Fuente: dm_venta, dm_cliente y pe_portfolio_hm_brand_distribution (Databricks). Canal vigente del cliente; High End sumado a DSD ON.</span><span>17</span></div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const M = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Set','Oct'];
+const VOL = {
+  2023:[344.6,370.3,392.9,376.4,363.9,337.6,332.9,322.6,312.7,319.4],
+  2024:[331.2,380.0,379.9,328.5,306.0,277.8,297.6,291.6,280.1,324.9],
+  2025:[335.5,355.7,354.7,355.3,327.2,271.7,284.5,278.3,297.1,315.1],
+  2026:[360.4,360.7,396.1,345.3,362.3,333.8,389.8,307.1,337.2,367.9]
+};
+const BD = {
+  2023:[344.1,350.7,349.9,342.2,318.7,322.3,328.4,320.2,315.9],
+  2024:[325.2,337.8,337.2,323.7,312.3,304.9,338.6,318.6,316.7],
+  2025:[329.3,339.2,340.9,333.4,324.8,302.0,297.7,311.3,327.7],
+  2026:[350.9,335.1,350.9,338.8,350.4,353.2,361.0,319.5,327.5]
+};
+Chart.defaults.font.family = '"Barlow", "Segoe UI", Arial, sans-serif';
+Chart.defaults.font.size = 12;
+Chart.defaults.color = '#444';
+Chart.defaults.animation = false;
+const sty = {
+  2026:{borderColor:'#111111',borderWidth:3.2,pointRadius:3,pointBackgroundColor:'#111111'},
+  2025:{borderColor:'#d4c600',borderWidth:2.2,pointRadius:0},
+  2024:{borderColor:'#9a9a9a',borderWidth:1.8,pointRadius:0},
+  2023:{borderColor:'#cfcfcf',borderWidth:1.8,pointRadius:0,borderDash:[5,4]}
+};
+const endLabel = {
+  id:'endLabel',
+  afterDatasetsDraw(c){
+    const ds = c.data.datasets[0], meta = c.getDatasetMeta(0), ctx = c.ctx;
+    const ly = c.data.datasets[1].data;
+    ctx.save(); ctx.font = '600 11px Barlow, Arial'; ctx.fillStyle = '#111'; ctx.textAlign = 'center';
+    meta.data.forEach((p,i) => {
+      const v = (ds.data[i] / ly[i] - 1) * 100;
+      ctx.fillStyle = v >= 0 ? '#0f7b3e' : '#c62828';
+      ctx.fillText((v >= 0 ? '+' : '−') + Math.abs(v).toFixed(1) + '%', p.x, p.y - 10);
+    });
+    ctx.restore();
+  }
+};
+function lines(id, data, n) {
+  const yrs = [2026,2025,2024,2023];
+  new Chart(document.getElementById(id), {
+    type:'line',
+    data:{ labels:M.slice(0,n), datasets: yrs.map(y => Object.assign({label:String(y), data:data[y], tension:0, fill:false}, sty[y])) },
+    options:{ maintainAspectRatio:false, plugins:{legend:{display:false}, tooltip:{enabled:false}},
+      layout:{padding:{top:16, right:28, left:6}},
+      scales:{ x:{grid:{display:false}}, y:{grid:{color:'#eeeeee'}, ticks:{callback:v => v.toLocaleString('en-US')}} } },
+    plugins:[endLabel]
+  });
+}
+lines('cVol', VOL, 10);
+lines('cBd', BD, 9);
+
+const valLabel = (fmt) => ({
+  id:'valLabel',
+  afterDatasetsDraw(c){
+    const ctx = c.ctx; ctx.save(); ctx.font = '700 12px Barlow, Arial'; ctx.fillStyle = '#111'; ctx.textBaseline = 'middle';
+    c.data.datasets.forEach((ds, di) => {
+      c.getDatasetMeta(di).data.forEach((b, i) => {
+        const v = ds.data[i];
+        const horiz = c.options.indexAxis === 'y';
+        if (horiz) { ctx.textAlign = 'left'; ctx.fillText(fmt(v), b.x + 6, b.y); }
+        else { ctx.textAlign = 'center'; ctx.fillText(fmt(v), b.x, b.y - 9); }
+      });
+    });
+    ctx.restore();
+  }
+});
+function hbar(id, labels, vals) {
+  new Chart(document.getElementById(id), {
+    type:'bar',
+    data:{ labels, datasets:[{ data:vals, backgroundColor:vals.map((v,i) => i < 2 ? '#111111' : '#FFF200'), borderColor:'#111111', borderWidth:vals.map((v,i) => i < 2 ? 0 : 1), barThickness:28 }] },
+    options:{ indexAxis:'y', maintainAspectRatio:false, plugins:{legend:{display:false}, tooltip:{enabled:false}},
+      layout:{padding:{right:50}},
+      scales:{ x:{display:false, beginAtZero:true}, y:{grid:{display:false}, ticks:{font:{size:13, weight:'600'}}} } },
+    plugins:[valLabel(v => v.toFixed(1) + '%')]
+  });
+}
+hbar('cVolAp', ['Lima Centro','Lima Este','Lima Norte','Lima Sur','Lima Oeste','May. y Eventos','Central KA'], [21.8,21.7,16.6,15.1,12.0,9.2,3.6]);
+hbar('cBdAp', ['Lima Sur','Lima Norte','Lima Este','Lima Centro','Lima Oeste','May. y Eventos'], [31.4,19.4,18.8,17.0,12.3,1.1]);
+
+new Chart(document.getElementById('cCross'), {
+  type:'bar',
+  data:{ labels:['Lima Este','Lima Centro','Lima Norte','Lima Sur','Lima Oeste','Total Lima'],
+    datasets:[
+      { label:'Volumen', data:[21.7,20.2,12.4,12.3,11.8,12.1], backgroundColor:'#111111', barPercentage:.8, categoryPercentage:.7 },
+      { label:'Brand Distribution', data:[6.3,5.7,5.3,10.0,4.1,6.2], backgroundColor:'#FFF200', borderColor:'#b5ab00', borderWidth:1, barPercentage:.8, categoryPercentage:.7 }
+    ] },
+  options:{ maintainAspectRatio:false, plugins:{legend:{display:false}, tooltip:{enabled:false}},
+    layout:{padding:{top:20}},
+    scales:{ x:{grid:{display:false}, ticks:{font:{size:13, weight:'600'}}}, y:{beginAtZero:true, grid:{color:'#eeeeee'}, ticks:{callback:v => v + '%'}} } },
+  plugins:[valLabel(v => '+' + v.toFixed(1) + '%')]
+});
+</script>
+</body>
+</html>

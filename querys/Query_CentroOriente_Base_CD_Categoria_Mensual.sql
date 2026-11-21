@@ -2,7 +2,7 @@
 -- secciones Total, Categoria, CD y el filtro global de Canal del dashboard.
 -- Reemplazar 'PE Ger P4 Tarapoto','PE Ger P4 Iquitos','PE Ger P4 Pucall Hco','PE Ger P4 Huancay Ch','PE Ger P4 DA Jun Puc', 'CD Pucallpa','CD Huánuco','CD Tingo María','CD Tarapoto','CD Yurimaguas','CD Moyobamba','CD Iquitos','CD Huancayo','CD Chanchamayo','CD Satipo','CD Huancavelica','CD San Benedicto I (Ate)','CD Motupe','CD Chiclayo' (la UNION de todos los CD confirmados de
 -- TODAS las gerencias del run -- no filtra cruzado porque gerencia+centro quedan juntos en
--- cada fila, ver reglas_negocio.md) y 202501/202609.
+-- cada fila, ver reglas_negocio.md) y 202501/202610.
 -- CORREGIDO 2026-09-06: gerencia sale de dm_cliente (vigente), no de dm_venta -- ver CLAUDE.md
 -- (caso Ucayali Beer, reasignado Huancay Ch -> DA Jun Puc en abril 2026).
 SELECT
@@ -20,7 +20,7 @@ SELECT
 FROM brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_venta v
 INNER JOIN brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_cliente c
   ON v.cliente_id = c.cliente_id
-WHERE v.mes BETWEEN '202501' AND '202609'
+WHERE v.mes BETWEEN '202501' AND '202610'
   AND c.gerencia IN ('PE Ger P4 Tarapoto','PE Ger P4 Iquitos','PE Ger P4 Pucall Hco','PE Ger P4 Huancay Ch','PE Ger P4 DA Jun Puc')
   AND v.indicadores_comerciales = 1
   AND v.estratificacion IN ('Cervezas','Licores','Ready To Drink','Gaseosas','Agua','Maltas')

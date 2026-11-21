@@ -1,4 +1,4 @@
--- Brand Distribution: matriz CD x mes, ene'24 a ago'26, Direccion Centro Oriente
+-- Brand Distribution: matriz CD x mes, ene'24 a set'26, Direccion Centro Oriente
 -- Alcance: Cervezas + Licores + Ready To Drink. Total oficial por gerencia (regla aplicada por
 -- transaccion segun su gerencia real, luego agrupado por CD del cliente via dm_cliente):
 --   Pucall Hco y Huancay Ch -> solo SELLIN
@@ -23,7 +23,7 @@ from brewdat_uc_mazana_dev.slv_maz_salesdata_salesdatadata_adb.pe_portfolio_hm_b
 left join brewdat_uc_maz_scus_weu_sales_dev_ds.gld_maz_sales_portfolio_pe.pe_portfolio_material m on v.material_id = m.material_id
 left join brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_cliente c on c.cliente_id = v.cliente_id
 where v.direccion ilike '%PE Dir Centro Orient%'
-and v.fecha_venta between '2024-01-01' and '2026-08-31'
+and v.fecha_venta between '2024-01-01' and '2026-09-30'
 and m.estratificacion in ('Cervezas', 'Licores', 'Ready To Drink')
 and c.centro_id in ('BK31','BK43','BK68','SJ01','SJ86','SJ87','SJ90','SJ91','SJ92','SJ93','SJ94','SJ95','SJ97')
 group by c.centro_id, v.mes

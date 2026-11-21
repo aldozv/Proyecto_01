@@ -1,4 +1,4 @@
--- Brand Distribution: matriz gerencia x mes, ene'24 a ago'26, Direccion Centro Oriente
+-- Brand Distribution: matriz gerencia x mes, ene'24 a set'26, Direccion Centro Oriente
 -- Alcance: Cervezas + Licores + Ready To Drink. Total oficial por gerencia (ver CLAUDE.md):
 --   Pucall Hco y Huancay Ch -> solo SELLIN
 --   Iquitos y Tarapoto      -> SELLIN + SELLOUT
@@ -17,7 +17,7 @@ select
 from brewdat_uc_mazana_dev.slv_maz_salesdata_salesdatadata_adb.pe_portfolio_hm_brand_distribution v
 left join brewdat_uc_maz_scus_weu_sales_dev_ds.gld_maz_sales_portfolio_pe.pe_portfolio_material m on v.material_id = m.material_id
 where v.direccion ilike '%PE Dir Centro Orient%'
-and v.fecha_venta between '2024-01-01' and '2026-08-31'
+and v.fecha_venta between '2024-01-01' and '2026-09-30'
 and m.estratificacion in ('Cervezas', 'Licores', 'Ready To Drink')
 group by v.gerencia, v.mes
 order by v.gerencia, v.mes

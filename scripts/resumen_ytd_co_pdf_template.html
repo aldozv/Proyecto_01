@@ -1,0 +1,236 @@
+<meta charset="utf-8">
+<title>Resumen YTD - Regional Centro Oriente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  /* Version para imprimir (PDF) del Resumen YTD - CO. A4 horizontal, 3 hojas, fondo blanco,
+     azul marino + ambar, verde y rojo con mas contraste que el artifact para lectura ejecutiva. */
+  @page { size: A4 landscape; margin: 0; }
+  :root{
+    --navy:#0F2744; --navy-2:#1C4373; --amber:#E39B1E; --amber-soft:#FDF2DB;
+    --ink:#142033; --muted:#5A6678; --line:#D8E0EA; --tint:#F2F6FB; --white:#FFFFFF;
+    --pos:#0F8A5F; --neg:#C8302F;
+    --font-display:'Fraunces', Georgia, 'Times New Roman', serif;
+    --font-body:'IBM Plex Sans','Segoe UI',Calibri,Arial,sans-serif;
+    --font-mono:'IBM Plex Mono', Consolas, 'Courier New', monospace;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:#fff; }
+  body{ font-family:var(--font-body); color:var(--ink); font-size:9.5pt; line-height:1.35; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .page{ width:297mm; height:209.5mm; padding:0 13mm 8mm; display:flex; flex-direction:column; gap:4.5mm; page-break-after:always; overflow:hidden; position:relative; }
+  .page:last-child{ page-break-after:auto; }
+  .band{ margin:0 -13mm; padding:7mm 13mm 6mm; background:var(--navy); color:#fff; display:flex; justify-content:space-between; align-items:flex-end; gap:10mm; border-bottom:2.2mm solid var(--amber); }
+  .band .eyebrow{ font-family:var(--font-mono); font-size:7.5pt; letter-spacing:.12em; text-transform:uppercase; color:#F2C46B; font-weight:600; }
+  .band h1{ font-family:var(--font-display); font-weight:700; font-size:23pt; line-height:1.1; margin:1.5mm 0 0; letter-spacing:-.01em; }
+  .band h2{ font-family:var(--font-display); font-weight:700; font-size:17pt; line-height:1.1; margin:1.2mm 0 0; }
+  .band .stamp{ text-align:right; font-size:8.5pt; color:#C9D6E8; line-height:1.4; white-space:nowrap; }
+  .band .stamp b{ color:#fff; font-weight:600; }
+  .headline{ font-family:var(--font-display); font-size:13.5pt; line-height:1.3; font-weight:500; margin:0; max-width:262mm; }
+  .headline b{ font-weight:700; }
+  .pos{ color:var(--pos); } .neg{ color:var(--neg); } .flat{ color:var(--muted); }
+
+  .tiles{ display:grid; grid-template-columns:repeat(5,1fr); gap:3.5mm; }
+  .tile{ background:var(--tint); border:.3mm solid var(--line); border-radius:2.5mm; padding:3.2mm 3.6mm; display:flex; flex-direction:column; gap:1.2mm; }
+  .tile .lbl{ font-size:7.5pt; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:700; display:flex; justify-content:space-between; gap:2mm; }
+  .tile .tag{ font-size:6.5pt; letter-spacing:.06em; background:var(--amber); color:#241600; border-radius:1mm; padding:.2mm 1.4mm; font-weight:700; }
+  .tile .val{ font-family:var(--font-display); font-weight:700; font-size:20pt; line-height:1.05; font-variant-numeric:tabular-nums; }
+  .tile .val small{ font-family:var(--font-body); font-size:7.5pt; font-weight:500; color:var(--muted); margin-left:1mm; }
+  .tile .chg{ font-family:var(--font-mono); font-weight:700; font-size:9.5pt; display:flex; justify-content:space-between; gap:2mm; white-space:nowrap; }
+  .tile .chg i{ font-style:normal; font-weight:500; font-size:8pt; }
+  .tile .cnt{ font-size:7.5pt; color:var(--muted); }
+  .tile.hero{ background:var(--navy); border-color:var(--navy); color:#fff; }
+  .tile.hero .lbl, .tile.hero .val small, .tile.hero .cnt{ color:#C9D6E8; }
+  .tile.hero .pos{ color:#5EE0A8; } .tile.hero .neg{ color:#FF8F8D; }
+
+  .cols{ display:grid; grid-template-columns:1fr 1fr; gap:5mm; min-height:0; }
+  .cols.three{ grid-template-columns:1fr 1fr; }
+  .box{ min-width:0; }
+  .box h3{ font-family:var(--font-display); font-weight:700; font-size:11.5pt; margin:0 0 1.6mm; color:var(--navy); display:flex; align-items:baseline; justify-content:space-between; gap:3mm; }
+  .box h3 span{ font-family:var(--font-body); font-weight:500; font-size:7.5pt; color:var(--muted); }
+  table.t{ width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums; font-size:8.5pt; }
+  table.t th{ background:var(--navy); color:#fff; font-weight:600; font-size:7.3pt; letter-spacing:.04em; text-transform:uppercase; padding:1.5mm 2mm; text-align:right; }
+  table.t th:first-child{ text-align:left; border-top-left-radius:1.5mm; } table.t th:last-child{ border-top-right-radius:1.5mm; }
+  table.t td{ padding:.95mm 2mm; line-height:1.2; text-align:right; border-bottom:.25mm solid var(--line); font-family:var(--font-mono); font-weight:500; }
+  table.t td:first-child{ text-align:left; font-family:var(--font-body); font-weight:600; }
+  table.t td small{ display:block; font-size:6.8pt; color:var(--muted); font-weight:500; }
+  table.t tr.total td{ background:var(--tint); font-weight:700; border-top:.35mm solid var(--navy); border-bottom:.35mm solid var(--navy); }
+  table.t tr.cur td{ background:var(--amber-soft); font-weight:700; }
+  table.t td.heat{ background:color-mix(in srgb, var(--hc) calc(var(--i) * 100%), #fff); }
+  table.t tr.total td.heat{ background:color-mix(in srgb, var(--hc) calc(var(--i) * 100%), var(--tint)); }
+  table.t td.base{ color:var(--muted); font-style:italic; }
+
+  .callouts{ display:grid; grid-template-columns:repeat(3,1fr); gap:4mm; }
+  .callout{ border:.3mm solid var(--line); border-radius:2.5mm; padding:3mm 3.6mm; font-size:8.8pt; line-height:1.4; background:#fff; }
+  .callout .k{ display:inline-block; font-size:7pt; letter-spacing:.08em; text-transform:uppercase; font-weight:700; border-radius:1mm; padding:.3mm 1.8mm; margin-bottom:1.6mm; color:#fff; }
+  .callout .k.up{ background:var(--pos); } .callout .k.down{ background:var(--neg); } .callout .k.key{ background:var(--navy); }
+  .callout b{ font-weight:700; color:var(--navy); }
+  .read{ list-style:none; margin:0; padding:0; display:grid; gap:2.2mm; font-size:8.6pt; line-height:1.35; }
+  .read li{ padding-left:3mm; border-left:.7mm solid var(--amber); }
+  .read b{ font-weight:700; color:var(--navy); }
+  .foot{ margin-top:auto; display:flex; justify-content:space-between; gap:8mm; font-size:6.8pt; color:var(--muted); border-top:.25mm solid var(--line); padding-top:1.8mm; }
+  .foot span:first-child{ max-width:215mm; }
+</style>
+
+<!-- Hoja 1: resumen ejecutivo -->
+<div class="page">
+  <div class="band">
+    <div><div class="eyebrow">Dirección Centro Oriente · Resumen ejecutivo</div><h1>Volumen YTD de la regional: 2026 vs años anteriores</h1></div>
+    <div class="stamp">YTD <b id="ytd-label"></b><br>Datos al <b>31.10.2026</b> · Volumen en HL</div>
+  </div>
+  <p class="headline" id="headline"></p>
+  <div class="tiles" id="tiles"></div>
+  <div class="cols">
+    <div class="box"><h3>Por gerencia <span>2026 vs LY · % y Δ mil HL</span></h3><table class="t" id="m-ger"></table></div>
+    <div class="box"><h3>Por canal <span>2026 vs LY · % y Δ mil HL</span></h3><table class="t" id="m-canal"></table></div>
+  </div>
+  <div class="callouts">
+    <div class="callout"><span class="k up">Lo que sube</span><br><b>Tarapoto</b> aporta +39,8 mil HL (55% del crecimiento), seguido de Iquitos (+10,2%) y Pucallpa (+5,1%). <b>Rtds</b> crece en las 5 gerencias y los 6 canales.</div>
+    <div class="callout"><span class="k down">Lo que cae</span><br><b>DA Jun Puc</b> es la única gerencia a la baja: −6,6% (−26,3 mil HL). <b>KA</b> cae −1,7% y viene bajando desde julio.</div>
+    <div class="callout"><span class="k key">Dato clave</span><br><b>Octubre cerró +11,8%</b> (+27,5 mil HL) y llevó el YTD de +2,2% a +3,2%. 2026 es el YTD más alto de la serie 2020–2026.</div>
+  </div>
+  <div class="foot"><span>Fuente: dm_venta × dm_cliente (indicadores_comerciales=1), Dirección Centro Oriente. Gerencia y canal vigentes del cliente. Beer = Cervezas + Licores · Rtds = Ready To Drink · Nabs = Gaseosas + Agua + Maltas (sin San Mateo). YTD = enero a último mes cerrado, igual en todos los años.</span><span>Hoja 1 de 3</span></div>
+</div>
+
+<!-- Hoja 2: evolucion 2021-2026 -->
+<div class="page">
+  <div class="band">
+    <div><div class="eyebrow">Dirección Centro Oriente · Resumen ejecutivo</div><h2>Evolución del YTD 2021–2026 por KPI</h2></div>
+    <div class="stamp">Cada fila es el YTD de ese año<br>«2026 vs año» compara 2026 con la fila</div>
+  </div>
+  <div class="cols" id="years"></div>
+  <div class="foot"><span>Fuente: dm_venta × dm_cliente, Dirección Centro Oriente. Gerencia y canal vigentes del cliente.</span><span>Hoja 2 de 3</span></div>
+</div>
+
+<!-- Hoja 3: canal x gerencia + lectura -->
+<div class="page">
+  <div class="band">
+    <div><div class="eyebrow">Dirección Centro Oriente · Resumen ejecutivo</div><h2>De dónde sale el crecimiento y qué mirar</h2></div>
+    <div class="stamp">Beer+Rtds · YTD Ene–Oct 2026 vs 2025</div>
+  </div>
+  <div class="cols">
+    <div class="box"><h3>Canal × gerencia <span>Δ mil HL (y % vs LY)</span></h3><table class="t" id="m-cross"></table>
+      <div style="height:4mm"></div>
+      <h3>Beer+Rtds por canal <span>crecimiento vs LY de cada año</span></h3><table class="t" id="m-yoy"></table></div>
+    <div class="box"><h3>Lectura del corte</h3>
+      <ul class="read">
+        <li><b>Tarapoto lidera:</b> +39,8 mil HL (55% del crecimiento), seguido de Iquitos (+26,7 mil, +10,2%), Pucallpa (+20,6 mil, +5,1%) y Huancayo (+10,9 mil, +1,9%). <b>DA Jun Puc es la única que cae</b> (−26,3 mil, −6,6%).</li>
+        <li><b>DAS aporta más que cualquier canal</b> (34% del volumen, +24,2 mil HL). Los DAs de las otras gerencias suman +50,6 mil, casi todo Tarapoto (+41,6 mil, +13,9%); sus canales tradicionales bajan algo (DSD OFF −0,6%, WHL −5,3%, EVE −9,7%).</li>
+        <li><b>DSD OFF</b> sigue siendo el mayor canal pero pasó de 46,8% a 32,0% del volumen desde 2021. Crece +1,7% por primera vez desde 2021, y casi todo viene de Rtds (en Beer solo +0,3%).</li>
+        <li><b>WHL</b> multiplicó su volumen por 2,5 desde 2021 (5,4% → 12,1% del mix), con crecimiento que se desacelera (+19,4%, +15,0%, +5,7%). <b>DSD ON</b> se recupera (+7,8%) y sube en 9 de 10 meses.</li>
+        <li><b>KA es la alerta:</b> −1,7% en Beer+Rtds. Crecía +22%, +14% y +23% entre enero y marzo y desde julio cae (−23%, −38%, −7%, −5%). Pesa 3,4% del volumen. <b>EVE</b> crece +3,5% con meses muy volátiles.</li>
+        <li><b>Rtds</b> crece en los 6 canales y las 5 gerencias, pero pesa 1,7% de Beer+Rtds; explica el 36% del crecimiento (+25,8 mil HL). Beer solo crece +2,0% y sigue −0,4% vs 2022.</li>
+        <li><b>Nabs</b> vuelve a crecer (+12,7%) tras tres caídas; DSD OFF explica el 83% de la mejora y Tarapoto el 66%.</li>
+        <li><b>Octubre empujó el YTD</b> (+11,8% en el mes, +27,5 mil HL); sin octubre el YTD era +2,2%. 2023 fue el único año de caída generalizada (0 de 5 gerencias, 2 de 6 canales).</li>
+      </ul></div>
+  </div>
+  <div class="foot"><span>La lectura corresponde al corte Ene–Oct 2026. Fuente y definiciones en la hoja 1.</span><span>Hoja 3 de 3</span></div>
+</div>
+
+<script>
+const DATA = {{DATA}};
+const YTD_M = {{YTD_M}};
+const MESL = ["","enero","febrero","marzo","abril","mayo","junio","julio","agosto","setiembre","octubre","noviembre","diciembre"];
+const KPIS = [["Beer+Rtds+Nabs",["Beer","Rtds","Nabs"]],["Beer+Rtds",["Beer","Rtds"]],["Beer",["Beer"]],["Rtds",["Rtds"]],["Nabs",["Nabs"]]];
+const CANAL_LBL = {"DSD OFF":"DSD OFF","DSD ON":"DSD ON","Mayoristas":"WHL (Mayoristas)","Eventos":"EVE (Eventos)","DAs":"DAS (DAs)","Key Accounts":"KA (Key Accounts)"};
+const CANAL_SHORT = {"DSD OFF":"DSD OFF","DSD ON":"DSD ON","Mayoristas":"WHL","Eventos":"EVE","DAs":"DAS","Key Accounts":"KA"};
+const YEARS = [2021,2022,2023,2024,2025,2026];
+const NG = DATA.ger.length, NC = DATA.canal.length;
+const idx = {}; DATA.months.forEach((m,i)=>{ idx[m[0]*100+m[1]] = i; });
+const catsOf = k => KPIS.find(x=>x[0]===k)[1];
+function S(kpi, y, g, c){
+  let t = 0; const cats = catsOf(kpi);
+  for(const gg of DATA.ger){ if(g && gg.code!==g) continue;
+    for(const cc of DATA.canal){ if(c && cc!==c) continue;
+      const cell = DATA.d[gg.code][cc]; if(!cell) continue;
+      for(const cat of cats){ const s = cell[cat]; if(!s) continue; for(let m=1;m<=YTD_M;m++){ const i = idx[y*100+m]; if(i!==undefined) t += s[i]; } } } }
+  return t;
+}
+const gp = (cur, prev) => prev>0 ? (cur/prev-1)*100 : null;
+const MINUS = "−";
+const num = (v, d=1) => Math.abs(v).toLocaleString("de-DE",{minimumFractionDigits:d,maximumFractionDigits:d});
+const kHL = v => num(v/1000,1);
+const sgn = v => (v<0?MINUS:"+");
+const pct = v => v===null ? "n/a" : (v>999 ? ">+999%" : sgn(v)+num(v,1)+"%");
+const nom = v => sgn(v)+num(v/1000,1);
+const cls = v => (v===null||Math.abs(v)<0.05) ? "flat" : (v>0?"pos":"neg");
+const heat = (v, cap) => `class="heat" style="--hc:var(${v>=0?'--pos':'--neg'});--i:${(Math.min(Math.abs(v)/cap,1)*0.5).toFixed(3)}"`;
+const gCodes = DATA.ger.map(g=>g.code);
+const countGrow = (k,y,list,key) => list.filter(it=>S(k,y,key==='g'?it:null,key==='c'?it:null) > S(k,y-1,key==='g'?it:null,key==='c'?it:null)).length;
+
+document.getElementById("ytd-label").textContent = "enero – " + MESL[YTD_M] + " 2026";
+
+// titular (base de reporte: Beer+Rtds)
+(function(){
+  const k="Beer+Rtds", cur=S(k,2026), prev=S(k,2025), g=gp(cur,prev);
+  const ng=countGrow(k,2026,gCodes,'g'), nc=countGrow(k,2026,DATA.canal,'c');
+  document.getElementById("headline").innerHTML = `En <b>Beer+Rtds</b> crecimos <b class="${cls(g)}">${pct(g)}</b> vs LY al YTD (${nom(cur-prev)} mil HL), creciendo en <b>${ng} de las ${NG} gerencias</b> y en <b>${nc} de los ${NC} canales</b>. Tercer año seguido de crecimiento y el YTD más alto de la serie 2020–2026.`;
+})();
+
+// fichas
+document.getElementById("tiles").innerHTML = KPIS.map(([k])=>{
+  const cur=S(k,2026), prev=S(k,2025), g=gp(cur,prev), ng=countGrow(k,2026,gCodes,'g'), nc=countGrow(k,2026,DATA.canal,'c');
+  const hero = k==="Beer+Rtds";
+  return `<div class="tile${hero?' hero':''}"><div class="lbl"><span>${k}</span>${hero?'<span class="tag">BASE</span>':''}</div>
+    <div class="val">${kHL(cur)}<small>mil HL</small></div>
+    <div class="chg ${cls(g)}"><span>${g>=0?"▲":"▼"} ${pct(g)}</span><i>${nom(cur-prev)} mil HL</i></div>
+    <div class="cnt">${ng}/${NG} gerencias · ${nc}/${NC} canales crecen</div></div>`;
+}).join("");
+
+// matrices 2026 vs LY por KPI (filas = gerencias / canales)
+function matrix(id, items, keyType, labelFn, firstLabel){
+  let h = `<thead><tr><th>${firstLabel}</th>${KPIS.map(([k])=>`<th>${k}</th>`).join("")}</tr></thead><tbody>`;
+  const get = (it,k,y) => it===null ? S(k,y) : (keyType==='c' ? S(k,y,null,it) : S(k,y,it,null));
+  const row = (it,label,total) => {
+    h += `<tr${total?' class="total"':''}><td>${label}</td>` + KPIS.map(([k])=>{
+      const a=get(it,k,2025), b=get(it,k,2026), g=gp(b,a);
+      return g===null ? `<td class="flat">n/a</td>` : `<td ${heat(g,12)}><span class="${cls(g)}">${pct(g)}</span><small>${nom(b-a)}</small></td>`;
+    }).join("") + `</tr>`;
+  };
+  items.forEach(it=>row(it,labelFn(it),false)); row(null,"Total regional",true);
+  document.getElementById(id).innerHTML = h + "</tbody>";
+}
+matrix("m-ger", gCodes, 'g', g=>DATA.ger.find(x=>x.code===g).label, "Gerencia");
+matrix("m-canal", DATA.canal, 'c', c=>CANAL_LBL[c], "Canal");
+
+// hoja 2: una tabla por KPI
+document.getElementById("years").innerHTML = KPIS.map(([k])=>{
+  let h = `<div class="box"><h3>${k} <span>YTD en mil HL</span></h3><table class="t"><thead><tr><th>Año</th><th>YTD</th><th>vs LY</th><th>Δ mil HL</th><th>Gerencias</th><th>Canales</th><th>2026 vs año</th></tr></thead><tbody>`;
+  const v26 = S(k,2026);
+  YEARS.forEach(y=>{
+    const cur=S(k,y), prev=S(k,y-1), g=gp(cur,prev);
+    const ng=countGrow(k,y,gCodes,'g'), nc=countGrow(k,y,DATA.canal,'c');
+    const last = y===2026 ? `<td class="base">base</td>` : (()=>{ const v=gp(v26,cur); return `<td class="${cls(v)}">${pct(v)}</td>`; })();
+    h += `<tr${y===2026?' class="cur"':''}><td>${y}</td><td>${kHL(cur)}</td><td class="${cls(g)}">${pct(g)}</td><td class="${cls(cur-prev)}">${nom(cur-prev)}</td><td>${ng}/${NG}</td><td>${nc}/${NC}</td>${last}</tr>`;
+  });
+  return h + "</tbody></table></div>";
+}).join("") + `<div class="box"><h3>Cómo leer esta hoja</h3><ul class="read">
+  <li><b>YTD:</b> volumen acumulado de enero al último mes cerrado (octubre), igual en todos los años para que la comparación sea justa.</li>
+  <li><b>Gerencias / Canales:</b> cuántos de los 5 (gerencias) o 6 (canales) tuvieron un YTD mayor que el del año anterior.</li>
+  <li><b>2026 vs año:</b> crecimiento del YTD 2026 contra el YTD de la fila.</li>
+  <li><b>2021</b> compara contra la base de 2020 (COVID) y por eso es un rebote. Los >+999% de Rtds vienen de una base casi nula.</li>
+  <li><b>Beer</b> = Cervezas + Licores · <b>Rtds</b> = Ready To Drink · <b>Nabs</b> = Gaseosas + Agua + Maltas (sin San Mateo).</li></ul></div>`;
+
+// hoja 3: canal x gerencia (Beer+Rtds) y crecimiento por canal y anio
+(function(){
+  const k="Beer+Rtds", cell=(g,c)=>S(k,2026,g,c)-S(k,2025,g,c);
+  let max=0; DATA.ger.forEach(g=>DATA.canal.forEach(c=>{ max=Math.max(max,Math.abs(cell(g.code,c))); }));
+  let h = `<thead><tr><th>Gerencia</th>${DATA.canal.map(c=>`<th>${CANAL_SHORT[c]}</th>`).join("")}<th>Total</th></tr></thead><tbody>`;
+  DATA.ger.forEach(g=>{
+    h += `<tr><td>${g.label}</td>` + DATA.canal.map(c=>{
+      if(S(k,2025,g.code,c)+S(k,2026,g.code,c)<1) return `<td class="flat">&ndash;</td>`;
+      const d=cell(g.code,c), p=gp(S(k,2026,g.code,c),S(k,2025,g.code,c));
+      return `<td ${heat(d,max)}>${nom(d)}<small>${pct(p)}</small></td>`;
+    }).join("");
+    const dg=S(k,2026,g.code)-S(k,2025,g.code);
+    h += `<td class="${cls(dg)}"><b>${nom(dg)}</b><small>${pct(gp(S(k,2026,g.code),S(k,2025,g.code)))}</small></td></tr>`;
+  });
+  h += `<tr class="total"><td>Total regional</td>` + DATA.canal.map(c=>{ const d=S(k,2026,null,c)-S(k,2025,null,c); return `<td class="${cls(d)}">${nom(d)}<small>${pct(gp(S(k,2026,null,c),S(k,2025,null,c)))}</small></td>`; }).join("") + `<td class="${cls(S(k,2026)-S(k,2025))}">${nom(S(k,2026)-S(k,2025))}<small>${pct(gp(S(k,2026),S(k,2025)))}</small></td></tr></tbody>`;
+  document.getElementById("m-cross").innerHTML = h;
+
+  let y = `<thead><tr><th>Canal</th>${YEARS.map(v=>`<th>${v}</th>`).join("")}</tr></thead><tbody>`;
+  const row=(c,label,total)=>{ y += `<tr${total?' class="total"':''}><td>${label}</td>` + YEARS.map(v=>{ const g=gp(c===null?S(k,v):S(k,v,null,c), c===null?S(k,v-1):S(k,v-1,null,c)); return g===null?`<td class="flat">n/a</td>`:`<td ${heat(g,25)}>${pct(g)}</td>`; }).join("") + "</tr>"; };
+  DATA.canal.forEach(c=>row(c,CANAL_LBL[c],false)); row(null,"Total regional",true);
+  document.getElementById("m-yoy").innerHTML = y + "</tbody>";
+})();
+</script>

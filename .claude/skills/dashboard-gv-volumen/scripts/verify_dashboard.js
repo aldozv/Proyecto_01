@@ -166,6 +166,14 @@ const reconcileCode = `
     if (Math.abs(multi - sep) > eps) bad.push({check:"multi_gerencia_union_vs_separado", period:p.key, multi, sep});
   }
 
+  // 7. columna YTD == suma de los meses mensuales Ene..YTD_MAX_MONTH, por gerencia
+  for (const g of GERENCIA_LIST) {
+    const ytd = sumBase([g.code], CD_DIMS[g.code], CAT_ORDER, allCanales, YTD_COLUMN.months);
+    let s = 0;
+    for (const p of PERIODS.month) if (p.months[0][1] <= YTD_MAX_MONTH) s += sumBase([g.code], CD_DIMS[g.code], CAT_ORDER, allCanales, p.months);
+    if (Math.abs(ytd - s) > eps) bad.push({check:"ytd_col_vs_suma_meses", gerCode:g.code, ytd, s});
+  }
+
   this.__BAD__ = bad;
 })();
 `;
@@ -178,6 +186,8 @@ for (const c of ["total_vs_catsum", "total_vs_cdsum", "total_vs_canalsum", "cana
 }
 const multiFails = bad.filter(b => b.check === "multi_gerencia_union_vs_separado");
 check("multi-gerencia (union de CD) == suma separada por gerencia, en todos los meses", multiFails.length === 0, multiFails.slice(0, 5));
+const ytdFails = bad.filter(b => b.check === "ytd_col_vs_suma_meses");
+check("columna YTD == suma de meses Ene..YTD_MAX_MONTH, por gerencia", ytdFails.length === 0, ytdFails.slice(0, 5));
 
 // Este bloque NO se suprime con --quiet, a proposito: a diferencia del bloque de mas abajo
 // (dims/periodos/canales, puramente descriptivo y estable), este chequea drift real -- el

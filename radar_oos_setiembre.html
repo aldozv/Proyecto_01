@@ -1,0 +1,792 @@
+<title>Radar OOS Setiembre</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@500;600;700;800&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --bg:#f6f3ec;
+    --surface:#ffffff;
+    --surface-2:#efe9dc;
+    --text:#221f19;
+    --text-muted:#6f6656;
+    --border:#e2d9c6;
+    --accent:#8a5a10;
+    --accent-soft:#f1e2c4;
+    --good:#2f7d5e;
+    --good-soft:#e2f0e9;
+    --warn:#a3730f;
+    --warn-soft:#f6ecd6;
+    --critical:#a8382c;
+    --critical-soft:#f6e2df;
+    --ger-huancay:#8a5a10;
+    --ger-pucallpa:#2c6e73;
+    --ger-tarapoto:#7a4f7d;
+    --ger-iquitos:#3b5f8a;
+    --shadow: 0 1px 2px rgba(34,31,25,0.06), 0 8px 24px -12px rgba(34,31,25,0.18);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#18150f;
+      --surface:#211c15;
+      --surface-2:#2a241a;
+      --text:#f1ecdf;
+      --text-muted:#a89b83;
+      --border:#3a3223;
+      --accent:#dba64a;
+      --accent-soft:#3a2d15;
+      --good:#6cc39a;
+      --good-soft:#1e3128;
+      --warn:#e0b558;
+      --warn-soft:#3a2f16;
+      --critical:#e2867a;
+      --critical-soft:#3a2119;
+      --ger-huancay:#dba64a;
+      --ger-pucallpa:#6fc2c8;
+      --ger-tarapoto:#c99fcc;
+      --ger-iquitos:#8fb0dd;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 28px -14px rgba(0,0,0,0.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#18150f;
+    --surface:#211c15;
+    --surface-2:#2a241a;
+    --text:#f1ecdf;
+    --text-muted:#a89b83;
+    --border:#3a3223;
+    --accent:#dba64a;
+    --accent-soft:#3a2d15;
+    --good:#6cc39a;
+    --good-soft:#1e3128;
+    --warn:#e0b558;
+    --warn-soft:#3a2f16;
+    --critical:#e2867a;
+    --critical-soft:#3a2119;
+    --ger-huancay:#dba64a;
+    --ger-pucallpa:#6fc2c8;
+    --ger-tarapoto:#c99fcc;
+    --ger-iquitos:#8fb0dd;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 28px -14px rgba(0,0,0,0.6);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:"Public Sans", ui-sans-serif, system-ui, sans-serif;
+    line-height:1.45;
+  }
+  .wrap{max-width:1180px; margin:0 auto; padding:36px 24px 64px;}
+
+  h1,h2,h3{font-family:"Libre Franklin", ui-sans-serif, system-ui, sans-serif; text-wrap:balance; margin:0;}
+  .mono{font-family:"IBM Plex Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums;}
+
+  header.top{display:flex; flex-direction:column; gap:10px; margin-bottom:28px;}
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px; align-self:flex-start;
+    font-size:12px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase;
+    color:var(--warn); background:var(--warn-soft); border:1px solid var(--border);
+    padding:5px 11px; border-radius:999px;
+  }
+  h1{font-size:32px; font-weight:800; letter-spacing:-0.01em;}
+  .subtitle{color:var(--text-muted); font-size:15px; max-width:70ch;}
+  .chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:6px;}
+  .chip{
+    font-size:12.5px; font-weight:600; color:var(--text-muted);
+    background:var(--surface-2); border:1px solid var(--border);
+    padding:4px 10px; border-radius:7px;
+  }
+
+  .tiles{display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:14px; margin-bottom:28px;}
+  .tile{
+    background:var(--surface); border:1px solid var(--border); border-radius:14px;
+    padding:18px 18px 16px; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:6px;
+  }
+  .tile .label{font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted);}
+  .tile .value{font-size:27px; font-weight:800; font-family:"Libre Franklin", sans-serif; letter-spacing:-0.01em;}
+  .tile .value .unit{font-size:14px; font-weight:600; color:var(--text-muted); margin-left:4px;}
+  .tile .note{font-size:12.5px; color:var(--text-muted);}
+  .tile.critical .value{color:var(--critical);}
+  .tile.warn .value{color:var(--warn);}
+
+  section{margin-bottom:30px;}
+  .section-head{display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:14px; flex-wrap:wrap;}
+  .section-head h2{font-size:18px; font-weight:700;}
+  .section-head .hint{font-size:12.5px; color:var(--text-muted);}
+
+  .panel{background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:20px; box-shadow:var(--shadow);}
+
+  .bars{display:flex; flex-direction:column; gap:12px;}
+  .bar-row{display:grid; grid-template-columns:150px 1fr 92px; align-items:center; gap:12px;}
+  .bar-row .name{font-size:13.5px; font-weight:600;}
+  .bar-row .name .sub{display:block; font-size:11.5px; font-weight:500; color:var(--text-muted); margin-top:1px;}
+  .bar-track{position:relative; height:22px; background:var(--surface-2); border-radius:6px; overflow:hidden;}
+  .bar-fill{position:absolute; inset:0 auto 0 0; border-radius:6px;}
+  .bar-row .val{font-size:13px; text-align:right; font-weight:600;}
+  .bar-row .val .sub{display:block; font-size:11px; font-weight:500; color:var(--text-muted);}
+
+  .controls{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px;}
+  select, input[type="text"]{
+    font:inherit; font-size:13px; color:var(--text); background:var(--surface);
+    border:1px solid var(--border); border-radius:8px; padding:7px 10px;
+  }
+  select:focus, input:focus{outline:2px solid var(--accent); outline-offset:1px;}
+  .table-scroll{overflow:auto; max-height:400px; border:1px solid var(--border); border-radius:10px;}
+  table{width:100%; border-collapse:collapse; font-size:13px;}
+  thead th{
+    position:sticky; top:0; background:var(--surface-2); text-align:left; padding:9px 12px;
+    font-size:11.5px; text-transform:uppercase; letter-spacing:0.04em; color:var(--text-muted);
+    border-bottom:1px solid var(--border); white-space:nowrap;
+  }
+  thead th.num, td.num{text-align:right;}
+  tbody td{padding:7px 12px; border-bottom:1px solid var(--border); white-space:nowrap;}
+  tbody tr:hover{background:var(--surface-2);}
+  .ger-dot{display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:2px; vertical-align:middle; flex:none;}
+  .pct-pill{
+    display:inline-block; padding:2px 8px; border-radius:999px; font-size:12px; font-weight:600;
+  }
+
+  .groups{display:flex; flex-direction:column;}
+  .ger-group{border-bottom:1px solid var(--border);}
+  .ger-group:last-of-type{border-bottom:none;}
+  .ger-group summary{
+    list-style:none; cursor:pointer; display:flex; align-items:center; gap:9px;
+    padding:14px 4px; font-weight:700; font-size:15px;
+  }
+  .ger-group summary::-webkit-details-marker{display:none;}
+  .ger-group summary .chevron{
+    display:inline-flex; width:14px; justify-content:center; color:var(--text-muted);
+    font-size:12px; transition:transform 0.15s ease; flex:none;
+  }
+  .ger-group[open] summary .chevron{transform:rotate(90deg);}
+  .ger-group summary .ger-stats{
+    margin-left:auto; font-size:12.5px; font-weight:600; color:var(--text-muted);
+    font-family:"IBM Plex Mono", monospace; white-space:nowrap;
+  }
+  .ger-group > .cd-groups{margin:0 0 16px; display:flex; flex-direction:column;}
+
+  .cd-group{margin-left:23px; padding-left:14px; border-left:2px solid var(--border);}
+  .cd-group summary{
+    list-style:none; cursor:pointer; display:flex; align-items:center; gap:8px;
+    padding:9px 4px; font-weight:600; font-size:13.5px;
+  }
+  .cd-group summary::-webkit-details-marker{display:none;}
+  .cd-group summary .chevron{
+    display:inline-flex; width:12px; justify-content:center; color:var(--text-muted);
+    font-size:11px; transition:transform 0.15s ease; flex:none;
+  }
+  .cd-group[open] summary .chevron{transform:rotate(90deg);}
+  .cd-group summary .cd-code{font-family:"IBM Plex Mono", monospace; font-weight:700;}
+  .cd-group summary .cd-name{font-weight:500; color:var(--text-muted);}
+  .cd-group summary .cd-stats{
+    margin-left:auto; font-size:12px; font-weight:600; color:var(--text-muted);
+    font-family:"IBM Plex Mono", monospace; white-space:nowrap;
+  }
+  .cd-group > .table-scroll{max-height:320px; margin:0 0 12px;}
+
+  .callout{
+    background:var(--surface-2); border:1px solid var(--border); border-radius:12px; padding:16px 18px;
+    font-size:13.5px; color:var(--text-muted);
+  }
+  .callout h3{font-size:13px; color:var(--text); margin-bottom:8px;}
+  .callout ul{margin:0; padding-left:18px; display:flex; flex-direction:column; gap:6px;}
+  .callout code{font-family:"IBM Plex Mono", monospace; font-size:12px; background:var(--surface); border:1px solid var(--border); padding:1px 5px; border-radius:4px; color:var(--text);}
+
+  footer{margin-top:36px; font-size:12px; color:var(--text-muted); border-top:1px solid var(--border); padding-top:16px;}
+
+  @media (max-width:820px){
+    .bar-row{grid-template-columns:110px 1fr 78px;}
+  }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow">Prueba · setiembre 2026</span>
+    <h1>Radar de quiebres de stock (OOS) — Centro Oriente</h1>
+    <p class="subtitle">Horas sin disponibilidad en BEES por marca-formato (<em>brand_pack</em>), agregadas a Gerencia y Centro de Distribución, y el volumen estimado que ese quiebre dejó de vender.</p>
+    <div class="chips">
+      <span class="chip">Cervezas + Licores + RTD</span>
+      <span class="chip">Setiembre 2026 · 26 días operativos (excl. domingos)</span>
+      <span class="chip">11 CD de Centro Oriente (BK31 excluido de Tarapoto)</span>
+      <span class="chip">Fuente: dev_onep_fact_critical_items_summary_24h_brand_pack_gold</span>
+    </div>
+  </header>
+
+  <div class="tiles" id="tiles"></div>
+
+  <section>
+    <div class="section-head">
+      <h2>HL perdido por gerencia</h2>
+      <span class="hint">Suma de <code>hl_so_brand_pack</code> del mes · ordenado de mayor a menor</span>
+    </div>
+    <div class="panel">
+      <div class="bars" id="ger-bars"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>HL perdido por CD — Top 5</h2>
+      <span class="hint">Suma de <code>hl_so_brand_pack</code> del mes · color = gerencia dominante del CD</span>
+    </div>
+    <div class="panel">
+      <div class="bars" id="cd-bars"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Los 10 combinaciones CD × marca-formato con más venta perdida</h2>
+      <span class="hint">setiembre 2026</span>
+    </div>
+    <div class="panel">
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Brand_pack</th>
+              <th>CD</th>
+              <th>Centro</th>
+              <th>Gerencia</th>
+              <th class="num">% Uptime</th>
+              <th class="num">Horas OOS</th>
+              <th class="num">HL perdido</th>
+            </tr>
+          </thead>
+          <tbody id="top-list"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Detalle Top 5 por CD — Gerencia × CD × Brand_pack</h2>
+      <span class="hint" id="row-count-hint"></span>
+    </div>
+    <div class="panel">
+      <div class="controls">
+        <select id="f-cd"><option value="">Todos los CD</option></select>
+        <input type="text" id="f-brand" placeholder="Buscar marca o brand_pack…">
+      </div>
+      <div class="groups" id="groups"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="callout">
+      <h3>Cómo leer esta prueba — 6 aproximaciones a tener presentes</h3>
+      <ul>
+        <li><b>Se excluyeron los domingos ("26 días flat").</b> Setiembre 2026 tiene 4 domingos (6, 13, 20, 27) → 30 − 4 = 26 días operativos. Se asume, como <b>hipótesis de negocio aún no validada</b> con venta real, que no hay demanda de pedidos ese día — así que un quiebre en domingo no genera pérdida real y se excluye de la suma. Validado puntualmente sobre agosto con Cristal 650 en SJ91/Iquitos: el HL perdido bajó de 12.646,98 a <b>10.901,77 HL (−13,8%)</b> al quitar sus 3 domingos con dato. Pendiente: confirmar contra <code>dm_venta</code> si la venta real cae a ~0 los domingos antes de adoptar esto como definitivo.</li>
+        <li><b>Cómo se calcula el HL perdido:</b> <code>hl_so_brand_pack = horas_oos_brand_pack × hl_pv_promedio_bp</code> — horas que el brand_pack estuvo apagado en BEES ese día, multiplicadas por su velocidad de venta promedio (HL/hora) en ese CD. Es una <b>estimación de demanda</b> ("lo que se habría vendido al ritmo habitual"), no venta perdida contabilizada — y no todos los días del mes tienen registro para cada combinación CD×brand_pack, así que el % uptime se calcula sobre los días con dato, no sobre el mes calendario completo. <b>Validamos el HL/hora con datos reales</b> (Cristal 650 en CD Iquitos/SJ91: 108.238 HL vendidos feb-jul'26 ÷ 4.344 horas calendario de esos 6 meses ≈ 24,9 HL/hora, contra ~26,0 HL/hora de promedio real de la tabla en agosto) — el divisor son <b>horas calendario</b>, no horas efectivamente disponibles. Esto implica que si un brand_pack viene de quiebres sostenidos, su promedio (y por tanto el HL perdido estimado) puede quedar <b>subestimado</b>, porque los días ya perdidos también jalan hacia abajo el promedio que se usa para proyectar la pérdida.</li>
+        <li><b>Gerencia es una aproximación, no una atribución exacta.</b> Esta tabla no tiene relación 1:1 CD→gerencia (un CD puede repartir a varias GV). Se usa el mapeo <b>CD → GV dominante</b> ya validado para Brand Distribution (&gt;98% del volumen de casi todos los CD es de una sola GV). <code>PE Ger P4 DA Jun Puc</code> queda fuera de este corte: no opera CD propio. <b>BK31 (San Benedicto I) se excluyó de Tarapoto</b> a pedido puntual del usuario para esta prueba — sigue siendo CD de Centro Oriente.</li>
+        <li><b><code>SJ01</code> (Planta San Juan) se excluyó.</b> No es un CD de reparto a POC, es la planta de producción — mezclar sus quiebres BEES con los de un CD real no es comparable.</li>
+        <li><b>El corte es por <code>brand_pack</code> (marca + formato), no por SKU individual</b> — por decisión explícita para esta prueba. Un mismo brand_pack puede agrupar más de un material/SKU.</li>
+        <li><b>Solo brand_pack activos en el CD</b> (<code>activo_en_cd = 1</code>) para no inflar el análisis con productos que ni siquiera se venden ahí — mismo criterio ya usado para el KPI SKU Uptime oficial.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    Query: <code>querys/Query_OOS_Gerencia_CD_BrandPack_Setiembre2026.sql</code> · 236 combinaciones CD×brand_pack activas en setiembre 2026 (26 días operativos, excl. domingos, BK31 excluido de Tarapoto), sobre 2.690 filas diarias agregadas. El último día del mes (30-set) trae solo ~16,6 h disponibles por corte de datos, igual que el 31-ago.
+  </footer>
+</div>
+
+<script>
+const COLS = ["gerencia_dominante","centro_id","brand","brand_pack","horas_oos","horas_prendidas","horas_disponibles_mes","pct_uptime","hl_perdido"];
+
+const RAW = [
+["PE Ger P4 Iquitos","SJ91","Cristal","Cristal 650 RB","428.3141666666667","164.30000000000004","592.61","0.2772","11805.35"],
+["PE Ger P4 Pucall Hco","SJ97","P.Callao","P.Callao 630 RB","267.1719444444444","301.45","568.61","0.5302","11260.58"],
+["PE Ger P4 Pucall Hco","SJ97","San Juan","San Juan 620 RB","142.8836111111111","233.71","376.61","0.6206","7141.12"],
+["PE Ger P4 Huancay Ch","BK68","P.Callao","P.Callao 630 RB","70.02305555555556","97.98000000000002","168.0","0.5832","3610.26"],
+["PE Ger P4 Huancay Ch","SJ86","P.Callao","P.Callao 630 RB","377.7394444444444","190.87","568.61","0.3357","3219.98"],
+["PE Ger P4 Pucall Hco","SJ97","Cristal","Cristal 650 RB","223.2194444444444","273.39","496.61","0.5505","3194.54"],
+["PE Ger P4 Tarapoto","SJ94","P.Callao","P.Callao 630 RB","232.96055555555557","119.68","352.61","0.3394","2626.58"],
+["PE Ger P4 Tarapoto","SJ95","P.Callao","P.Callao 630 RB","436.59416666666664","180.02000000000007","616.61","0.292","2022.35"],
+["PE Ger P4 Tarapoto","SJ95","Cristal","Cristal 650 RB","389.1302777777778","138.88000000000002","528.0","0.263","1816.09"],
+["PE Ger P4 Tarapoto","SJ92","Cristal","Cristal 650 RB","360.4394444444444","232.19000000000003","592.61","0.3918","1620.66"],
+["PE Ger P4 Pucall Hco","SJ97","San Juan","San Juan 355 CAN","387.60527777777776","181.03","568.61","0.3184","1569.56"],
+["PE Ger P4 Huancay Ch","SJ87","P.Callao","P.Callao 630 RB","220.23444444444445","132.39000000000001","352.61","0.3755","1539.14"],
+["PE Ger P4 Tarapoto","SJ94","Cristal","Cristal 650 RB","332.7247222222222","187.9","520.61","0.3609","1212.82"],
+["PE Ger P4 Pucall Hco","SJ97","Cusqueña","Cusqueña Trigo 620 RB","157.7472222222222","218.87000000000003","376.61","0.5812","978.88"],
+["PE Ger P4 Iquitos","SJ91","Cristal","Cristal 355 CAN","529.8755555555555","62.75000000000001","592.61","0.1059","965.63"],
+["PE Ger P4 Tarapoto","SJ92","P.Callao","P.Callao 630 RB","192.77027777777778","63.83999999999999","256.61","0.2488","949.68"],
+["PE Ger P4 Huancay Ch","SJ87","Cristal","Cristal 650 RB","327.0672222222222","145.54","472.61","0.3079","894.14"],
+["PE Ger P4 Pucall Hco","SJ90","San Juan","San Juan 620 RB","67.16111111111111","100.84","168.0","0.6002","691.64"],
+["PE Ger P4 Iquitos","SJ91","P.Callao","P.Callao 630 RB","411.79222222222216","116.19","528.0","0.2201","538.38"],
+["PE Ger P4 Tarapoto","SJ92","P.Callao","P.Callao 305 RB","484.4758333333334","132.17000000000002","616.61","0.2143","500.19"],
+["PE Ger P4 Tarapoto","SJ94","P.Callao","P.Callao 305 RB","299.54","245.08000000000007","544.61","0.45","464.64"],
+["PE Ger P4 Huancay Ch","BK68","Cusqueña","Cusqueña Trigo 620 RB","123.91916666666667","188.08999999999997","312.0","0.6029","380.05"],
+["PE Ger P4 Iquitos","SJ91","Cristal","Cristal 473 CAN","484.31555555555553","132.30999999999997","616.61","0.2146","298.54"],
+["PE Ger P4 Iquitos","SJ91","Corona","Corona 210 NRB","487.1205555555555","129.5","616.61","0.21","296.74"],
+["PE Ger P4 Iquitos","SJ91","San Juan","San Juan 620 RB","466.5572222222222","37.45","504.0","0.0743","295.72"],
+["PE Ger P4 Pucall Hco","SJ90","Cusqueña","Cusqueña Trigo 620 RB","279.2155555555555","56.79","336.0","0.169","292.18"],
+["PE Ger P4 Huancay Ch","SJ87","Cusqueña","Cusqueña Trigo 620 RB","247.35777777777778","88.64999999999999","336.0","0.2638","284.98"],
+["PE Ger P4 Huancay Ch","BK43","P.Callao","P.Callao 630 RB","69.66944444444444","146.32999999999998","216.0","0.6775","247.16"],
+["PE Ger P4 Tarapoto","SJ92","Cusqueña","Cusqueña Trigo 620 RB","191.48777777777778","144.52","336.0","0.4301","242.46"],
+["PE Ger P4 Pucall Hco","SJ93","Cusqueña","Cusqueña Trigo 620 RB","476.6405555555555","139.97000000000003","616.61","0.227","241.91"],
+["PE Ger P4 Pucall Hco","SJ97","Golden","Golden 650 RB","310.52916666666664","66.09","376.61","0.1755","224.88"],
+["PE Ger P4 Iquitos","SJ91","Mike's","Mikes Fresa 355 CAN","588.1330555555555","28.48","616.61","0.0462","223.64"],
+["PE Ger P4 Huancay Ch","SJ86","Cristal","Cristal 1000 RB","122.8725","109.73","232.61","0.4717","216.0"],
+["PE Ger P4 Iquitos","SJ91","Mike's","Mikes Maracuyá 355 CAN","549.8025","66.82","616.61","0.1084","212.84"],
+["PE Ger P4 Iquitos","SJ91","Golden","Golden 650 RB","322.4886111111111","85.52000000000001","408.0","0.2096","198.15"],
+["PE Ger P4 Pucall Hco","SJ93","San Juan","San Juan 620 RB","35.98555555555556","132.02","168.0","0.7858","197.59"],
+["PE Ger P4 Huancay Ch","BK43","P.Callao","P.Callao 473 CAN","433.2308333333333","94.76","528.0","0.1795","195.89"],
+["PE Ger P4 Huancay Ch","BK68","Golden","Golden 650 RB","220.1483333333333","156.46","376.61","0.4154","192.88"],
+["PE Ger P4 Pucall Hco","SJ97","Cusqueña","Cusqueña Malta 620 RB","132.0547222222222","59.95","192.0","0.3122","185.89"],
+["PE Ger P4 Iquitos","SJ91","Golden","Golden 473 CAN","616.6138888888888","0.0","616.61","0.0","180.53"],
+["PE Ger P4 Huancay Ch","BK68","Golden","Golden 473 CAN","181.5011111111111","435.1","616.61","0.7056","172.1"],
+["PE Ger P4 Huancay Ch","BK68","P.Callao","P.Callao 305 RB","404.37555555555554","123.62","528.0","0.2341","162.28"],
+["PE Ger P4 Iquitos","SJ91","Cusqueña","Cusqueña Malta 620 RB","455.6116666666667","96.41000000000001","552.0","0.1747","157.08"],
+["PE Ger P4 Huancay Ch","SJ86","Golden","Golden 650 RB","499.8047222222222","92.82000000000001","592.61","0.1566","142.75"],
+["PE Ger P4 Huancay Ch","SJ86","Cristal","Cristal 650 RB","168.4136111111111","95.60000000000001","264.0","0.3621","140.99"],
+["PE Ger P4 Iquitos","SJ91","Mike's","Mikes Limón 355 CAN","576.5477777777778","40.06","616.61","0.065","132.6"],
+["PE Ger P4 Huancay Ch","BK43","Cusqueña","Cusqueña Trigo 620 RB","255.8663888888889","200.15000000000003","456.0","0.4389","131.78"],
+["PE Ger P4 Huancay Ch","BK68","Cristal","Cristal 650 RB","143.70583333333335","96.28","240.0","0.4012","123.82"],
+["PE Ger P4 Tarapoto","SJ94","Cusqueña","Cusqueña Trigo 620 RB","179.40555555555557","84.59","264.0","0.3204","116.53"],
+["PE Ger P4 Pucall Hco","SJ97","Cusqueña","Cusqueña Trigo 355 CAN","412.3144444444444","108.29","520.61","0.208","116.23"],
+["PE Ger P4 Iquitos","SJ91","San Juan","San Juan 355 CAN","348.1674999999999","131.81","480.0","0.2746","114.31"],
+["PE Ger P4 Huancay Ch","SJ87","P.Callao","P.Callao 473 CAN","136.26416666666665","168.35999999999999","304.61","0.5527","112.37"],
+["PE Ger P4 Pucall Hco","SJ97","Corona","Corona 330 NRB","268.50861111111107","108.09","376.61","0.287","109.45"],
+["PE Ger P4 Iquitos","SJ91","Mike's","Mikes Arándano 355 CAN","590.2433333333333","26.38","616.61","0.0428","103.22"],
+["PE Ger P4 Pucall Hco","SJ97","Golden","Golden 473 CAN","238.3486111111111","90.26","328.61","0.2747","99.51"],
+["PE Ger P4 Iquitos","SJ91","P.Callao","P.Callao 355 CAN","316.8230555555555","163.18","480.0","0.34","95.72"],
+["PE Ger P4 Iquitos","SJ91","P.Callao","P.Callao 305 RB","194.89277777777778","69.10999999999999","264.0","0.2618","94.47"],
+["PE Ger P4 Iquitos","SJ91","Cusqueña","Cusqueña Trigo 355 CAN","353.54972222222216","215.07999999999996","568.61","0.3783","93.31"],
+["PE Ger P4 Pucall Hco","SJ97","Cristal","Cristalina 500 PET","237.52861111111113","98.47","336.0","0.2931","91.13"],
+["PE Ger P4 Pucall Hco","SJ97","P.Callao","P.Callao 305 RB","309.6427777777777","50.35","360.0","0.1399","89.46"],
+["PE Ger P4 Tarapoto","SJ92","P.Callao (Pilsen Fresh)","P.Fresh 305 RB","205.02555555555554","154.95999999999998","360.0","0.4304","87.52"],
+["PE Ger P4 Iquitos","SJ91","Mike's","Mikes Manzana 355 CAN","567.2272222222222","49.379999999999995","616.61","0.0801","83.15"],
+["PE Ger P4 Tarapoto","SJ95","P.Callao","P.Callao 305 RB","374.445","81.54999999999998","456.0","0.1788","82.72"],
+["PE Ger P4 Huancay Ch","BK68","P.Callao","P.Callao 473 CAN","34.05694444444445","325.93999999999994","360.0","0.9054","80.21"],
+["PE Ger P4 Tarapoto","SJ95","Cristal","Cristalina 500 PET","173.63861111111112","138.37","312.0","0.4435","78.35"],
+["PE Ger P4 Iquitos","SJ91","P.Callao","P.Callao 269 CAN","283.49","100.50999999999999","384.0","0.2617","76.5"],
+["PE Ger P4 Huancay Ch","BK68","P.Callao","P.Callao 1000 RB","166.4986111111111","97.49999999999999","264.0","0.3693","74.85"],
+["PE Ger P4 Pucall Hco","SJ97","Mike's","Mikes Maracuyá 355 CAN","334.34583333333336","121.66","456.0","0.2668","70.65"],
+["PE Ger P4 Iquitos","SJ91","Cusqueña","Cusqueña Trigo 620 RB","71.48916666666666","120.53","192.0","0.6278","67.76"],
+["PE Ger P4 Pucall Hco","SJ97","Mike's","Mikes Arándano 355 CAN","456.8888888888889","159.75000000000003","616.61","0.2591","61.66"],
+["PE Ger P4 Tarapoto","SJ95","Golden","Golden 650 RB","348.3358333333333","52.28","400.61","0.1305","60.64"],
+["PE Ger P4 Pucall Hco","SJ90","San Juan","San Juan 355 CAN","82.21972222222222","85.78999999999999","168.0","0.5107","60.01"],
+["PE Ger P4 Tarapoto","SJ95","Cristal","Cristal 355 CAN","177.92083333333335","134.08","312.0","0.4297","58.93"],
+["PE Ger P4 Tarapoto","SJ94","P.Callao (Pilsen Fresh)","P.Fresh 305 RB","346.37222222222226","13.63","360.0","0.0379","55.21"],
+["PE Ger P4 Pucall Hco","SJ90","Cristal","Cristalina 500 PET","428.5277777777778","92.07000000000001","520.61","0.1769","54.74"],
+["PE Ger P4 Pucall Hco","SJ97","Corona","Corona 210 NRB","317.7513888888889","114.25","432.0","0.2645","52.03"],
+["PE Ger P4 Huancay Ch","BK68","Cusqueña","Cusqueña Trigo 473 CAN","158.02777777777777","129.99","288.0","0.4514","51.61"],
+["PE Ger P4 Pucall Hco","SJ93","San Juan","San Juan 355 CAN","70.01583333333333","66.6","136.61","0.4875","51.3"],
+["PE Ger P4 Tarapoto","SJ92","Golden","Golden 650 RB","173.60722222222222","35.01","208.61","0.1678","45.12"],
+["PE Ger P4 Pucall Hco","SJ90","Cristal","Cristal 650 RB","61.295","58.699999999999996","120.0","0.4892","43.28"],
+["PE Ger P4 Huancay Ch","SJ87","Cusqueña","Cusqueña Malta 620 RB","386.33638888888885","110.27000000000001","496.61","0.222","41.71"],
+["PE Ger P4 Huancay Ch","SJ86","P.Callao","P.Callao 473 CAN","81.7622222222222","134.23000000000002","216.0","0.6214","41.62"],
+["PE Ger P4 Pucall Hco","SJ97","Mike's","Mikes Fresa 355 CAN","172.6872222222222","299.93","472.61","0.6346","40.99"],
+["PE Ger P4 Iquitos","SJ91","Cusqueña","Cusqueña Trigo 473 CAN","298.34666666666664","61.66","360.0","0.1713","40.33"],
+["PE Ger P4 Iquitos","SJ91","Cristal","Cristalina 500 PET","123.30277777777778","44.7","168.0","0.2661","39.62"],
+["PE Ger P4 Huancay Ch","SJ87","Golden","Golden 650 RB","444.07916666666665","100.55000000000001","544.61","0.1846","38.64"],
+["PE Ger P4 Tarapoto","SJ95","Cusqueña","Cusqueña Trigo 620 RB","116.58388888888888","75.41999999999999","192.0","0.3928","38.44"],
+["PE Ger P4 Huancay Ch","SJ87","P.Callao (Pilsen Fresh)","P.Fresh 473 CAN","345.9763888888889","54.63","400.61","0.1364","35.09"],
+["PE Ger P4 Pucall Hco","SJ97","P.Callao","P.Callao 355 CAN","112.6425","431.97","544.61","0.7932","32.82"],
+["PE Ger P4 Pucall Hco","SJ93","Golden","Golden 650 RB","473.4480555555555","143.17000000000002","616.61","0.2322","32.3"],
+["PE Ger P4 Huancay Ch","BK68","Mike's","Mikes Maracuyá 355 CAN","240.70305555555555","119.3","360.0","0.3314","32.24"],
+["PE Ger P4 Huancay Ch","BK43","Cusqueña","Cusqueña Trigo 473 CAN","265.77611111111116","118.22","384.0","0.3079","31.83"],
+["PE Ger P4 Iquitos","SJ91","P.Callao","P.Callao 305 NRB","304.4563888888889","120.17","424.61","0.283","31.42"],
+["PE Ger P4 Pucall Hco","SJ93","Cristal","Cristalina 500 PET","475.2372222222221","93.37","568.61","0.1642","30.54"],
+["PE Ger P4 Tarapoto","SJ92","Cristal","Cristal 305 RB","163.57361111111112","69.03999999999999","232.61","0.2968","29.74"],
+["PE Ger P4 Pucall Hco","SJ97","Cusqueña","Cusqueña Trigo 473 CAN","74.52472222222224","141.48","216.0","0.655","29.71"],
+["PE Ger P4 Huancay Ch","SJ86","San Juan","San Juan 620 RB","6.970277777777778","41.03","48.0","0.8548","28.91"],
+["PE Ger P4 Huancay Ch","SJ86","P.Callao (Pilsen Fresh)","P.Fresh 473 CAN","314.22277777777776","62.39","376.61","0.1657","28.63"],
+["PE Ger P4 Huancay Ch","BK68","P.Callao (Pilsen Fresh)","P.Fresh 473 CAN","94.99472222222222","49.01","144.0","0.3403","27.24"],
+["PE Ger P4 Pucall Hco","SJ90","Golden","Golden 650 RB","291.0211111111111","37.6","328.61","0.1144","26.07"],
+["PE Ger P4 Pucall Hco","SJ97","Mike's","Mikes Manzana 355 CAN","250.52333333333337","102.08","352.61","0.2895","25.79"],
+["PE Ger P4 Tarapoto","SJ95","Corona","Corona 330 NRB","356.32916666666665","75.66","432.0","0.1751","24.67"],
+["PE Ger P4 Iquitos","SJ91","Cusqueña","Cusqueña Malta 355 CAN","262.2125","138.42","400.61","0.3455","24.66"],
+["PE Ger P4 Tarapoto","SJ95","Mike's","Mikes Arándano 355 CAN","399.6183333333333","96.99","496.61","0.1953","24.53"],
+["PE Ger P4 Iquitos","SJ91","Cusqueña","Cusqueña Trigo 310 RB","191.44194444444446","96.55999999999999","288.0","0.3353","23.65"],
+["PE Ger P4 Huancay Ch","BK43","Cristal","Cristalina 500 PET","479.19722222222225","17.42","496.61","0.0351","23.2"],
+["PE Ger P4 Pucall Hco","SJ93","Corona","Corona 330 NRB","133.39666666666668","106.59","240.0","0.4441","21.41"],
+["PE Ger P4 Tarapoto","SJ95","Corona","Corona 210 NRB","403.6066666666666","213.01999999999998","616.61","0.3455","21.39"],
+["PE Ger P4 Huancay Ch","BK43","Cristal","Cristal 650 RB","430.6727777777778","89.95000000000002","520.61","0.1728","21.36"],
+["PE Ger P4 Pucall Hco","SJ93","Cusqueña","Cusqueña Malta 620 RB","271.16861111111115","64.82","336.0","0.1929","19.38"],
+["PE Ger P4 Pucall Hco","SJ93","Corona","Corona 210 NRB","283.67277777777775","140.92999999999998","424.61","0.3319","19.15"],
+["PE Ger P4 Tarapoto","SJ92","Corona","Corona 330 NRB","34.32805555555555","109.65","144.0","0.7615","18.65"],
+["PE Ger P4 Iquitos","SJ91","Corona","Corona 473 CAN","616.6138888888888","0.0","616.61","0.0","18.65"],
+["PE Ger P4 Pucall Hco","SJ93","Cusqueña","Cusqueña Trigo 355 CAN","158.48472222222225","33.510000000000005","192.0","0.1745","18.25"],
+["PE Ger P4 Huancay Ch","SJ87","Corona","Corona 330 NRB","185.75361111111116","150.25","336.0","0.4472","18.0"],
+["PE Ger P4 Tarapoto","SJ94","Corona","Corona 330 NRB","51.977222222222224","92.03","144.0","0.6391","17.81"],
+["PE Ger P4 Huancay Ch","BK68","Cusqueña","Cusqueña Malta 620 RB","31.84083333333333","112.15","144.0","0.7788","17.76"],
+["PE Ger P4 Huancay Ch","BK68","P.Callao (Pilsen Fresh)","P.Fresh 305 RB","104.25","39.75","144.0","0.276","17.27"],
+["PE Ger P4 Iquitos","SJ91","Cusqueña","Cusqueña Malta 310 NRB","420.8572222222222","11.14","432.0","0.0258","15.11"],
+["PE Ger P4 Pucall Hco","SJ97","Cristal","Cristal 355 CAN","78.22611111111111","514.38","592.61","0.868","15.04"],
+["PE Ger P4 Huancay Ch","SJ87","P.Callao","P.Callao 305 RB","46.05027777777778","66.57","112.61","0.5912","14.86"],
+["PE Ger P4 Tarapoto","SJ92","P.Callao","P.Callao 473 CAN","87.10499999999999","49.51","136.61","0.3624","14.84"],
+["PE Ger P4 Huancay Ch","BK43","P.Callao","P.Callao 1000 RB","426.9894444444445","77.02","504.0","0.1528","14.43"],
+["PE Ger P4 Huancay Ch","SJ86","P.Callao","P.Callao 355 CAN","69.6913888888889","74.3","144.0","0.516","14.33"],
+["PE Ger P4 Huancay Ch","SJ87","Cristal","Cristal 473 CAN","83.2775","60.739999999999995","144.0","0.4218","13.88"],
+["PE Ger P4 Pucall Hco","SJ93","P.Callao","P.Callao 630 RB","107.24694444444445","84.74000000000001","192.0","0.4414","13.75"],
+["PE Ger P4 Huancay Ch","BK68","Cristal","Cristalina 500 PET","91.83694444444444","100.16999999999999","192.0","0.5217","13.72"],
+["PE Ger P4 Huancay Ch","BK43","Golden","Golden 473 CAN","93.12694444444443","74.86999999999999","168.0","0.4457","12.21"],
+["PE Ger P4 Iquitos","SJ91","P.Callao (Pilsen Fresh)","P.Fresh 355 CAN","75.23416666666665","109.38","184.61","0.5925","11.77"],
+["PE Ger P4 Tarapoto","SJ94","P.Callao","P.Callao 355 CAN","11.500277777777779","53.12","64.61","0.8222","11.66"],
+["PE Ger P4 Pucall Hco","SJ97","Cusqueña","Cusqueña Malta 473 CAN","157.72972222222222","218.86999999999998","376.61","0.5812","11.64"],
+["PE Ger P4 Tarapoto","SJ94","Mike's","Mikes Arándano 355 CAN","81.5336111111111","38.47","120.0","0.3206","11.52"],
+["PE Ger P4 Huancay Ch","SJ86","Cusqueña","Cusqueña Malta 620 RB","138.64888888888888","69.96000000000001","208.61","0.3354","11.0"],
+["PE Ger P4 Pucall Hco","SJ90","P.Callao","P.Callao 305 RB","89.28916666666666","102.71000000000001","192.0","0.5349","10.13"],
+["PE Ger P4 Huancay Ch","BK68","Flying Fish","Flying Fish 355 CAN","404.1174999999999","140.49","544.61","0.258","9.07"],
+["PE Ger P4 Huancay Ch","BK43","Golden","Golden 650 RB","185.95555555555552","70.66","256.61","0.2754","9.01"],
+["PE Ger P4 Tarapoto","SJ92","Mike's","Mikes Manzana 355 CAN","172.71416666666667","67.28999999999999","240.0","0.2804","8.48"],
+["PE Ger P4 Tarapoto","SJ92","Mike's","Mikes Arándano 355 CAN","189.52555555555554","26.48","216.0","0.1226","8.47"],
+["PE Ger P4 Pucall Hco","SJ90","Corona","Corona 210 NRB","156.73694444444442","83.27","240.0","0.347","8.47"],
+["PE Ger P4 Pucall Hco","SJ93","Cristal","Cristal 650 RB","259.2422222222222","52.75","312.0","0.1691","7.96"],
+["PE Ger P4 Huancay Ch","BK68","Cusqueña","Cusqueña Malta 473 CAN","81.50027777777777","38.5","120.0","0.3208","7.61"],
+["PE Ger P4 Tarapoto","SJ94","Corona","Corona 210 NRB","67.67222222222222","68.95","136.61","0.5047","7.16"],
+["PE Ger P4 Huancay Ch","BK68","Mike's","Mikes Arándano 355 CAN","160.88194444444443","55.120000000000005","216.0","0.2552","6.54"],
+["PE Ger P4 Huancay Ch","BK68","Cristal","Cristal 473 CAN","91.01916666666666","76.98","168.0","0.4582","6.51"],
+["PE Ger P4 Pucall Hco","SJ97","Mike's","Mikes Mango 355 CAN","121.50333333333333","142.5","264.0","0.5398","6.43"],
+["PE Ger P4 Huancay Ch","SJ87","Cristal","Cristal 305 RB","42.22444444444445","53.769999999999996","96.0","0.5601","6.21"],
+["PE Ger P4 Huancay Ch","SJ87","Cusqueña","Cusqueña Trigo 473 CAN","35.47527777777778","36.53","72.0","0.5074","6.04"],
+["PE Ger P4 Tarapoto","SJ94","P.Callao (Pilsen Fresh)","P.Fresh 355 CAN","106.04638888888888","37.95","144.0","0.2635","6.02"],
+["PE Ger P4 Tarapoto","SJ94","Cristal","Cristal 305 RB","37.814166666666665","34.18","72.0","0.4747","5.82"],
+["PE Ger P4 Tarapoto","SJ92","Mike's","Mikes Fresa 355 CAN","67.55972222222223","52.449999999999996","120.0","0.4371","5.66"],
+["PE Ger P4 Tarapoto","SJ94","Golden","Golden 650 RB","15.056111111111111","49.56","64.61","0.7671","5.29"],
+["PE Ger P4 Huancay Ch","SJ86","Cusqueña","Cusqueña Trigo 310 RB","60.720555555555556","11.28","72.0","0.1567","4.93"],
+["PE Ger P4 Pucall Hco","SJ93","Cusqueña","Cusqueña Malta 355 CAN","133.01722222222222","58.98","192.0","0.3072","4.61"],
+["PE Ger P4 Tarapoto","SJ95","P.Callao (Pilsen Fresh)","P.Fresh 355 CAN","102.56250000000003","34.06","136.61","0.2493","4.54"],
+["PE Ger P4 Huancay Ch","BK68","P.Callao","P.Callao 305 NRB","124.00194444444443","36.61","160.61","0.2279","4.2"],
+["PE Ger P4 Pucall Hco","SJ90","P.Callao","P.Callao 630 RB","10.840833333333332","37.16","48.0","0.7742","3.96"],
+["PE Ger P4 Tarapoto","SJ92","Cristal","Cristalina 500 PET","16.8425","31.16","48.0","0.6492","3.94"],
+["PE Ger P4 Tarapoto","SJ92","Mike's","Mikes Mango 355 CAN","49.335277777777776","15.28","64.61","0.2365","3.52"],
+["PE Ger P4 Huancay Ch","BK68","Corona","Corona 210 NRB","25.34722222222222","46.66","72.0","0.6481","3.47"],
+["PE Ger P4 Pucall Hco","SJ97","P.Callao (Pilsen Fresh)","P.Fresh 305 RB","144.0911111111111","23.9","168.0","0.1423","3.32"],
+["PE Ger P4 Pucall Hco","SJ93","P.Callao","P.Callao 305 RB","319.3566666666667","16.64","336.0","0.0495","3.3"],
+["PE Ger P4 Huancay Ch","BK43","P.Callao","P.Callao 355 CAN","103.8436111111111","16.16","120.0","0.1347","3.18"],
+["PE Ger P4 Tarapoto","SJ94","Cusqueña","Cusqueña Quinua 473 CAN","173.2452777777778","66.75","240.0","0.2781","3.16"],
+["PE Ger P4 Pucall Hco","SJ97","Budweiser","Budweiser 355 CAN","12.004722222222222","35.99","48.0","0.7498","2.76"],
+["PE Ger P4 Huancay Ch","SJ87","Cristal","Cristal 1000 RB","8.393888888888888","39.599999999999994","48.0","0.825","2.73"],
+["PE Ger P4 Tarapoto","SJ94","P.Callao","P.Callao 269 CAN","57.738888888888894","62.260000000000005","120.0","0.5188","2.63"],
+["PE Ger P4 Huancay Ch","BK43","Cusqueña","Cusqueña Malta 473 CAN","103.84416666666667","16.16","120.0","0.1347","2.62"],
+["PE Ger P4 Tarapoto","SJ95","Mike's","Mikes Maracuyá 355 CAN","30.11777777777778","41.88","72.0","0.5817","2.58"],
+["PE Ger P4 Huancay Ch","BK68","Corona","Corona 330 NRB","27.86777777777778","68.13","96.0","0.7097","2.5"],
+["PE Ger P4 Huancay Ch","BK43","Cusqueña","Cusqueña Malta 620 RB","40.19888888888889","31.799999999999997","72.0","0.4417","2.46"],
+["PE Ger P4 Huancay Ch","BK68","Mike's","Mikes Fresa 355 CAN","30.784444444444443","41.21","72.0","0.5724","2.44"],
+["PE Ger P4 Tarapoto","SJ92","Cusqueña","Cusqueña Malta 620 RB","11.000277777777779","29.619999999999997","40.61","0.7294","2.42"],
+["PE Ger P4 Pucall Hco","SJ93","Golden","Golden 473 CAN","26.416666666666668","117.58999999999999","144.0","0.8166","2.37"],
+["PE Ger P4 Tarapoto","SJ94","Budweiser","Budweiser 355 CAN","155.35916666666668","12.64","168.0","0.0752","2.35"],
+["PE Ger P4 Pucall Hco","SJ97","Cusqueña","Cusqueña Malta 355 CAN","20.99361111111111","51.01","72.0","0.7085","2.32"],
+["PE Ger P4 Huancay Ch","SJ87","Corona","Corona 210 NRB","115.57305555555556","76.42","192.0","0.398","2.24"],
+["PE Ger P4 Tarapoto","SJ92","San Juan","San Juan 620 RB","73.4336111111111","94.56","168.0","0.5629","2.18"],
+["PE Ger P4 Pucall Hco","SJ93","P.Callao","P.Callao 355 CAN","48.894999999999996","71.12","120.0","0.5927","2.18"],
+["PE Ger P4 Huancay Ch","BK68","Mike's","Mikes Mango 355 CAN","64.97833333333332","47.63","112.61","0.423","1.95"],
+["PE Ger P4 Pucall Hco","SJ97","Cusqueña","Cusqueña Cero 355 CAN","87.2838888888889","73.33","160.61","0.4566","1.88"],
+["PE Ger P4 Pucall Hco","SJ97","P.Callao","P.Callao 473 CAN","8.867777777777778","607.75","616.61","0.9856","1.71"],
+["PE Ger P4 Huancay Ch","BK68","Corona","Corona Cero 355 NRB","73.62583333333333","46.38","120.0","0.3865","1.64"],
+["PE Ger P4 Iquitos","SJ91","Cusqueña","Cusqueña Cero 355 CAN","116.0927777777778","75.92","192.0","0.3954","1.59"],
+["PE Ger P4 Tarapoto","SJ94","Cusqueña","Cusqueña Cero 355 CAN","108.75777777777778","59.24000000000001","168.0","0.3526","1.51"],
+["PE Ger P4 Huancay Ch","BK68","Mike's","Mikes Limón 355 CAN","8.38861111111111","15.61","24.0","0.6504","1.45"],
+["PE Ger P4 Tarapoto","SJ94","Cusqueña","Cusqueña 355 CAN","155.35888888888888","12.64","168.0","0.0752","1.44"],
+["PE Ger P4 Huancay Ch","SJ86","Mike's","Mikes Arándano 355 CAN","63.2925","56.71","120.0","0.4726","1.33"],
+["PE Ger P4 Tarapoto","SJ95","Cusqueña","Cusqueña Malta 355 CAN","41.999722222222225","126.0","168.0","0.75","1.24"],
+["PE Ger P4 Tarapoto","SJ92","Corona","Corona 210 NRB","31.35388888888889","16.65","48.0","0.3469","1.17"],
+["PE Ger P4 Tarapoto","SJ94","P.Callao","P.Callao 305 NRB","11.5","29.119999999999997","40.61","0.7171","1.15"],
+["PE Ger P4 Pucall Hco","SJ90","Cusqueña","Cusqueña Malta 620 RB","11.000277777777779","29.619999999999997","40.61","0.7294","1.02"],
+["PE Ger P4 Huancay Ch","SJ87","Cusqueña","Cusqueña Trigo 355 CAN","27.19222222222222","44.81","72.0","0.6224","1.01"],
+["PE Ger P4 Pucall Hco","SJ97","Cusqueña","Cusqueña Trigo 310 NRB","8.355555555555556","87.63999999999999","96.0","0.9129","1.0"],
+["PE Ger P4 Tarapoto","SJ92","P.Callao (Pilsen Fresh)","P.Fresh 355 CAN","53.58972222222222","35.019999999999996","88.61","0.3952","0.98"],
+["PE Ger P4 Tarapoto","SJ92","Mike's","Mikes Limón 355 CAN","14.236944444444445","33.76","48.0","0.7033","0.93"],
+["PE Ger P4 Tarapoto","SJ94","Cristal","Cristal 355 CAN","7.657222222222223","592.35","600.0","0.9873","0.89"],
+["PE Ger P4 Huancay Ch","SJ86","Mike's","Mikes Maracuyá 355 CAN","27.956944444444446","44.05","72.0","0.6118","0.87"],
+["PE Ger P4 Tarapoto","SJ94","Stella Artois","Stella Artois 330 NRB","20.573333333333334","27.43","48.0","0.5715","0.84"],
+["PE Ger P4 Pucall Hco","SJ90","Cusqueña","Cusqueña Malta 473 CAN","21.492777777777775","43.13","64.61","0.6675","0.76"],
+["PE Ger P4 Huancay Ch","SJ87","Cristal","Cristal 355 CAN","11.485833333333334","36.519999999999996","48.0","0.7608","0.72"],
+["PE Ger P4 Tarapoto","SJ95","Mike's","Mikes Limón 355 CAN","11.005277777777778","36.99","48.0","0.7706","0.66"],
+["PE Ger P4 Huancay Ch","SJ86","P.Callao","P.Callao 305 RB","10.49611111111111","37.51","48.0","0.7815","0.61"],
+["PE Ger P4 Tarapoto","SJ95","P.Callao","P.Callao 305 NRB","161.86055555555555","6.14","168.0","0.0365","0.6"],
+["PE Ger P4 Tarapoto","SJ95","San Juan","San Juan 620 RB","20.257777777777775","20.36","40.61","0.5014","0.6"],
+["PE Ger P4 Tarapoto","SJ94","Cusqueña","Cusqueña Cero 310 NRB","81.08027777777778","86.91000000000001","168.0","0.5173","0.58"],
+["PE Ger P4 Huancay Ch","BK43","Budweiser","Budweiser 355 CAN","264.0","0.0","264.0","0.0","0.52"],
+["PE Ger P4 Tarapoto","SJ92","Corona","Corona Cero 355 NRB","21.21055555555556","19.4","40.61","0.4777","0.44"],
+["PE Ger P4 Tarapoto","SJ94","San Juan","San Juan 620 RB","2.4991666666666665","45.5","48.0","0.9479","0.39"],
+["PE Ger P4 Huancay Ch","SJ86","Cristal","Cristal 473 CAN","11.636666666666667","12.36","24.0","0.515","0.37"],
+["PE Ger P4 Tarapoto","SJ92","Cusqueña","Cusqueña Malta 310 NRB","39.01833333333333","25.59","64.61","0.3961","0.37"],
+["PE Ger P4 Pucall Hco","SJ97","Corona","Corona 473 CAN","10.999444444444444","37.0","48.0","0.7708","0.36"],
+["PE Ger P4 Huancay Ch","BK68","Cusqueña","Cusqueña Cero 355 CAN","29.759999999999998","42.25","72.0","0.5868","0.34"],
+["PE Ger P4 Tarapoto","SJ92","Cusqueña","Cusqueña Malta 473 CAN","10.500833333333333","37.5","48.0","0.7813","0.29"],
+["PE Ger P4 Pucall Hco","SJ97","Stella Artois","Stella Artois 330 NRB","11.54388888888889","36.46","48.0","0.7596","0.27"],
+["PE Ger P4 Pucall Hco","SJ90","Flying Fish","Flying Fish 355 CAN","26.692777777777774","45.31","72.0","0.6293","0.24"],
+["PE Ger P4 Huancay Ch","BK68","Budweiser","Budweiser 355 CAN","48.975833333333334","23.02","72.0","0.3197","0.24"],
+["PE Ger P4 Huancay Ch","SJ87","Mike's","Mikes Arándano 355 CAN","12.498888888888889","28.119999999999997","40.61","0.6924","0.21"],
+["PE Ger P4 Pucall Hco","SJ90","Corona","Corona 473 CAN","30.667499999999997","65.33","96.0","0.6805","0.16"],
+["PE Ger P4 Pucall Hco","SJ97","Cusqueña","Cusqueña Cero 310 NRB","11.000833333333333","29.619999999999997","40.61","0.7294","0.15"],
+["PE Ger P4 Tarapoto","SJ94","Corona","Corona 473 CAN","22.66722222222222","73.33","96.0","0.7639","0.14"],
+["PE Ger P4 Huancay Ch","BK43","Mike's","Mikes Fresa 355 CAN","11.496944444444445","36.510000000000005","48.0","0.7606","0.13"],
+["PE Ger P4 Huancay Ch","BK68","Budweiser","Budweiser 600 RB","7.353055555555556","16.65","24.0","0.6938","0.09"],
+["PE Ger P4 Tarapoto","SJ94","P.Callao (Pilsen Fresh)","P.Fresh 305 NRB","0.5077777777777778","23.49","24.0","0.9787","0.06"],
+["PE Ger P4 Tarapoto","SJ95","P.Callao (Pilsen Fresh)","P.Fresh 305 RB","0.48388888888888887","23.52","24.0","0.98","0.04"],
+["PE Ger P4 Huancay Ch","BK68","Cusqueña","Cusqueña Cero 310 NRB","0.5066666666666667","23.49","24.0","0.9787","0.02"],
+["PE Ger P4 Pucall Hco","SJ90","P.Callao","P.Callao 269 CAN","25.139166666666668","22.86","48.0","0.4763","0.02"],
+["PE Ger P4 Pucall Hco","SJ90","P.Callao","P.Callao 473 CAN","0.0","48.0","48.0","1.0","0.0"],
+["PE Ger P4 Huancay Ch","SJ87","P.Callao","P.Callao 355 CAN","0.0","72.0","72.0","1.0","0.0"],
+["PE Ger P4 Tarapoto","SJ94","Cusqueña","Cusqueña Malta 310 NRB","0.0","144.0","144.0","1.0","0.0"],
+["PE Ger P4 Tarapoto","SJ94","P.Callao","P.Callao 473 CAN","0.0","72.0","72.0","1.0","0.0"],
+["PE Ger P4 Pucall Hco","SJ97","Mike's","Mikes Limón 355 CAN","0.0","160.61","160.61","1.0","0.0"],
+["PE Ger P4 Pucall Hco","SJ90","Cusqueña","Cusqueña Trigo 310 NRB","0.0","592.61","592.61","1.0","0.0"],
+["PE Ger P4 Pucall Hco","SJ97","Cusqueña","Cusqueña Malta 310 NRB","0.0","216.0","216.0","1.0","0.0"],
+["PE Ger P4 Huancay Ch","BK68","Cusqueña","Cusqueña Malta 310 NRB","0.0","192.0","192.0","1.0","0.0"],
+["PE Ger P4 Huancay Ch","BK68","P.Callao","P.Callao 355 CAN","0.0","96.0","96.0","1.0","0.0"],
+["PE Ger P4 Huancay Ch","BK68","Cusqueña","Cusqueña Trigo 310 NRB","0.0","168.0","168.0","1.0","0.0"]
+];
+
+const DATA = RAW.map(r => ({
+  gerencia_dominante: r[0],
+  centro_id: r[1],
+  brand: r[2],
+  brand_pack: r[3],
+  horas_oos: parseFloat(r[4]),
+  horas_prendidas: parseFloat(r[5]),
+  horas_disponibles_mes: parseFloat(r[6]),
+  pct_uptime: parseFloat(r[7]),
+  hl_perdido: parseFloat(r[8]),
+}));
+
+const GER_COLOR = {
+  "PE Ger P4 Huancay Ch": "var(--ger-huancay)",
+  "PE Ger P4 Pucall Hco": "var(--ger-pucallpa)",
+  "PE Ger P4 Tarapoto": "var(--ger-tarapoto)",
+  "PE Ger P4 Iquitos": "var(--ger-iquitos)",
+};
+const GER_SHORT = {
+  "PE Ger P4 Huancay Ch": "Huancayo-Chanchamayo",
+  "PE Ger P4 Pucall Hco": "Pucallpa-Huánuco",
+  "PE Ger P4 Tarapoto": "Tarapoto",
+  "PE Ger P4 Iquitos": "Iquitos",
+};
+const CD_NAME = {
+  BK31: "San Benedicto I", BK43: "Huancavelica", BK68: "Huancayo",
+  SJ86: "Satipo", SJ87: "Chanchamayo", SJ90: "Huánuco", SJ91: "Iquitos",
+  SJ92: "Moyobamba", SJ93: "Tingo María", SJ94: "Tarapoto", SJ95: "Yurimaguas", SJ97: "Pucallpa",
+};
+
+function fmt(n, dec){
+  dec = dec === undefined ? 1 : dec;
+  return n.toLocaleString('es-PE', {minimumFractionDigits: dec, maximumFractionDigits: dec});
+}
+function fmtInt(n){
+  return Math.round(n).toLocaleString('es-PE');
+}
+function pctColor(p){
+  if (p < 0.30) return 'var(--critical)';
+  if (p < 0.55) return 'var(--warn)';
+  return 'var(--good)';
+}
+function pctSoft(p){
+  if (p < 0.30) return 'var(--critical-soft)';
+  if (p < 0.55) return 'var(--warn-soft)';
+  return 'var(--good-soft)';
+}
+
+// ---- Rollups ----
+const totalHorasPrendidas = DATA.reduce((s,d)=>s+d.horas_prendidas,0);
+const totalHorasDisp = DATA.reduce((s,d)=>s+d.horas_disponibles_mes,0);
+const totalHlPerdido = DATA.reduce((s,d)=>s+d.hl_perdido,0);
+const globalUptime = totalHorasPrendidas/totalHorasDisp;
+
+const byGerencia = {};
+DATA.forEach(d=>{
+  if(!byGerencia[d.gerencia_dominante]) byGerencia[d.gerencia_dominante] = {hl:0, prendidas:0, disp:0};
+  byGerencia[d.gerencia_dominante].hl += d.hl_perdido;
+  byGerencia[d.gerencia_dominante].prendidas += d.horas_prendidas;
+  byGerencia[d.gerencia_dominante].disp += d.horas_disponibles_mes;
+});
+const gerenciaRows = Object.entries(byGerencia)
+  .map(([g,v])=>({gerencia:g, hl:v.hl, uptime:v.prendidas/v.disp}))
+  .sort((a,b)=>b.hl-a.hl);
+
+const worstGerencia = gerenciaRows[0];
+
+const byCd = {};
+DATA.forEach(d=>{
+  if(!byCd[d.centro_id]) byCd[d.centro_id] = {hl:0, prendidas:0, disp:0, gerencia:d.gerencia_dominante};
+  byCd[d.centro_id].hl += d.hl_perdido;
+  byCd[d.centro_id].prendidas += d.horas_prendidas;
+  byCd[d.centro_id].disp += d.horas_disponibles_mes;
+});
+const cdRows = Object.entries(byCd)
+  .map(([cd,v])=>({cd, hl:v.hl, uptime:v.prendidas/v.disp, gerencia:v.gerencia}))
+  .sort((a,b)=>b.hl-a.hl);
+const worstCd = cdRows[0];
+const worstCdByOos = [...cdRows].sort((a,b)=>a.uptime-b.uptime)[0];
+
+const worstRowByOos = [...DATA].sort((a,b)=>{
+  if (a.pct_uptime !== b.pct_uptime) return a.pct_uptime - b.pct_uptime;
+  if (a.horas_oos !== b.horas_oos) return b.horas_oos - a.horas_oos;
+  return b.hl_perdido - a.hl_perdido;
+})[0];
+
+const zeroUptimeCount = DATA.filter(d=>d.pct_uptime < 0.05).length;
+
+const top10 = [...DATA].sort((a,b)=>b.hl_perdido-a.hl_perdido).slice(0,10);
+const top3Hl = top10.slice(0,3).reduce((s,d)=>s+d.hl_perdido,0);
+
+const top5PerCd = (() => {
+  const byCd = {};
+  DATA.forEach(d=>{ (byCd[d.centro_id] = byCd[d.centro_id] || []).push(d); });
+  return Object.values(byCd).flatMap(rows =>
+    rows.slice().sort((a,b)=>b.hl_perdido-a.hl_perdido).slice(0,5)
+  );
+})();
+
+// ---- Tiles ----
+const tiles = [
+  {label:'HL perdido — Top 3 combinaciones', value: fmtInt(top3Hl) + ' <span class="unit">HL</span>', note: fmt(top3Hl/totalHlPerdido*100,0)+'% del total del mes, en solo 3 combinaciones', cls:'critical'},
+  {label:'HL perdido estimado (mes)', value: fmtInt(totalHlPerdido) + ' <span class="unit">HL</span>', note:'suma de hl_so_brand_pack, ' + DATA.length + ' combinaciones', cls:''},
+  {label:'% Uptime ponderado global', value: fmt(globalUptime*100,1) + '<span class="unit">%</span>', note:'sum(horas_prendidas) / sum(horas_disponibles)', cls: globalUptime<0.3?'critical':(globalUptime<0.55?'warn':'')},
+  {label:'Gerencia con más HL perdido', value: GER_SHORT[worstGerencia.gerencia], note: fmtInt(worstGerencia.hl)+' HL · uptime '+fmt(worstGerencia.uptime*100,0)+'%', cls:'critical'},
+  {label:'Combinaciones en quiebre casi total', value: zeroUptimeCount, note:'brand_pack×CD con uptime < 5% en el mes', cls:'warn'},
+  {label:'CD con mayor % de quiebre', value: worstCdByOos.cd + ' · ' + (CD_NAME[worstCdByOos.cd] || ''), note: fmt((1-worstCdByOos.uptime)*100,0)+'% de quiebre · '+fmtInt(worstCdByOos.hl)+' HL perdido', cls:'critical'},
+  {label:'Brand_pack con mayor % de quiebre', value: worstRowByOos.brand_pack, note: fmt((1-worstRowByOos.pct_uptime)*100,0)+'% de quiebre en '+worstRowByOos.centro_id+' ('+(CD_NAME[worstRowByOos.centro_id] || '')+')', cls:'critical'},
+];
+document.getElementById('tiles').innerHTML = tiles.map(t=>`
+  <div class="tile ${t.cls}">
+    <div class="label">${t.label}</div>
+    <div class="value mono">${t.value}</div>
+    <div class="note">${t.note}</div>
+  </div>
+`).join('');
+
+// ---- Gerencia bars ----
+const maxGerHl = Math.max(...gerenciaRows.map(g=>g.hl));
+document.getElementById('ger-bars').innerHTML = gerenciaRows.map(g=>`
+  <div class="bar-row">
+    <div class="name">${GER_SHORT[g.gerencia]}<span class="sub">${g.gerencia}</span></div>
+    <div class="bar-track">
+      <div class="bar-fill" style="width:${(g.hl/maxGerHl*100).toFixed(1)}%; background:${GER_COLOR[g.gerencia]}"></div>
+    </div>
+    <div class="val mono">${fmtInt(g.hl)} HL<span class="sub">${fmt(g.uptime*100,0)}% uptime</span></div>
+  </div>
+`).join('');
+
+// ---- CD bars (Top 5) ----
+const cdTop5 = cdRows.slice(0, 5);
+const maxCdHl = Math.max(...cdTop5.map(c=>c.hl));
+document.getElementById('cd-bars').innerHTML = cdTop5.map(c=>`
+  <div class="bar-row">
+    <div class="name">${c.cd}<span class="sub">${CD_NAME[c.cd] || ''}</span></div>
+    <div class="bar-track">
+      <div class="bar-fill" style="width:${(c.hl/maxCdHl*100).toFixed(1)}%; background:${GER_COLOR[c.gerencia]}"></div>
+    </div>
+    <div class="val mono">${fmtInt(c.hl)} HL<span class="sub">${fmt(c.uptime*100,0)}% uptime</span></div>
+  </div>
+`).join('');
+
+// ---- Top 10 table ----
+document.getElementById('top-list').innerHTML = top10.map((d,i)=>`
+  <tr>
+    <td class="mono">${i+1}</td>
+    <td><b>${d.brand}</b> ${d.brand_pack}</td>
+    <td><span class="ger-dot" style="background:${GER_COLOR[d.gerencia_dominante]}"></span><span class="mono">${d.centro_id}</span></td>
+    <td>${CD_NAME[d.centro_id] || ''}</td>
+    <td>${GER_SHORT[d.gerencia_dominante]}</td>
+    <td class="num mono"><span class="pct-pill" style="color:${pctColor(d.pct_uptime)}; background:${pctSoft(d.pct_uptime)}">${fmt(d.pct_uptime*100,0)}%</span></td>
+    <td class="num mono">${fmt(d.horas_oos,0)}</td>
+    <td class="num mono">${fmt(d.hl_perdido,1)}</td>
+  </tr>
+`).join('');
+
+// ---- Grouped table: Gerencia > CD x Brand_pack ----
+const groupsEl = document.getElementById('groups');
+const fCd = document.getElementById('f-cd');
+const fBrand = document.getElementById('f-brand');
+const rowCountHint = document.getElementById('row-count-hint');
+
+[...new Set(top5PerCd.map(d=>d.centro_id))].sort().forEach(cd=>{
+  const o = document.createElement('option'); o.value = cd; o.textContent = cd; fCd.appendChild(o);
+});
+
+const gerenciaOrder = gerenciaRows.map(g=>g.gerencia);
+
+function render(){
+  const cd = fCd.value, q = fBrand.value.trim().toLowerCase();
+  const filtered = top5PerCd.filter(d =>
+    (!cd || d.centro_id===cd) &&
+    (!q || d.brand.toLowerCase().includes(q) || d.brand_pack.toLowerCase().includes(q))
+  );
+
+  rowCountHint.textContent = filtered.length + ' de ' + top5PerCd.length + ' combinaciones (Top 5 por CD)';
+
+  const byG = {};
+  filtered.forEach(d=>{ (byG[d.gerencia_dominante] = byG[d.gerencia_dominante] || []).push(d); });
+
+  groupsEl.innerHTML = gerenciaOrder
+    .filter(g => byG[g] && byG[g].length)
+    .map(g=>{
+      const gRows = byG[g];
+      const prendidas = gRows.reduce((s,d)=>s+d.horas_prendidas,0);
+      const disp = gRows.reduce((s,d)=>s+d.horas_disponibles_mes,0);
+      const hlSum = gRows.reduce((s,d)=>s+d.hl_perdido,0);
+      const uptime = prendidas/disp;
+
+      const byCdInG = {};
+      gRows.forEach(d=>{ (byCdInG[d.centro_id] = byCdInG[d.centro_id] || []).push(d); });
+      const cdOrder = Object.keys(byCdInG)
+        .map(cd => ({cd, hl: byCdInG[cd].reduce((s,d)=>s+d.hl_perdido,0)}))
+        .sort((a,b)=>b.hl-a.hl)
+        .map(x=>x.cd);
+
+      const cdHtml = cdOrder.map(cd=>{
+        const rows = byCdInG[cd].slice().sort((a,b)=>b.hl_perdido-a.hl_perdido);
+        const cdPrendidas = rows.reduce((s,d)=>s+d.horas_prendidas,0);
+        const cdDisp = rows.reduce((s,d)=>s+d.horas_disponibles_mes,0);
+        const cdHl = rows.reduce((s,d)=>s+d.hl_perdido,0);
+        const cdUptime = cdPrendidas/cdDisp;
+        return `
+          <details class="cd-group" open>
+            <summary>
+              <span class="chevron">▸</span>
+              <span class="cd-code">${cd}</span>
+              <span class="cd-name">${CD_NAME[cd] || ''}</span>
+              <span class="cd-stats">${fmtInt(cdHl)} HL perdido · ${fmt(cdUptime*100,0)}% uptime · ${rows.length} combinaciones</span>
+            </summary>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Marca</th>
+                    <th>Brand_pack</th>
+                    <th class="num">% Uptime</th>
+                    <th class="num">Horas OOS</th>
+                    <th class="num">HL perdido</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rows.map(d => `
+                    <tr>
+                      <td>${d.brand}</td>
+                      <td>${d.brand_pack}</td>
+                      <td class="num mono"><span class="pct-pill" style="color:${pctColor(d.pct_uptime)}; background:${pctSoft(d.pct_uptime)}">${fmt(d.pct_uptime*100,0)}%</span></td>
+                      <td class="num mono">${fmt(d.horas_oos,0)}</td>
+                      <td class="num mono">${fmt(d.hl_perdido,1)}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </details>
+        `;
+      }).join('');
+
+      return `
+        <details class="ger-group" open>
+          <summary>
+            <span class="chevron">▸</span>
+            <span class="ger-dot" style="background:${GER_COLOR[g]}"></span>
+            <span>${GER_SHORT[g]}</span>
+            <span class="ger-stats">${fmtInt(hlSum)} HL perdido · ${fmt(uptime*100,0)}% uptime · ${gRows.length} combinaciones</span>
+          </summary>
+          <div class="cd-groups">${cdHtml}</div>
+        </details>
+      `;
+    }).join('');
+}
+
+fCd.addEventListener('change', render);
+fBrand.addEventListener('input', render);
+
+render();
+</script>

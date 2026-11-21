@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>PBI vs Volumen CO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+@page { size: 1280px 720px; margin: 0; }
+:root { --y: #FFF200; --k: #111111; --g: #6b6b6b; --up: #0f7b3e; --dn: #c62828; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: #ffffff; color: var(--k); font-family: "Barlow", "Segoe UI", Arial, sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.slide { width: 1280px; height: 720px; position: relative; overflow: hidden; background: #fff; padding: 34px 40px; }
+.ybar { position: absolute; left: 0; right: 0; top: 0; height: 14px; background: var(--y); }
+.lbl { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 15px; letter-spacing: .22em; color: #5b5b5b; text-transform: uppercase; margin-top: 6px; }
+h1 { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 31px; line-height: 1.08; margin: 6px 0 14px; text-transform: uppercase; }
+.grid { display: grid; grid-template-columns: 1.25fr 1fr; gap: 18px; }
+.col { border: 1px solid #dcdcdc; display: flex; flex-direction: column; }
+.ch { background: var(--y); font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 18px; padding: 7px 12px; text-transform: uppercase; }
+.cb { padding: 10px 14px; }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: #444; margin-bottom: 4px; }
+.legend i { display: inline-block; width: 12px; height: 12px; vertical-align: -1px; margin-right: 5px; }
+.legend i.ln { height: 0; width: 18px; border-top: 3px solid; vertical-align: 3px; }
+.legend i.dash { border-top-style: dashed; }
+table.t { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+table.t th { background: var(--k); color: #fff; font-family: "Barlow Condensed", sans-serif; font-weight: 600; font-size: 14px; padding: 5px 7px; text-align: right; }
+table.t td { padding: 4px 7px; border-bottom: 1px solid #e3e3e3; text-align: right; white-space: nowrap; }
+table.t td:first-child, table.t th:first-child { text-align: left; }
+table.t tr.tt td { background: var(--y); font-weight: 700; border-bottom: none; }
+table.t td small { color: #8a8a8a; font-size: 10.5px; margin-left: 3px; }
+.up { color: var(--up); } .dn { color: var(--dn); }
+.blk { background: var(--k); color: #fff; padding: 12px 16px; margin-top: 12px; }
+.blk .h { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 18px; color: var(--y); text-transform: uppercase; margin-bottom: 6px; }
+ul.b { margin: 0; padding: 0; list-style: none; font-size: 13px; line-height: 1.36; }
+ul.b li { position: relative; padding-left: 16px; margin-bottom: 6px; }
+ul.b li:before { content: ""; position: absolute; left: 0; top: 5px; width: 9px; height: 9px; background: var(--y); }
+ul.b b { color: var(--y); }
+.obs { font-size: 12.5px; line-height: 1.35; margin-top: 8px; }
+.obs b { background: var(--y); padding: 0 3px; }
+.note { position: absolute; left: 40px; right: 40px; bottom: 12px; font-size: 10.5px; color: #8a8a8a; line-height: 1.3; }
+</style>
+</head>
+<body>
+<div class="slide">
+  <div class="ybar"></div>
+  <div class="lbl">1YP 2027 | Contexto macro</div>
+  <h1>El freno de 2026 sigue al PBI: Oriente baja de 4.8% a 0.2% y el volumen de +5.6% a 0.0%. En 2027 la macro no nos empuja</h1>
+  <div class="grid">
+    <div class="col">
+      <div class="ch">PBI trimestral vs volumen Beer+Rtds CO (var. % vs LY)</div>
+      <div class="cb">
+        <div class="legend">
+          <span><i style="background:#FFE000;border:1px solid #111"></i>Volumen CO</span>
+          <span><i style="background:#fff;border:1.5px dashed #111"></i>Volumen que exige el LE 4T'26</span>
+          <span><i class="ln" style="border-color:#111"></i>PBI Junín</span>
+          <span><i class="ln" style="border-color:#c62828"></i>PBI Oriente</span>
+          <span><i class="ln dash" style="border-color:#9a9a9a"></i>PBI Perú</span>
+        </div>
+        <div style="font-weight:700;font-size:13px;margin:2px 0 0">PBI (var. %)</div><div style="position:relative;height:215px"><canvas id="c1"></canvas></div><div style="font-weight:700;font-size:13px;margin:4px 0 0">Volumen Beer+Rtds CO (var. % vs LY)</div><div style="position:relative;height:150px"><canvas id="c2"></canvas></div>
+        <div class="obs">El punto más bajo coincide: en el <b>2T'26</b> Oriente crece ~0.2% y Junín 2.9%, y el volumen de la regional queda plano (−0.2 mil HL). 3T'26 y 4T'26 son PBI estimado.</div>
+      </div>
+    </div>
+    <div>
+      <div class="col">
+        <div class="ch">Volumen Beer+Rtds Ene–Set 2026 por GV</div>
+        <div class="cb" style="padding:8px 10px">
+          <table class="t">
+            <tr><th>GV</th><th>mil HL</th><th>vs LY</th><th>vs 2024</th><th>vs 2023</th></tr>
+            <tr><td>Tarapoto</td><td>574.9</td><td class="up">+4.5%<small>+24.6</small></td><td class="up">+12.3%</td><td class="up">+14.0%</td></tr>
+            <tr><td>Iquitos</td><td>256.3</td><td class="up">+8.8%<small>+20.7</small></td><td class="up">+5.6%</td><td class="up">+19.6%</td></tr>
+            <tr><td>Pucall Hco</td><td>379.5</td><td class="up">+4.9%<small>+17.8</small></td><td class="up">+5.8%</td><td class="up">+2.6%</td></tr>
+            <tr><td>Huancay Ch</td><td>536.0</td><td class="up">+1.5%<small>+7.7</small></td><td class="up">+3.1%</td><td class="up">+3.9%</td></tr>
+            <tr><td>DA Jun Puc</td><td>330.9</td><td class="dn">−7.4%<small>−26.4</small></td><td class="dn">−2.2%</td><td class="up">+4.0%</td></tr>
+            <tr class="tt"><td>Total CO</td><td>2,077.5</td><td>+2.2%<small style="color:#111">+44.4</small></td><td>+5.4%</td><td>+8.1%</td></tr>
+          </table>
+          <div class="obs" style="margin-top:6px">Tarapoto y Huancayo siguen al PBI. En Iquitos y Pucallpa el 3T es efecto base (−14.6% y −5.2% en el 3T'25). DA Jun Puc cae por agro y cacao, más de lo que explica el PBI.</div>
+        </div>
+      </div>
+      <div class="blk">
+        <div class="h">Lo que se viene</div>
+        <ul class="b">
+          <li><b>4T'26:</b> el PBI mejora poco (Oriente 2.0%, Junín 3.2%), pero el LE exige <b>+5.7%</b> vs LY (+43.8 mil HL). Es el riesgo de cierre.</li>
+          <li><b>2027:</b> sin viento a favor de la macro. El orgánico aporta +15.1 kHL; las 5 palancas propias (+71.4 kHL) explican el 83% de la meta de +86.5 kHL (+3.0%).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="note">Fuente: Strategy &amp; Insights 1YP CO 2027 (INEI y Macroconsult; PBI 3T y 4T'26 estimado) · dm_venta, Beer+Rtds, gerencia vigente de dm_cliente, a Set'26. Junín se usa como proxy de Huancay Ch y DA Jun Puc; Oriente, de Tarapoto, Iquitos y Pucall Hco.</div>
+</div>
+<script>
+const L = ["1T'25", "2T'25", "3T'25", "4T'25", "1T'26", "2T'26", "3T'26", "4T'26"];
+const VOL = [4.2, 5.6, 0.1, 4.0, 5.9, 0.0, 1.2, null];
+const LE = [null, null, null, null, null, null, null, 5.7];
+const JUN = [7.5, 12.3, 2.8, 4.5, 5.7, 2.9, 3.0, 3.2];
+const ORI = [4.7, 4.8, 3.0, 2.3, 1.3, 0.2, 1.7, 2.0];
+const PER = [4.0, 2.7, 3.7, 3.3, 3.6, 2.6, 2.9, 2.5];
+const FF = 'Barlow, "Segoe UI", Arial, sans-serif';
+const fmt = v => (v > 0 ? '+' : '') + v.toFixed(1) + '%';
+const X = { grid: { display: false }, ticks: { font: { family: FF, size: 12, weight: 600 }, color: '#111' } };
+const Yax = (mn, mx, st) => ({ min: mn, max: mx, ticks: { stepSize: st, callback: v => v + '%', font: { family: FF, size: 11 }, color: '#8a8a8a' }, grid: { color: '#eeeeee' }, afterFit: s => { s.width = 38; } });
+const base = { responsive: true, maintainAspectRatio: false, animation: false, layout: { padding: { right: 18, top: 14 } }, plugins: { legend: { display: false }, tooltip: { enabled: false } } };
+const lineLbl = { id: 'll', afterDatasetsDraw(ch) {
+  const x = ch.ctx; x.save(); x.textAlign = 'center'; x.font = '700 11.5px ' + FF;
+  [[0, '#111', ORI], [1, '#c62828', JUN]].forEach(([di, c, oth]) => ch.getDatasetMeta(di).data.forEach((p, i) => {
+    const v = ch.data.datasets[di].data[i]; x.fillStyle = c;
+    x.fillText(v.toFixed(1), p.x, v >= oth[i] ? p.y - 9 : p.y + 17);
+  })); x.restore(); } };
+const barLbl = { id: 'bl', afterDatasetsDraw(ch) {
+  const x = ch.ctx; x.save(); x.textAlign = 'center'; x.font = '700 13px ' + FF; x.fillStyle = '#111';
+  [0, 1].forEach(di => ch.getDatasetMeta(di).data.forEach((b, i) => {
+    const v = ch.data.datasets[di].data[i]; if (v == null) return;
+    x.fillText(fmt(v) + (di ? ' LE' : ''), b.x, Math.min(b.y, b.base) - 5);
+  })); x.restore(); } };
+document.fonts.ready.then(() => {
+  new Chart(document.getElementById('c1'), { type: 'line',
+    data: { labels: L, datasets: [
+      { data: JUN, borderColor: '#111', backgroundColor: '#111', borderWidth: 2.5, pointRadius: 3.5, tension: .25 },
+      { data: ORI, borderColor: '#c62828', backgroundColor: '#c62828', borderWidth: 2.5, pointRadius: 3.5, tension: .25 },
+      { data: PER, borderColor: '#9a9a9a', borderDash: [5, 4], borderWidth: 2, pointRadius: 0, tension: .25 } ] },
+    options: Object.assign({}, base, { scales: { x: Object.assign({}, X, { ticks: { display: false } }), y: Yax(-1, 14, 4) } }),
+    plugins: [lineLbl] });
+  new Chart(document.getElementById('c2'), { type: 'bar',
+    data: { labels: L, datasets: [
+      { data: VOL, backgroundColor: '#FFE000', borderColor: '#111', borderWidth: 1, barPercentage: .6 },
+      { data: LE, backgroundColor: '#ffffff', borderColor: '#111', borderWidth: 1.5, borderDash: [4, 3], barPercentage: .6 } ] },
+    options: Object.assign({}, base, { scales: { x: Object.assign({}, X, { stacked: true }), y: Object.assign(Yax(0, 8, 4), { stacked: true }) } }),
+    plugins: [barLbl] });
+});
+</script>
+</body>
+</html>

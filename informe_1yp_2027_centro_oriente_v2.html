@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Informe 1YP 2027 Centro Oriente v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+@page { size: A4; margin: 14mm 14mm 14mm 14mm; }
+:root { --y: #FFF200; --k: #111; --g: #5f5f5f; --up: #0f7b3e; --dn: #c62828; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #fff; color: var(--k); font-family: "Barlow", "Segoe UI", Arial, sans-serif; font-size: 10.2pt; line-height: 1.42; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.wrap { max-width: 790px; margin: 0 auto; }
+.cover { border-top: 10px solid var(--y); padding: 16px 0 8px; margin-bottom: 10px; }
+.cover .lbl { font-family: "Barlow Condensed", sans-serif; font-weight: 700; letter-spacing: .2em; color: #666; font-size: 10pt; text-transform: uppercase; }
+h1 { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 25pt; line-height: 1.05; margin: 6px 0 8px; text-transform: uppercase; }
+.meta { font-size: 9.3pt; color: var(--g); } .meta b { color: var(--k); }
+h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 15.5pt; text-transform: uppercase; margin: 14px 0 6px; padding-top: 6px; border-top: 3px solid var(--y); break-after: avoid; line-height: 1.15; }
+h2 .n { background: var(--k); color: var(--y); padding: 0 8px; margin-right: 8px; }
+h3 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 12pt; margin: 10px 0 4px; break-after: avoid; }
+p { margin: 4px 0 6px; }
+ul { margin: 3px 0 6px; padding-left: 17px; } li { margin-bottom: 3px; }
+.box { background: #f4f4f4; border-left: 6px solid var(--y); padding: 8px 12px; margin: 8px 0; break-inside: avoid; }
+.box.k { background: var(--k); color: #fff; } .box.k b { color: var(--y); }
+.impl { border-left: 4px solid var(--k); padding: 5px 10px; margin: 8px 0; background: #fffbd1; break-inside: avoid; }
+.impl .h { font-family: "Barlow Condensed", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; display: block; margin-bottom: 2px; }
+.risk { border-left: 4px solid var(--dn); padding: 5px 10px; margin: 8px 0; background: #fdeeee; break-inside: avoid; }
+.risk .h { font-family: "Barlow Condensed", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; display: block; margin-bottom: 2px; color: var(--dn); }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; margin: 8px 0; break-inside: avoid; }
+.kpi { background: var(--k); color: #fff; padding: 7px 9px; }
+.kpi .v { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 18pt; color: var(--y); line-height: 1; }
+.kpi .t { font-size: 8.3pt; margin-top: 3px; line-height: 1.25; }
+table { width: 100%; border-collapse: collapse; font-size: 8.8pt; margin: 6px 0; break-inside: avoid; }
+th { background: var(--k); color: #fff; font-family: "Barlow Condensed", sans-serif; font-weight: 600; font-size: 9.6pt; text-align: right; padding: 3px 5px; }
+td { padding: 3px 5px; border-bottom: 1px solid #e2e2e2; text-align: right; vertical-align: top; }
+th:first-child, td:first-child, th.l, td.l { text-align: left; }
+tr.tt td { background: var(--y); font-weight: 700; }
+.up { color: var(--up); } .dn { color: var(--dn); } .mut { color: #888; }
+figure { margin: 8px 0 8px; break-inside: avoid; }
+figure img { width: 100%; border: 1px solid #ddd; display: block; }
+figure.half { display: inline-block; width: 49%; vertical-align: top; margin-right: 1%; }
+figure.mid { width: 72%; margin-left: auto; margin-right: auto; }
+figcaption { font-size: 8pt; color: #777; margin-top: 2px; }
+.pb { break-before: page; }
+.src { font-size: 8pt; color: #888; }
+.foot { font-size: 8pt; color: #888; margin-top: 14px; border-top: 1px solid #ddd; padding-top: 6px; }
+</style>
+</head>
+<body><div class="wrap">
+
+<!-- ============ PORTADA + RESUMEN ============ -->
+<div class="cover">
+  <div class="lbl">Informe · Dirección Centro Oriente · versión 2</div>
+  <h1>1YP 2027: lo que plantea el plan nacional y qué significa para Centro Oriente</h1>
+  <div class="meta"><b>Para:</b> Directora de Ventas · <b>De:</b> PPM Centro Oriente · <b>Fecha:</b> 11 de noviembre de 2026<br>
+  <b>Base:</b> "1YP Regionales" Día 1 (Marketing, 382 láminas) y Día 2 (Growth, 239 láminas), leídas en su totalidad y cruzadas con los datos de Centro Oriente (dm_venta + dm_cliente, Beer+Rtds, YTD Ene–Oct 2026).</div>
+</div>
+
+<h2>Resumen ejecutivo</h2>
+<div class="box k"><b>Centro Oriente presenta su 1YP regional primero, el 16 de noviembre.</b> El plan nacional nos pide tres entregables: el portafolio 2027 por brandpack y canal (con movimientos de Brand Distribution entre brandpacks, sin cambiar el total), la lista de puntos de venta flagship e influential con su compromiso de volumen (PxQ), y oportunidades propias de la regional.</div>
+<ul>
+  <li><b>El país crecerá con el core plano y apoyado en distribución nueva.</b> Volumen +3% (15.6 → 16.1 MM HL), Brand Distribution +10%. El 80% del aumento de BD recae en brandpacks Hyper Focus (innovaciones y latas), que hoy son solo el 6% del volumen.</li>
+  <li><b>Centro Oriente parte desde un portafolio distinto al que el plan prioriza.</b> El 45% de nuestro volumen está en marcas Sustain o Tail (Cristal, San Juan, Golden), que no tienen campaña integrada (IMC) nacional; en el país ese peso es 31%. El segmento Hyper Focus pesa 2.9% en CO vs 6% nacional, aunque crece +155%.</li>
+  <li><b>Selecta es la innovación que más toca a CO.</b> Es una marca below core a ~S/5.50, pensada para el consumidor de bajos ingresos fuera de Lima. Su referencia de fair share en CO es ~30 mil HL, pero, según cuánto canibalice a Cristal, San Juan y Golden, el aporte neto va de +9 a +21 mil HL.</li>
+  <li><b>El EPA (% de visitas que terminan en pedido) es la palanca con más volumen.</b> En CO cada punto vale 0.3 mil HL al mes. Los 4 bloques del plan nacional (+26.8 pp) equivalen en teoría a ~96 mil HL al año; solo el bloque de supervisión en campo vale ~36 mil.</li>
+  <li><b>Category Image es nuestro mayor rezago relativo.</b> Commercial Relevance 0.6% (la menor del país) con meta 4.6% para 2027: entre 110 y 130 mil HL al año deberán pasar por puntos flagship e influential, casi 60% en Huancayo y mayormente vía eventos.</li>
+  <li><b>En clientes, CO es la mejor en servicio y lealtad pero la última en autonomía de pedido.</b> Ahí está la palanca de frecuencia que Growth valora en +0.70 HL por cliente-mes cuando un cliente pasa de 1 a 2 pedidos.</li>
+</ul>
+<h3>Las 5 preguntas que probablemente nos harán el 16-nov</h3>
+<table>
+<tr><th class="l" style="width:46%">Pregunta</th><th class="l">Respuesta que debemos llevar</th></tr>
+<tr><td>¿Cuánta Brand Distribution aporta CO y en qué brandpacks?</td><td class="l">Portafolio por brandpack y canal, con movimientos de puntos hacia Mike's, CSQ 473 y Fresh.</td></tr>
+<tr><td>¿Qué hacemos con Cristal y San Juan, si no tienen IMC?</td><td class="l">Plan propio: Cristal Iquitos (must-win) y San Juan Pucallpa (stronghold), con KSM locales.</td></tr>
+<tr><td>¿Cuánto Selecta vende CO y cuánto canibaliza?</td><td class="l">Escenario de 30 mil HL con 30–70% de incrementalidad, por GV y CD.</td></tr>
+<tr><td>¿Cómo llegamos a 4.6% de Commercial Relevance?</td><td class="l">Lista de eventos y PDVs por GV con PxQ, empezando por Huancayo.</td></tr>
+<tr><td>¿Cómo sube el EPA en CO?</td><td class="l">Rutina de supervisores (40 h en campo) y gerentes (20 h), más pre-pedido en visitas cerradas.</td></tr>
+</table>
+
+<!-- ============ 1 ============ -->
+<h2 class="pb"><span class="n">1</span>El plan nacional: core plano, crecimiento por portafolio y distribución</h2>
+<p>El 2026 cierra como el año de mayor volumen de la historia de Backus: 15.6 MM HL (+8.2%), con Pilsen Callao explicando ~130% del crecimiento (+20% YTD). Fue posible porque, por primera vez en 4 años, se frenó el alza del costo relativo de la cerveza (minutos de trabajo necesarios para comprarla), moderando el precio del pack que pesa 40% del volumen. Para 2027 la ambición es +3% (16.1 MM HL), con precio acompañando a la inflación (Rate/CPI 114%).</p>
+<figure class="mid"><img src="informe_1yp_img/d1_p10.jpg"><figcaption>Retos 2027: waterfall de volumen por marca. Fuente: 1YP Regionales Día 1, lám. 10.</figcaption></figure>
+<div class="two">
+<div>
+<h3>Volumen y Brand Distribution 2027 por canal (Perú)</h3>
+<table>
+<tr><th>Canal</th><th>Vol 26</th><th>Vol 27</th><th>Δ vol</th><th>Δ BD</th></tr>
+<tr><td>Off premise</td><td>5.44</td><td>5.49</td><td>+0.8%</td><td>+8.7%</td></tr>
+<tr><td>On premise</td><td>1.26</td><td>1.28</td><td>+1.6%</td><td>+11.1%</td></tr>
+<tr><td>DAS (sell out)</td><td>3.16</td><td>3.33</td><td>+5.5%</td><td>+15.5%</td></tr>
+<tr class="tt"><td>Total</td><td>9.85</td><td>10.10</td><td>+2.4%</td><td>+10.4%</td></tr>
+</table>
+<div class="src">MM HL. Día 2, lám. 24 (perímetro Growth: Off, On y DAS).</div>
+</div>
+<div>
+<h3>Por segmento de foco (Perú)</h3>
+<table>
+<tr><th>Segmento</th><th>Mix vol</th><th>Δ vol</th><th>Δ BD</th><th>% del Δ BD</th></tr>
+<tr><td>Hyper Focus</td><td>6%</td><td>+68%</td><td>+36%</td><td>80%</td></tr>
+<tr><td>Focus</td><td>64%</td><td>+0.5%</td><td>+4.7%</td><td>27%</td></tr>
+<tr><td>Sustain</td><td>30%</td><td>−0.8%</td><td>−3.5%</td><td>−6%</td></tr>
+<tr><td>Tail</td><td>1%</td><td>+1.6%</td><td>−11.2%</td><td>−1%</td></tr>
+</table>
+<div class="src">Día 2, lám. 24.</div>
+</div>
+</div>
+<p><b>Lectura.</b> El volumen crece 2.4% y la distribución 10.4%: el plan supone que cada punto nuevo de distribución vende menos que el promedio, porque llega con innovaciones y latas que recién arrancan. En el canal Off premise, el 70% del crecimiento de BD se carga a los roles especializados (bodega cervecera, licorería, multicategoría), donde los SKUs distintos por POC deben pasar, por ejemplo, de 6.6 a 8 en el cervecero.</p>
+<div class="impl"><span class="h">Implicancia para Centro Oriente</span>Nuestra Brand Distribution crece +4.4% YTD (Ene–Set). Igualar el ritmo nacional implica más que duplicarlo. Hay una señal a favor: en el ejemplo de Mike's Maracuyá, CO crece +27% en compradores (la mejor de las 4 direcciones) y es la única cuyo crecimiento natural supera lo que pide el plan (+142 compradores). El 16-nov debemos llevar dónde está ese potencial por brandpack, canal y rol de cliente.</div>
+
+<!-- ============ 2 ============ -->
+<h2 class="pb"><span class="n">2</span>Casi la mitad del volumen de CO está fuera de los motores del plan</h2>
+<p>La matriz nacional clasifica cada brandpack por foco (Hyper Focus = gran apuesta, mínimo +10%; Focus = potencial, +2.5%; Sustain = mantener o frenar pérdidas; Tail = declive aceptado) y por rol en la arquitectura del portafolio. Cristal, las marcas regionales y Golden 473 son Sustain; Golden 6XX y Budweiser son Tail. Ninguno es elegible para IMC en 2027, y en las 8 IMCs del año no aparece Cristal ni San Juan.</p>
+<figure class="mid" style="width:60%"><img src="informe_1yp_img/d2_p21.jpg"><figcaption>Matriz de priorización de brandpacks 2027. Fuente: Día 2, lám. 21.</figcaption></figure>
+<h3>Centro Oriente por segmento de la matriz (YTD Ene–Oct, mil HL)</h3>
+<div id="t2a"></div>
+<h3>Por gerencia de venta: peso de las marcas Sustain/Tail y de los brandpacks Hyper Focus</h3>
+<div id="t2b"></div>
+<div class="src">Sustain/Tail = Cristal + San Juan + Golden. Hyper Focus por GV = Mike's + Pilsen Fresh (CSQ 473 y COR 473 no están separados por GV en la base). Mil HL, YTD Ene–Oct.</div>
+<div class="impl"><span class="h">Implicancia para Centro Oriente</span>Si solo ejecutamos el plan nacional, casi la mitad del volumen queda sin palanca de marca, y esa mitad es la que cae (−11% en Sustain). Pero la caída no es pareja: Cristal crece en Iquitos (+24.8 mil HL) y San Juan en Pucallpa (+10.9 mil HL), justo en sus plazas fuertes, mientras Cristal pierde −138 mil HL entre Tarapoto, Huancayo y DA Jun Puc. El plan propio debe defender lo que funciona, <b>Cristal en Iquitos</b> (uno de sus 5 mercados must-win: 11% del volumen nacional de la marca, mix 81% en la plaza y creciendo +8%) y <b>San Juan en Pucallpa</b> (stronghold declarado de regionales, con KSM en la Fiesta de San Juan).</div>
+
+<!-- ============ 3 ============ -->
+<h2 class="pb"><span class="n">3</span>Selecta: la apuesta below core llega a nuestro consumidor</h2>
+<p>Selecta by Cristal es la innovación más grande del 2027 (160 mil HL) y el mayor aporte individual al crecimiento del país (+167 mil HL). Es una cerveza below core con líquido con beneficio de ISC, dirigida al hombre de +35 años y bajos ingresos (LIC), que genera más del 50% del volumen de la categoría. Ese consumidor está comprando menos por precio, y la brecha es mayor fuera de Lima: el tiempo de trabajo para comprar una cerveza es 24 minutos en Lima, 33 en Centro-Sur y 43 en Norte y Oriente. Mientras la participación crece en Lima, cae en las demás regiones.</p>
+<div class="impl"><span class="h">Implicancia para Centro Oriente</span>Con el peso de CO en el volumen nacional (18.4%), la referencia de fair share es ~30 mil HL. El precio (~S/5.50) la pone frente a Tres Cruces 640 y por encima de Golden 650, en la zona de precio donde CO tiene su mayor base expuesta: Cristal 650, San Juan 620 y Golden. Por eso el aporte neto depende de cuánto sea incremental.</div>
+<div id="t3"></div>
+<figure class="half"><img src="informe_1yp_img/d1_p28.jpg"><figcaption>Consumidor LIC y propuesta Selecta. Día 1, lám. 28.</figcaption></figure><figure class="half"><img src="informe_1yp_img/d1_p278.jpg"><figcaption>Escalera de precios en tradicional: Selecta ~S/5.50, índice 76 vs PC 630. Día 1, lám. 278.</figcaption></figure>
+<div class="risk"><span class="h">Riesgos y qué definir</span>Canibalizar la base retornable que ya cae (Cristal −18.9%, San Juan −2.2% en CO) y que Selecta se lea como "Cristal más barata". Definir: plazas y CDs de entrada (DSD OFF y DAS donde más cae Cristal), precio real de góndola por plaza frente a Tres Cruces, y la meta de compradores por GV.</div>
+
+<!-- ============ 4 ============ -->
+<h2 class="pb"><span class="n">4</span>EPA: la mayor palanca de Growth depende de cómo se trabaja la visita</h2>
+<p>Hoy 43% de las visitas programadas termina en pedido del BDR (vendedor). En el resto, 22% de los clientes compra por su cuenta en otro momento (BEES u otro canal), 31% no compra en todo el ciclo y 4.6% de las visitas no se ejecuta. La meta 2027 es 70%; un CPG líder de referencia está en 73%. Growth muestra que la brecha no es la cartera:</p>
+<ul>
+  <li>El 78% de la diferencia entre BDRs ocurre <b>dentro de la misma gerencia</b>. El mejor decil convierte 54% y el peor 26%, con la misma cartera y ~36 visitas al día.</li>
+  <li>Con el supervisor en la venta, el EPA sube +10 pp (+11% HL y +12% SKUs por visita). Hoy solo el 1% de las visitas va acompañada, y el supervisor registra 9.6 h semanales en el mercado (meta: 40), con 15.5 h en tareas administrativas.</li>
+  <li>El EPA cae los sábados (40.4% vs 44%) y en la tarde (~9 pp entre la mañana y las 16–18 h). Las visitas a clientes cerrados (8% del total) no tienen protocolo; convertirlas como las abiertas vale +3.6 pp.</li>
+  <li>Si un cliente no compró en sus 2 últimos ciclos, 6 de cada 10 veces tampoco compra en este: es predecible antes de salir a ruta.</li>
+</ul>
+<figure class="mid"><img src="informe_1yp_img/d2_p38.jpg"><figcaption>Diagnóstico y camino del EPA de 43.2% a 70%. Fuente: Día 2, lám. 38.</figcaption></figure>
+<h3>Lo que vale cada bloque del plan en Centro Oriente (referencia teórica)</h3>
+<div id="t4"></div>
+<div class="impl"><span class="h">Implicancia para Centro Oriente</span>En CO cada punto de EPA vale 0.3 mil HL al mes y 1.1 mil SKUs (el menor valor de las 4 direcciones, por tamaño). El bloque de liderazgo efectivo (~36 mil HL al año) depende solo de nuestra gestión: supervisores 40 h en campo, gerentes 20 h y reportería automatizada. El techo con la demanda actual es 65.9%: llegar a 70% exige crear demanda en el 31% de visitas sin compra.</div>
+
+<!-- ============ 5 ============ -->
+<h2 class="pb"><span class="n">5</span>Category Image: CO es la última en Commercial Relevance</h2>
+<p>Category Image busca elevar la imagen de la cerveza con ejecuciones de alto impacto. Su KPI comercial, <b>Commercial Relevance</b>, mide qué porcentaje del volumen de cada gerencia pasa por puntos flagship (intervención completa) o influential (referentes de la zona). La evidencia de 2026 respalda la apuesta: en la licorería flagship El Botijón el volumen de cerveza se duplicó, la inversión se paga en 3.4 años, y los POCs con ejecución top crecieron +32% a +56% en volumen.</p>
+<figure class="half"><img src="informe_1yp_img/d2_p175.jpg"><figcaption>Commercial Relevance LE 2026. Día 2, lám. 175.</figcaption></figure><figure class="half"><img src="informe_1yp_img/d2_p177.jpg"><figcaption>Commercial Relevance TO BE 2027. Día 2, lám. 177.</figcaption></figure>
+<h3>Volumen que debe pasar por puntos flagship e influential en CO</h3>
+<div id="t5"></div>
+<div class="src">Volumen anualizado = YTD Ene–Oct 2026 × 12/10. HL implícitos = volumen anualizado × % de Commercial Relevance.</div>
+<div class="impl"><span class="h">Implicancia para Centro Oriente</span>Pasar de 0.6% a 4.6% significa que <b>entre 110 y 130 mil HL al año</b> (según se incluya DA Jun Puc) deben venderse en ejecuciones top: unos 95 a 110 mil más que hoy. Huancayo concentra casi 60% de ese volumen, y su meta de eventos (6.0%) es la más alta del país. Las fiestas del calendario KSM 2027 son la base natural para esa lista: Fiesta de San Juan y Carnaval Riojano (Tier 1), Aniversario de Huánuco (Tier 2) y Verano Amazónico (Cristal). Hoy, además, las flagships Off se ejecutan solo en "Lima +5".</div>
+
+<!-- ============ 6 ============ -->
+<h2 class="pb"><span class="n">6</span>Las marcas en CO frente al plan nacional</h2>
+<p>Cada marca tiene en el plan un rol y un nivel de inversión. Cruzarlos con nuestro desempeño por gerencia muestra dónde el plan nacional nos ayuda y dónde tenemos que complementarlo.</p>
+<h3>Variación YTD vs 2025 por gerencia de venta (mil HL)</h3>
+<div id="t6"></div>
+<table>
+<tr><th>Marca</th><th class="l">Rol 2027</th><th class="l">Lo que muestra CO y qué hacer</th></tr>
+<tr><td><b>Cusqueña</b></td><td class="l">Focus; 473 y Dorada Hyper Focus; IMCs Q1 y Q4</td><td class="l">Power en CO 20.6, mayor que Lima (19.5), pero la región con peor volumen (−10% YTD Set) y mix de 10%. Pucallpa e Iquitos en el bottom de GV por volumen de la marca. Es un tema de precio y disponibilidad: 473, Dorada y el kero en KSM locales.</td></tr>
+<tr><td><b>Mike's</b></td><td class="l">Hyper Focus; IMC Q4</td><td class="l">Mix sobre cerveza en CO 1.6% (+1.1 pp), el mayor salto del país. Es donde la expansión de portafolio sí funciona: mover puntos de BD hacia Mike's.</td></tr>
+<tr><td><b>Cristal</b></td><td class="l">Sustain; sin IMC</td><td class="l">Quinto año de caída a nivel nacional (de 6.0 a 2.5 MM HL). Iquitos es el único must-win que crece. Su plan 2027 (Edición Campeona, Verano Amazónico) debe aterrizarse en Iquitos.</td></tr>
+<tr><td><b>San Juan</b></td><td class="l">Regionales; Sustain</td><td class="l">Stronghold Pucallpa. Pedir toolkit, edición limitada y 12 semanas de medios del plan de regionales.</td></tr>
+<tr><td><b>Corona</b></td><td class="l">Focus; IMC Q2</td><td class="l">El menor crecimiento del país en CO; Coronita (precio de entrada S/3.5) pierde −26% de BD en CO.</td></tr>
+</table>
+<figure class="half"><img src="informe_1yp_img/d1_p40.jpg"><figcaption>Cusqueña on a page: C. Oriente power 20.6, mix 10%. Día 1, lám. 40.</figcaption></figure><figure class="half"><img src="informe_1yp_img/d1_p306.jpg"><figcaption>Mike's on a page: mix 1.6% en CO. Día 1, lám. 306.</figcaption></figure>
+<figure class="half"><img src="informe_1yp_img/d1_p244.jpg"><figcaption>Cristal: 5 mercados must-win, incluido Iquitos. Día 1, lám. 244.</figcaption></figure><figure class="half"><img src="informe_1yp_img/d1_p289.jpg"><figcaption>Regionales: strongholds Arequipa, Trujillo y Pucallpa. Día 1, lám. 289.</figcaption></figure>
+
+<!-- ============ 7 ============ -->
+<h2 class="pb"><span class="n">7</span>Clientes: mejores en servicio y lealtad, últimos en autonomía</h2>
+<p>Growth gestionará el 2027 por <b>número de pedidos</b>: en un mismo cliente, pasar de 1 a 2 pedidos al mes suma +85% de HL (+0.70 HL y +S/352 de NR por cliente-mes). El plan busca +102 mil pedidos y +116 mil HL a nivel país, 60% vía pedido autónomo. El contexto es una base que se achica: los compradores nacionales caen −5.5% en un año (222.9 → 210.6 mil) por migración a mayoristas y cierre de bodegas (en Lima −33% de bodegas desde 2018).</p>
+<table>
+<tr><th>Indicador</th><th>CO</th><th>Nacional</th><th>Meta 27</th><th class="l">Lectura</th></tr>
+<tr><td>% clientes que piden solos (quincenales y sin visita)</td><td class="dn"><b>57.6%</b></td><td>60.3%</td><td>67%</td><td class="l">el menor del país</td></tr>
+<tr><td>Cobertura 2+ días de reparto</td><td class="dn"><b>59.9%</b></td><td>60.8%</td><td>78.1%</td><td class="l"></td></tr>
+<tr><td>Días sin visita D-1 con pedido autónomo</td><td class="dn"><b>4.1%</b></td><td>4.5%</td><td>8.0%</td><td class="l"></td></tr>
+<tr><td>Cero Fallas</td><td class="up"><b>57.1%</b></td><td>55.2%</td><td>58.7%</td><td class="l">mejor que el país</td></tr>
+<tr><td>Clientes con 2+ meses seguidos de falla</td><td class="up"><b>21.9%</b></td><td>23.6%</td><td>19.5%</td><td class="l"></td></tr>
+<tr><td>Clientes perdidos que se recuperan (L12M)</td><td class="dn"><b>5.6%</b></td><td>6.1%</td><td>7.3%</td><td class="l">el menor del país</td></tr>
+<tr><td>Canjeadores de puntos (L3M)</td><td class="up"><b>57.1%</b></td><td>54.3%</td><td>70%</td><td class="l">el mejor del país</td></tr>
+<tr><td>Tiempo desde el último canje</td><td class="up"><b>3.0 meses</b></td><td>3.7 meses</td><td>2.5 meses</td><td class="l">el mejor del país</td></tr>
+</table>
+<h3>POCs compradores y productividad por gerencia (YTD Ene–Oct)</h3>
+<div id="t7"></div>
+<figure class="half"><img src="informe_1yp_img/d2_p71.jpg"><figcaption>Pedido autónomo: KRs por dirección. Día 2, lám. 71.</figcaption></figure><figure class="half"><img src="informe_1yp_img/d2_p105.jpg"><figcaption>Programa de lealtad por niveles: en CO, Black + Gold = 34% de POCs y 69% del volumen. Día 2, lám. 105.</figcaption></figure>
+<div class="impl"><span class="h">Implicancia para Centro Oriente</span>Perdemos clientes en todas las gerencias directas, y la productividad (HL/POC) compensa. La palanca que falta es la frecuencia: 64% de los días de reparto no tienen visita el día previo, y en CO solo 4.1% de esos días termina en pedido autónomo. Flex (pedido mínimo −50%) dio +8.7% de HL en quienes lo adoptaron, y en DAS se quiere pasar de 10% a 50% de adopción, lo que es relevante para DA Jun Puc. CO tendrá 6 de los 31 Ángeles BEES para educar a clientes sin visita. Growth propone medir al BDR por la frecuencia de compra de sus clientes, con el EPA como candado.</div>
+
+<!-- ============ 8 ============ -->
+<h2 class="pb"><span class="n">8</span>Movimientos operativos que nos tocan directamente</h2>
+<h3>Retenes (cobertura de rutas sin titular)</h3>
+<p>A nivel país solo se cubre el 61% de las rutas que necesitan retén, pese a que hay retenes suficientes: el 46% de su tiempo se va en "sombra" o sin registro, y están repartidos sin relación con la necesidad. La propuesta sube de 105 a 127 retenes y los reasigna por gerencia, con meta de ≥80% del tiempo cubriendo ruta.</p>
+<table>
+<tr><th>Gerencia</th><th>Rutas/día que necesitan retén</th><th>Retenes hoy</th><th>Retenes por ruta-día</th><th>Propuesta</th><th>Δ</th></tr>
+<tr><td>Pucallpa–Huánuco</td><td>1.4</td><td>7</td><td>5.0</td><td>2</td><td class="dn">−5</td></tr>
+<tr><td>Huancayo–Chanchamayo</td><td>1.9</td><td>5</td><td>2.6</td><td>3</td><td class="dn">−2</td></tr>
+<tr><td>Iquitos</td><td>1.2</td><td>3</td><td>2.5</td><td>2</td><td class="dn">−1</td></tr>
+<tr><td>Tarapoto</td><td>2.2</td><td>3</td><td>1.4</td><td>4</td><td class="up">+1</td></tr>
+<tr class="tt"><td>Centro Oriente</td><td>6.7</td><td>18</td><td>2.7</td><td>11</td><td>−7</td></tr>
+</table>
+<div class="src">Total país: 62.4 rutas/día, 105 retenes (1.7 por ruta-día). Día 2, lám. 44–45.</div>
+<h3>Coolers en primera posición (reto Q4 2026)</h3>
+<table>
+<tr><th>Gerencia</th><th>Equipos asignados</th><th>Meta en primera posición</th><th>% de cumplimiento requerido</th></tr>
+<tr><td>Huancay Ch</td><td>530</td><td>371</td><td>70%</td></tr>
+<tr><td>Tarapoto</td><td>413</td><td>289</td><td>70%</td></tr>
+<tr><td>Pucall Hco</td><td>350</td><td>245</td><td>70%</td></tr>
+<tr><td>Iquitos</td><td>162</td><td>113</td><td>70%</td></tr>
+<tr class="tt"><td>Centro Oriente</td><td>1,455</td><td>1,019</td><td>70%</td></tr>
+</table>
+<p>Growth asocia el frío en primera posición a +24% de apertura del equipo, y el Punto Perfecto completo (precio, lineal y frío) a +19% de volumen. A nivel país solo 4% de los POCs cumple hoy los tres a la vez.</p>
+<figure class="half"><img src="informe_1yp_img/d2_p45.jpg"><figcaption>Reasignación de retenes por gerencia. Día 2, lám. 45.</figcaption></figure><figure class="half"><img src="informe_1yp_img/d2_p162.jpg"><figcaption>Coolers en primera posición: reto Q4. Día 2, lám. 162.</figcaption></figure>
+<div class="risk"><span class="h">A validar</span><b>Retenes:</b> CO pasaría de 18 a 11. Antes de aceptarlo hay que revisar cuánto del tiempo actual de los retenes de Pucallpa–Huánuco es cobertura real, y si la necesidad de 1.4 rutas/día considera las vacaciones no registradas. <b>Porte en el nivel Black:</b> la propuesta baja el porte a 14 días de 4% a 3% y a 21 días de 6% a 4%. Esos valores no coinciden con nuestra tabla de porte (3.75% a 14 días y 4% a 21 días): confirmar con Revenue.</div>
+
+<!-- ============ 9 ============ -->
+<h2 class="pb"><span class="n">9</span>Lo que nos piden y lo que debemos llevar el 16 de noviembre</h2>
+<figure class="mid"><img src="informe_1yp_img/d2_p238.jpg"><figcaption>Expectativas para las regionales. Fuente: Día 2, lám. 238.</figcaption></figure>
+<p>El plan nacional está construido desde Lima. Las flagships Off se ejecutan en "Lima +5", en High End solo aparece Tarapoto–Laguna Azul, y en la clusterización de gerencias Pucallpa, Tarapoto e Iquitos quedan en el clúster de menor prioridad (Huancayo, en el segundo). Por eso CO necesita llegar con oportunidades propias y cuantificadas.</p>
+<h3>Palancas para Centro Oriente: propias y del plan nacional</h3>
+<table>
+<tr><th class="l">Palanca</th><th>Potencial CO</th><th class="l">Tipo</th></tr>
+<tr><td>5 palancas propias (DA Jun Puc, Cusqueña Huancayo, POCs DSD OFF, San Juan Iquitos, Golden)</td><td>+64.5 mil HL</td><td class="l">recuperación de gaps 2026</td></tr>
+<tr><td>EPA: bloque liderazgo efectivo (+10 pp)</td><td>~+36 mil HL</td><td class="l">referencia teórica</td></tr>
+<tr><td>Selecta (fair share, neto según incrementalidad)</td><td>+9 a +21 mil HL</td><td class="l">escenario</td></tr>
+<tr><td>Commercial Relevance 0.6% → 4.6%</td><td>110–130 mil HL por puntos top</td><td class="l">compromiso PxQ</td></tr>
+<tr><td>Brand Distribution hacia Hyper Focus (Mike's, CSQ 473, Fresh)</td><td>por cuantificar</td><td class="l">movimiento de puntos</td></tr>
+</table>
+<div class="src">Las palancas no se suman entre sí para evitar doble conteo (por ejemplo, EPA y POCs DSD OFF se superponen).</div>
+<h3>Decisiones y entregables</h3>
+<table>
+<tr><th class="l">Decisión o entregable</th><th class="l">Con quién</th><th>Cuándo</th></tr>
+<tr><td>Portafolio 2027 de CO por brandpack y canal, con movimientos de BD hacia Hyper Focus</td><td class="l">Growth · Portafolio</td><td>16-nov</td></tr>
+<tr><td>Lista de flagships e influentials por GV con PxQ y calendario (prioridad Huancayo y eventos)</td><td class="l">Category Image · GVs</td><td>16-nov</td></tr>
+<tr><td>Selecta en CO: volumen, plazas, precio y escenario de canibalización</td><td class="l">Marketing · Revenue</td><td>Q4 2026</td></tr>
+<tr><td>Plan propio para Cristal Iquitos y San Juan Pucallpa (sin IMC nacional)</td><td class="l">Marketing · Regional</td><td>Q4 2026</td></tr>
+<tr><td>Validar el ajuste de retenes (18 → 11) y la tabla de porte Black</td><td class="l">Ventas · RRHH · Revenue</td><td>Dic 2026</td></tr>
+<tr><td>Rutina de líderes: supervisores 40 h con BDR, gerentes 20 h en mercado</td><td class="l">Ventas</td><td>Ene 2027</td></tr>
+</table>
+<div class="box"><b>Material de soporte.</b> La presentación "PR 2026 &amp; 1YP 2027 – v3" (28 láminas) integra estos hallazgos. Las notas de lectura completas, lámina por lámina, están en <i>1YP_2027_notas_lectura.md</i>.</div>
+<div class="foot">Fuentes: 1YP Regionales 2027 Día 1 y Día 2 (Backus, documento interno). Datos de Centro Oriente: dm_venta y dm_cliente (jerarquía vigente), Beer+Rtds = Cervezas + Licores + RTD, YTD Ene–Oct 2026, corte 10.11.26. Los potenciales de EPA, Selecta y Commercial Relevance son referencias calculadas sobre parámetros nacionales y deben validarse con Growth.</div>
+</div>
+
+<script src="informe_1yp_img/co_data.js"></script>
+<script>
+const Z = () => Array(46).fill(0);
+const add = (a, b) => a.map((x, i) => x + b[i]);
+const sumS = arr => arr.reduce((s, x) => add(s, x), Z());
+const ytd = (a, y) => a.slice(y * 12, y * 12 + 10).reduce((s, x) => s + x, 0);
+const G = ['Tarapoto', 'Huancay Ch', 'Pucall Hco', 'DA Jun Puc', 'Iquitos'];
+const gv = g => sumS(Object.keys(GC).filter(k => k.startsWith(g + '|')).map(k => GC[k]));
+const gm = (g, m) => GM[g + '|' + m] || Z();
+const RT = sumS(Object.values(CAT));
+const k1 = v => (v < 0 ? '−' : '') + (Math.abs(v) / 1000).toLocaleString('en-US', {minimumFractionDigits: 1, maximumFractionDigits: 1});
+const sk = v => (v >= 0 ? '+' : '−') + (Math.abs(v) / 1000).toLocaleString('en-US', {minimumFractionDigits: 1, maximumFractionDigits: 1});
+const pcs = (a, b) => { if (b < 1) return 'nuevo'; const x = (a / b - 1) * 100; return Math.abs(x) < 0.05 ? '0.0%' : (x >= 0 ? '+' : '−') + Math.abs(x).toFixed(1) + '%'; };
+const c = v => v >= 0 ? 'up' : 'dn';
+const f0 = v => Math.round(v).toLocaleString('en-US');
+
+/* 2a: segmentos */
+(function () {
+  const g = k => BP[k] || Z(); const sub = (a, b) => a.map((x, i) => x - b[i]);
+  const S = [['Hyper Focus', "Fresh, CSQ 473, COR 473, Mike's", sumS([g('T|Pilsen Fresh'), g('Cusqueña|473 CAN'), g('Corona|473 CAN'), g("T|Mike's")]), '6%'],
+    ['Focus', 'Pilsen Callao; Corona y Cusqueña (resto)', sumS([g('T|Pilsen Callao'), sub(g('T|Corona'), g('Corona|473 CAN')), sub(g('T|Cusqueña'), g('Cusqueña|473 CAN'))]), '64%'],
+    ['Sustain', 'Cristal, San Juan, Golden 473', sumS([g('T|Cristal'), g('T|San Juan'), g('Golden|473 CAN')]), '30%'],
+    ['Tail', 'Golden 6XX y resto de Golden', sub(g('T|Golden'), g('Golden|473 CAN')), '1%'],
+    ['Sin clasificar', 'Otras marcas', g('T|Otras marcas'), '—']];
+  const T = S.reduce((s, x) => s + ytd(x[2], 3), 0), T0 = S.reduce((s, x) => s + ytd(x[2], 2), 0);
+  let h = '<table><tr><th>Segmento</th><th class="l">Qué incluye en CO</th><th>YTD 26</th><th>Mix CO</th><th>Δ vs 25</th><th>vs 25</th><th>Mix nacional</th></tr>';
+  S.forEach(x => { const a = ytd(x[2], 3), b = ytd(x[2], 2); h += '<tr><td><b>' + x[0] + '</b></td><td class="l">' + x[1] + '</td><td>' + k1(a) + '</td><td>' + (a / T * 100).toFixed(1) + '%</td><td class="' + c(a - b) + '">' + sk(a - b) + '</td><td class="' + c(a - b) + '">' + pcs(a, b) + '</td><td>' + x[3] + '</td></tr>'; });
+  h += '<tr class="tt"><td>Total CO</td><td></td><td>' + k1(T) + '</td><td>100%</td><td>' + sk(T - T0) + '</td><td>' + pcs(T, T0) + '</td><td>100%</td></tr></table>';
+  document.getElementById('t2a').innerHTML = h;
+})();
+
+/* 2b: por GV */
+(function () {
+  let h = '<table><tr><th>Gerencia</th><th>YTD 26</th><th>% Sustain/Tail</th><th>Cristal Δ</th><th>San Juan Δ</th><th>Golden Δ</th><th>% Hyper (Mike\'s+Fresh)</th><th>Hyper Δ</th></tr>';
+  let S = [0, 0, 0, 0, 0, 0, 0, 0];
+  G.forEach(g => { const T = ytd(gv(g), 3); const st = ['Cristal', 'San Juan', 'Golden'].reduce((s, m) => s + ytd(gm(g, m), 3), 0);
+    const d = m => ytd(gm(g, m), 3) - ytd(gm(g, m), 2); const hy = ytd(gm(g, "Mike's"), 3) + ytd(gm(g, 'Pilsen Fresh'), 3); const hy0 = ytd(gm(g, "Mike's"), 2) + ytd(gm(g, 'Pilsen Fresh'), 2);
+    S[0] += T; S[1] += st; S[2] += d('Cristal'); S[3] += d('San Juan'); S[4] += d('Golden'); S[5] += hy; S[6] += hy - hy0;
+    h += '<tr><td>' + g + '</td><td>' + k1(T) + '</td><td><b>' + (st / T * 100).toFixed(0) + '%</b></td><td class="' + c(d('Cristal')) + '">' + sk(d('Cristal')) + '</td><td class="' + c(d('San Juan')) + '">' + sk(d('San Juan')) + '</td><td class="' + c(d('Golden')) + '">' + sk(d('Golden')) + '</td><td>' + (hy / T * 100).toFixed(1) + '%</td><td class="' + c(hy - hy0) + '">' + sk(hy - hy0) + '</td></tr>'; });
+  h += '<tr class="tt"><td>Centro Oriente</td><td>' + k1(S[0]) + '</td><td>' + (S[1] / S[0] * 100).toFixed(0) + '%</td><td>' + sk(S[2]) + '</td><td>' + sk(S[3]) + '</td><td>' + sk(S[4]) + '</td><td>' + (S[5] / S[0] * 100).toFixed(1) + '%</td><td>' + sk(S[6]) + '</td></tr></table>';
+  document.getElementById('t2b').innerHTML = h;
+})();
+
+/* 3: Selecta escenarios */
+(function () {
+  const b = k => ytd(BP[k] || Z(), 3);
+  const base = b('Cristal|650 RB') + b('San Juan|620 RB') + ytd(BP['T|Golden'] || Z(), 3);
+  const FS = 30000;
+  let h = '<table><tr><th>Escenario</th><th>Selecta CO</th><th>% incremental</th><th>Aporte neto</th><th>Canibalización</th><th>% de la base expuesta*</th></tr>';
+  [['Optimista', 0.7], ['Base', 0.5], ['Conservador', 0.3]].forEach(e => { const net = FS * e[1], can = FS - net;
+    h += '<tr><td>' + e[0] + '</td><td>30.0</td><td>' + (e[1] * 100).toFixed(0) + '%</td><td class="up"><b>+' + k1(net) + '</b></td><td class="dn">−' + k1(can) + '</td><td>' + (can / (base * 1.2) * 100).toFixed(1) + '%</td></tr>'; });
+  h += '</table><div class="src">Mil HL al año. *Base expuesta = Cristal 650 RB + San Juan 620 RB + Golden en CO (' + k1(base) + ' mil HL YTD Ene–Oct; anualizada ×12/10). Fair share = 18.4% de 160 mil HL.</div>';
+  document.getElementById('t3').innerHTML = h;
+})();
+
+/* 4: EPA bloques */
+(function () {
+  const B = [['Liderazgo efectivo', 'supervisores 40 h con BDR, gerentes 20 h en mercado, reportería automática', 10.0], ['Rutina BDR', 'pre-pedido en cerrados, visita según ciclo de compra, llamada en 2 h', 9.8], ['Phygital', 'complementar pedidos ya hechos en BEES (13% de visitas)', 5.8], ['Zonas vacantes', 'retenes asignados según necesidad', 1.2]];
+  let h = '<table><tr><th class="l">Bloque</th><th class="l">Qué cambia</th><th>+ pp EPA</th><th>Mil HL/mes CO</th><th>Mil HL/año CO</th></tr>', t = 0;
+  B.forEach(b => { const y = b[2] * 0.3 * 12; t += y; h += '<tr><td class="l"><b>' + b[0] + '</b></td><td class="l">' + b[1] + '</td><td>+' + b[2].toFixed(1) + '</td><td>' + (b[2] * 0.3).toFixed(1) + '</td><td class="up"><b>~' + y.toFixed(0) + '</b></td></tr>'; });
+  h += '<tr class="tt"><td>Total</td><td class="l">43.2% → 70%</td><td>+26.8</td><td>' + (26.8 * 0.3).toFixed(1) + '</td><td>~' + t.toFixed(0) + '</td></tr></table><div class="src">0.3 mil HL/mes por punto de EPA en CO (neto de lo que el cliente compraría igual por BEES o televenta, según Growth). Los bloques son secuenciales a nivel visita y no se cuentan dos veces.</div>';
+  document.getElementById('t4').innerHTML = h;
+})();
+
+/* 5: Commercial relevance implícito */
+(function () {
+  const R = {'Huancay Ch': [0.7, 8.9, 6.0], 'Tarapoto': [1.3, 4.1, 0.9], 'Iquitos': [0.2, 1.9, 1.9], 'Pucall Hco': [0.2, 1.2, 1.1]};
+  let h = '<table><tr><th>Gerencia</th><th>Volumen anualizado</th><th>CR 2026</th><th>CR 2027</th><th>de ello eventos</th><th>HL 2026</th><th>HL 2027</th><th>Δ HL</th></tr>', S = [0, 0, 0];
+  Object.keys(R).forEach(g => { const v = ytd(gv(g), 3) * 1.2, a = v * R[g][0] / 100, b = v * R[g][1] / 100; S[0] += v; S[1] += a; S[2] += b;
+    h += '<tr><td>' + g + '</td><td>' + k1(v) + '</td><td>' + R[g][0].toFixed(1) + '%</td><td><b>' + R[g][1].toFixed(1) + '%</b></td><td>' + R[g][2].toFixed(1) + '%</td><td>' + k1(a) + '</td><td>' + k1(b) + '</td><td class="up">' + sk(b - a) + '</td></tr>'; });
+  const v = ytd(RT, 3) * 1.2;
+  h += '<tr class="tt"><td>Centro Oriente*</td><td>' + k1(v) + '</td><td>0.6%</td><td>4.6%</td><td>2.9%</td><td>' + k1(v * 0.006) + '</td><td>' + k1(v * 0.046) + '</td><td>' + sk(v * 0.04) + '</td></tr></table><div class="src">Mil HL. *El total de Dirección incluye DA Jun Puc, que no tiene meta de Commercial Relevance publicada por gerencia.</div>';
+  document.getElementById('t5').innerHTML = h;
+})();
+
+/* 6: marcas por GV */
+(function () {
+  const M = ['Cusqueña', "Mike's", 'Cristal', 'San Juan', 'Corona', 'Pilsen Callao'];
+  let h = '<table><tr><th>Marca</th>' + G.map(g => '<th>' + g + '</th>').join('') + '<th>Total CO</th></tr>';
+  M.forEach(m => { let a = 0, b = 0; h += '<tr><td><b>' + m + '</b></td>' + G.map(g => { const x = ytd(gm(g, m), 3), y = ytd(gm(g, m), 2); a += x; b += y; return '<td class="' + c(x - y) + '">' + sk(x - y) + '<br><span style="font-size:7.8pt">' + pcs(x, y) + '</span></td>'; }).join('') + '<td class="' + c(a - b) + '"><b>' + sk(a - b) + '</b><br><span style="font-size:7.8pt">' + pcs(a, b) + '</span></td></tr>'; });
+  document.getElementById('t6').innerHTML = h + '</table>';
+})();
+
+/* 7: POCs por GV */
+(function () {
+  let h = '<table><tr><th>Gerencia</th><th>POCs 23</th><th>POCs 25</th><th>POCs 26</th><th>Δ vs 25</th><th>vs 23</th><th>HL/POC 26</th><th>HL/POC vs 25</th></tr>', s = [0, 0, 0, 0, 0];
+  G.forEach(g => { const p23 = POCY['2023|' + g][0], p25 = POCY['2025|' + g][0], p26 = POCY['2026|' + g][0], h25 = POCY['2025|' + g][1], h26 = POCY['2026|' + g][1];
+    s[0] += p23; s[1] += p25; s[2] += p26; s[3] += h25; s[4] += h26;
+    h += '<tr><td>' + g + (g === 'DA Jun Puc' ? ' <span class="mut">(distribuidores)</span>' : '') + '</td><td>' + f0(p23) + '</td><td>' + f0(p25) + '</td><td>' + f0(p26) + '</td><td class="' + c(p26 - p25) + '">' + (p26 - p25 >= 0 ? '+' : '−') + f0(Math.abs(p26 - p25)) + '</td><td class="' + c(p26 - p23) + '">' + pcs(p26, p23) + '</td><td>' + f0(h26 / p26) + '</td><td class="' + c(h26 / p26 - h25 / p25) + '">' + pcs(h26 / p26, h25 / p25) + '</td></tr>'; });
+  h += '<tr class="tt"><td>Centro Oriente</td><td>' + f0(s[0]) + '</td><td>' + f0(s[1]) + '</td><td>' + f0(s[2]) + '</td><td>−' + f0(s[1] - s[2]) + '</td><td>' + pcs(s[2], s[0]) + '</td><td>' + (s[4] / s[2]).toFixed(1) + '</td><td>' + pcs(s[4] / s[2], s[3] / s[1]) + '</td></tr></table>';
+  document.getElementById('t7').innerHTML = h;
+})();
+</script>
+</body></html>

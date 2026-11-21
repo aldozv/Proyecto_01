@@ -1,0 +1,286 @@
+<meta charset="utf-8">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Resumen YTD - CO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Layout: titular dinamico + 5 fichas de KPI (selector) + cuadros por anio, canal, gerencia y canal x gerencia + lectura.
+     Sistema visual: el del Dashboard Volumen - CO (papel calido, Fraunces / IBM Plex). */
+  :root{
+    --bg:#EEE9DC; --surface:#FFFFFF; --surface-2:#F7F3E8; --ink:#211C15; --ink-muted:#6E6656;
+    --accent:#B87A2A; --accent-strong:#8C5A17; --accent-soft:#B87A2A1f;
+    --positive:#2E7D4F; --negative:#B23C3C; --border:#DAD2BF; --border-strong:#C7BC9F;
+    --shadow: 0 1px 2px rgba(33,28,21,0.06), 0 8px 24px -12px rgba(33,28,21,0.18);
+    --font-display:'Fraunces', ui-serif, Georgia, serif;
+    --font-body:'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-mono:'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#16130E; --surface:#201B13; --surface-2:#241F16; --ink:#F1ECDF; --ink-muted:#A89C82;
+      --accent:#E7A94E; --accent-strong:#F2C078; --accent-soft:#E7A94E26;
+      --positive:#4FAE79; --negative:#E17272; --border:#3A3222; --border-strong:#4A4128;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#16130E; --surface:#201B13; --surface-2:#241F16; --ink:#F1ECDF; --ink-muted:#A89C82;
+    --accent:#E7A94E; --accent-strong:#F2C078; --accent-soft:#E7A94E26;
+    --positive:#4FAE79; --negative:#E17272; --border:#3A3222; --border-strong:#4A4128;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+    color-scheme: dark;
+  }
+  *{ box-sizing:border-box; }
+  body{ background:var(--bg); color:var(--ink); font-family:var(--font-body); font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+  .wrap{ max-width:1180px; margin:0 auto; padding-block:28px 72px; padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); display:flex; flex-direction:column; gap:22px; }
+  header.page{ display:flex; flex-direction:column; gap:6px; }
+  .eyebrow{ font-family:var(--font-mono); font-size:11px; letter-spacing:.09em; text-transform:uppercase; color:var(--accent-strong); font-weight:600; }
+  h1{ font-family:var(--font-display); font-weight:600; font-size:clamp(28px,4vw,38px); margin:0; text-wrap:balance; letter-spacing:-0.01em; }
+  .sub{ color:var(--ink-muted); max-width:74ch; margin:0; }
+  .headline{ font-family:var(--font-display); font-size:clamp(19px,2.4vw,24px); line-height:1.35; font-weight:500; max-width:60ch; margin:0; text-wrap:balance; }
+  .headline b{ font-weight:700; }
+  .pos{ color:var(--positive); } .neg{ color:var(--negative); } .flat{ color:var(--ink-muted); }
+
+  .tiles{ display:flex; flex-wrap:wrap; gap:10px; }
+  .tile{ all:unset; box-sizing:border-box; cursor:pointer; flex:1 1 190px; min-width:0; display:flex; flex-direction:column; gap:6px; padding:14px 16px; background:var(--surface-2); border:1px solid var(--border); border-radius:14px; transition:border-color .15s ease, background .15s ease; }
+  .tile:hover{ border-color:var(--border-strong); }
+  .tile:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+  .tile[aria-checked="true"]{ background:var(--surface); border-color:var(--accent); box-shadow:var(--shadow); }
+  .tile .lbl{ font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-muted); font-weight:600; }
+  .tile[aria-checked="true"] .lbl{ color:var(--accent-strong); }
+  .tile .val{ font-family:var(--font-display); font-size:28px; font-weight:600; line-height:1.1; font-variant-numeric:tabular-nums; }
+  .tile .val small{ font-family:var(--font-body); font-size:11px; font-weight:500; color:var(--ink-muted); margin-left:4px; }
+  .tile .chg{ font-family:var(--font-mono); font-size:12.5px; font-weight:600; font-variant-numeric:tabular-nums; }
+  .tile .cnt{ font-size:11.5px; color:var(--ink-muted); }
+
+  section.card{ background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:18px 18px 8px; box-shadow:var(--shadow); min-width:0; }
+  section.card > .head{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:4px; }
+  section.card h2{ font-family:var(--font-display); font-size:20px; font-weight:600; margin:0; }
+  section.card .meta{ font-size:12px; color:var(--ink-muted); }
+  section.card .note{ font-size:11.5px; color:var(--ink-muted); margin:6px 2px 12px; max-width:90ch; }
+  .tblwrap{ overflow-x:auto; border-radius:10px; border:1px solid var(--border); margin-bottom:14px; }
+  .tblwrap + .tblwrap{ margin-top:-2px; }
+  table.data{ border-collapse:collapse; width:100%; font-family:var(--font-mono); font-size:12.5px; font-variant-numeric:tabular-nums; }
+  table.data th{ background:var(--surface-2); color:var(--ink-muted); font-family:var(--font-body); font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:.05em; text-align:right; padding:9px 12px; white-space:nowrap; border-bottom:1px solid var(--border-strong); }
+  table.data th:first-child, table.data td:first-child{ text-align:left; position:sticky; left:0; z-index:1; }
+  table.data td{ text-align:right; padding:8px 12px; white-space:nowrap; border-bottom:1px solid var(--border); }
+  table.data td:first-child{ font-family:var(--font-body); font-weight:600; background:var(--surface); border-right:1px solid var(--border); }
+  table.data tbody tr:last-child td{ border-bottom:none; }
+  table.data tr.total td{ font-weight:700; background:var(--surface-2); border-top:1px solid var(--border-strong); }
+  table.data tr.total td:first-child{ background:var(--surface-2); }
+  table.data td.base{ color:var(--ink-muted); font-style:italic; }
+  td.heat{ background:color-mix(in srgb, var(--hc) calc(var(--i) * 100%), var(--surface)); }
+  tr.total td.heat{ background:color-mix(in srgb, var(--hc) calc(var(--i) * 100%), var(--surface-2)); }
+  td.bar{ position:relative; }
+  td.bar::before{ content:""; position:absolute; left:0; top:5px; bottom:5px; width:var(--w); background:var(--accent-soft); border-radius:0 4px 4px 0; }
+  td.bar > span{ position:relative; }
+  td small{ display:block; font-size:10.5px; font-weight:500; opacity:.85; }
+
+  ul.read{ margin:6px 0 14px; padding:0; list-style:none; display:grid; gap:12px; max-width:84ch; }
+  ul.read li{ padding-left:14px; border-left:2px solid var(--border-strong); }
+  ul.read li b{ font-weight:600; }
+  footer.page{ font-size:11.5px; color:var(--ink-muted); max-width:90ch; }
+  @media (max-width:520px){ .tile .val{ font-size:24px; } }
+</style>
+
+<div class="wrap">
+  <header class="page">
+    <span class="eyebrow">Dirección Centro Oriente · Resumen YTD</span>
+    <h1>Resumen YTD de la regional</h1>
+    <p class="sub">Volumen en HL de enero a <span id="ytd-end"></span> de cada año (meses cerrados). Se compara cada año desde 2021 hasta 2026. Elige un KPI para ver todo el detalle.</p>
+  </header>
+
+  <p class="headline" id="headline"></p>
+
+  <div class="tiles" id="tiles" role="radiogroup" aria-label="KPI"></div>
+
+  <section class="card">
+    <div class="head"><h2>Evolución 2021–2026</h2><span class="meta" id="meta-years"></span></div>
+    <p class="note">Cada fila es el YTD de ese año. "2026 vs ese año" compara el YTD 2026 con el YTD de la fila.</p>
+    <div class="tblwrap"><table class="data" id="tbl-years"></table></div>
+  </section>
+
+  <section class="card">
+    <div class="head"><h2>Por canal</h2><span class="meta" id="meta-canal"></span></div>
+    <p class="note">Canal vigente del cliente (<code>unidad_negocio_revenue_volumen_meta</code>); el canal residual High End está dentro de DSD ON. "Aporte" es la parte del crecimiento total que explica cada canal.</p>
+    <div class="tblwrap"><table class="data" id="tbl-canal"></table></div>
+    <div class="tblwrap"><table class="data" id="tbl-canal-yoy"></table></div>
+  </section>
+
+  <section class="card">
+    <div class="head"><h2>Por gerencia</h2><span class="meta" id="meta-ger"></span></div>
+    <div class="tblwrap"><table class="data" id="tbl-ger"></table></div>
+    <div class="tblwrap"><table class="data" id="tbl-ger-yoy"></table></div>
+  </section>
+
+  <section class="card">
+    <div class="head"><h2>Canal × gerencia</h2><span class="meta" id="meta-cross"></span></div>
+    <p class="note">Variación nominal del YTD 2026 vs 2025 en mil HL, con el % debajo. Muestra de dónde sale el crecimiento de cada gerencia.</p>
+    <div class="tblwrap"><table class="data" id="tbl-cross"></table></div>
+  </section>
+
+  <section class="card">
+    <div class="head"><h2>Lectura del corte</h2><span class="meta">Beer+Rtds · YTD Ene–Oct 2026 vs 2025</span></div>
+    <ul class="read">
+      <li><b>Tarapoto lidera el crecimiento</b> con +39,8 mil HL (55% del total), seguido de Iquitos (+26,7 mil, +10,2%), Pucallpa (+20,6 mil, +5,1%) y Huancayo (+10,9 mil, +1,9%). DA Jun Puc es la única gerencia que cae (−26,3 mil, −6,6%).</li>
+      <li><b>DAS aporta más que cualquier otro canal.</b> Pesa 34% del volumen y suma +24,2 mil HL (+3,1%). DA Jun Puc cae −26,3 mil HL y los DAs de las otras gerencias suman +50,6 mil HL, casi todo en Tarapoto (+41,6 mil, +13,9%). Los canales tradicionales de Tarapoto bajan algo: DSD OFF −0,6%, WHL −5,3%, EVE −9,7%.</li>
+      <li><b>DSD OFF sigue siendo el canal más grande, pero pesa menos.</b> Pasó de 46,8% del volumen en 2021 a 32,0% en 2026. Crece +1,7% (+12,7 mil HL) por primera vez desde 2021, y casi todo viene de Rtds: en Beer solo crece +0,3%.</li>
+      <li><b>WHL multiplicó su volumen por 2,5 desde 2021</b> (115 a 283 mil HL) y pasó de 5,4% a 12,1% del mix. Su crecimiento se desacelera: +19,4%, +15,0% y ahora +5,7%.</li>
+      <li><b>DSD ON se recupera</b> con +7,8% (+11,6 mil HL), tras caer −0,6% en 2025. Sube en 9 de los 10 meses y agosto queda plano.</li>
+      <li><b>KA es la alerta.</b> Cae −1,7% en Beer+Rtds (−3,9% en Beer). Crecía +22%, +14% y +23% entre enero y marzo, y desde julio cae (−23%, −38%, −7%, −5%). Pesa 3,4% del volumen.</li>
+      <li><b>EVE crece +3,5%</b> (+9,1 mil HL) con meses muy volátiles (abril −19%, febrero +26%). El aporte viene de Pucallpa (+17,6%, +13,6 mil HL).</li>
+      <li><b>Rtds crece en los 6 canales y en las 5 gerencias</b>, pero pesa 1,7% de Beer+Rtds. Explica el 36% del crecimiento de la categoría (+25,8 mil HL). Beer solo crece +2,0% y sigue −0,4% vs 2022.</li>
+      <li><b>Nabs vuelve a crecer</b> (+12,7%) tras tres caídas seguidas. DSD OFF explica el 83% de la mejora (+17,7 mil HL) y Tarapoto el 66% por gerencia.</li>
+      <li><b>Octubre empujó el YTD.</b> Cerró +11,8% (+27,5 mil HL), con DSD OFF +12% y DAS +18%. Sin octubre el YTD era +2,2%.</li>
+      <li><b>2023 fue el único año de caída generalizada:</b> ninguna gerencia y solo 2 de 6 canales crecieron. El +59% de 2021 es rebote contra la base de 2020.</li>
+    </ul>
+  </section>
+
+  <footer class="page">
+    Fuente: <span style="font-family:var(--font-mono)">dm_venta</span> &times; <span style="font-family:var(--font-mono)">dm_cliente</span>, <span style="font-family:var(--font-mono)">indicadores_comerciales=1</span>, Dirección Centro Oriente. Gerencia y canal son los vigentes del cliente: un cliente que cambió de gerencia o canal arrastra todo su histórico al actual. Beer = Cervezas + Licores &middot; Rtds = Ready To Drink &middot; Nabs = Gaseosas + Agua + Maltas (sin San Mateo). YTD = enero al último mes cerrado, igual en todos los años. Los >+999% de Rtds vienen de una base casi nula en 2020 y 2021. La lectura es el corte Ene–Oct 2026 y no se recalcula sola.
+  </footer>
+</div>
+
+<script>
+const DATA = {{DATA}};
+const YTD_M = {{YTD_M}};
+const MES = ["","Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Set","Oct","Nov","Dic"];
+const KPIS = [["Beer+Rtds+Nabs",["Beer","Rtds","Nabs"]],["Beer+Rtds",["Beer","Rtds"]],["Beer",["Beer"]],["Rtds",["Rtds"]],["Nabs",["Nabs"]]];
+const CANAL_LBL = {"DSD OFF":"DSD OFF","DSD ON":"DSD ON","Mayoristas":"WHL (Mayoristas)","Eventos":"EVE (Eventos)","DAs":"DAS (DAs)","Key Accounts":"KA (Key Accounts)"};
+const YEARS = [2021,2022,2023,2024,2025,2026];
+const NG = DATA.ger.length, NC = DATA.canal.length;
+const idx = {}; DATA.months.forEach((m,i)=>{ idx[m[0]*100+m[1]] = i; });
+const state = { kpi:"Beer+Rtds" };
+const catsOf = k => KPIS.find(x=>x[0]===k)[1];
+
+// YTD (Ene..YTD_M) de un anio, filtrable por gerencia y/o canal
+function S(kpi, y, g, c){
+  let t = 0; const cats = catsOf(kpi);
+  for(const gg of DATA.ger){
+    if(g && gg.code!==g) continue;
+    for(const cc of DATA.canal){
+      if(c && cc!==c) continue;
+      const cell = DATA.d[gg.code][cc]; if(!cell) continue;
+      for(const cat of cats){ const s = cell[cat]; if(!s) continue; for(let m=1;m<=YTD_M;m++){ const i = idx[y*100+m]; if(i!==undefined) t += s[i]; } }
+    }
+  }
+  return t;
+}
+const gp = (cur, prev) => prev>0 ? (cur/prev-1)*100 : null;
+const MINUS = "−";
+const num = (v, d=1) => Math.abs(v).toLocaleString("de-DE",{minimumFractionDigits:d,maximumFractionDigits:d});
+const kHL = v => num(v/1000, 1);
+const sgn = v => (v<0?MINUS:"+");
+const pct = v => v===null ? "n/a" : (v>999 ? ">+999%" : sgn(v)+num(v,1)+"%");
+const nom = v => sgn(v)+num(v/1000,1);
+const cls = v => (v===null||Math.abs(v)<0.05) ? "flat" : (v>0?"pos":"neg");
+const heat = (v, cap) => { const i = Math.min(Math.abs(v)/cap,1)*0.55; return `class="heat" style="--hc:var(${v>=0?'--positive':'--negative'});--i:${i.toFixed(3)}"`; };
+const countGrow = (kpi, y, list, key) => list.filter(it=>S(kpi,y,key==='g'?it:null,key==='c'?it:null) > S(kpi,y-1,key==='g'?it:null,key==='c'?it:null)).length;
+const gCodes = DATA.ger.map(g=>g.code);
+
+function tiles(){
+  document.getElementById("tiles").innerHTML = KPIS.map(([k])=>{
+    const cur = S(k,2026), prev = S(k,2025), g = gp(cur,prev);
+    const ng = countGrow(k,2026,gCodes,'g'), nc = countGrow(k,2026,DATA.canal,'c');
+    const arrow = g===null?"":(g>=0?"▲ ":"▼ ");
+    return `<button class="tile" role="radio" aria-checked="${k===state.kpi}" data-k="${k}" id="tile-${k.replace(/\W/g,'')}">
+      <span class="lbl">${k}</span>
+      <span class="val">${kHL(cur)}<small>mil HL</small></span>
+      <span class="chg ${cls(g)}">${arrow}${pct(g)} (${nom(cur-prev)} mil HL)</span>
+      <span class="cnt">${ng} de ${NG} gerencias &middot; ${nc} de ${NC} canales crecen</span></button>`;
+  }).join("");
+}
+
+function headline(){
+  const k = state.kpi, cur = S(k,2026), prev = S(k,2025), g = gp(cur,prev);
+  const ng = countGrow(k,2026,gCodes,'g'), nc = countGrow(k,2026,DATA.canal,'c');
+  const up = g>=0;
+  document.getElementById("headline").innerHTML =
+    `En <b>${k}</b> ${up?"crecimos":"caímos"} <b class="${cls(g)}">${pct(g)}</b> vs LY al YTD (${nom(cur-prev)} mil HL), ${up?"creciendo":"con crecimiento"} en <b>${ng} de las ${NG} gerencias</b> y en <b>${nc} de los ${NC} canales</b>.`;
+}
+
+function yearsTable(){
+  const k = state.kpi, vals = YEARS.map(y=>S(k,y)), max = Math.max(...vals);
+  let h = `<thead><tr><th>Año</th><th>YTD (mil HL)</th><th>vs LY</th><th>Δ mil HL</th><th>Gerencias creciendo</th><th>Canales creciendo</th><th>2026 vs ese año</th></tr></thead><tbody>`;
+  YEARS.forEach((y,i)=>{
+    const cur = vals[i], prev = S(k,y-1), g = gp(cur,prev);
+    const ng = countGrow(k,y,gCodes,'g'), nc = countGrow(k,y,DATA.canal,'c');
+    const last = y===2026 ? `<td class="base">base</td>` : (()=>{ const v = gp(vals[YEARS.length-1],cur); return `<td class="${cls(v)}">${pct(v)}</td>`; })();
+    h += `<tr><td>${y}</td><td class="bar" style="--w:${(cur/max*100).toFixed(1)}%"><span>${kHL(cur)}</span></td><td class="${cls(g)}">${pct(g)}</td><td class="${cls(cur-prev)}">${nom(cur-prev)}</td><td>${ng} de ${NG}</td><td>${nc} de ${NC}</td>${last}</tr>`;
+  });
+  document.getElementById("tbl-years").innerHTML = h + "</tbody>";
+  document.getElementById("meta-years").textContent = `${state.kpi} · YTD Ene–${MES[YTD_M]}`;
+}
+
+// tabla de 2026 vs 2025 + aporte + mix, para filas = canales o gerencias
+function breakdown(tblId, items, keyType, labelFn, firstLabel){
+  const k = state.kpi, tot26 = S(k,2026), tot25 = S(k,2025), dTot = tot26-tot25;
+  const get = (it,y) => keyType==='c' ? S(k,y,null,it) : S(k,y,it,null);
+  let h = `<thead><tr><th>${firstLabel}</th><th>YTD'25</th><th>YTD'26</th><th>Var %</th><th>Δ mil HL</th><th>Aporte al crecimiento</th><th>Mix 2026</th></tr></thead><tbody>`;
+  items.forEach(it=>{
+    const a = get(it,2025), b = get(it,2026), g = gp(b,a);
+    h += `<tr><td>${labelFn(it)}</td><td>${kHL(a)}</td><td>${kHL(b)}</td><td class="${cls(g)}">${pct(g)}</td><td class="${cls(b-a)}">${nom(b-a)}</td><td class="${cls(b-a)}">${dTot? (sgn((b-a)/dTot)+num(Math.abs((b-a)/dTot)*100,0)+"%"):"n/a"}</td><td>${num(tot26? b/tot26*100:0,1)}%</td></tr>`;
+  });
+  h += `<tr class="total"><td>Total regional</td><td>${kHL(tot25)}</td><td>${kHL(tot26)}</td><td class="${cls(gp(tot26,tot25))}">${pct(gp(tot26,tot25))}</td><td class="${cls(dTot)}">${nom(dTot)}</td><td>100%</td><td>100,0%</td></tr></tbody>`;
+  document.getElementById(tblId).innerHTML = h;
+}
+
+// matriz de crecimiento vs LY por anio (2021..2026), filas = canales o gerencias
+function yoyMatrix(tblId, items, keyType, labelFn, firstLabel){
+  const k = state.kpi;
+  const get = (it,y) => keyType==='c' ? S(k,y,null,it) : (it===null? S(k,y) : S(k,y,it,null));
+  let h = `<thead><tr><th>${firstLabel}: crecimiento vs LY</th>${YEARS.map(y=>`<th>${y}</th>`).join("")}</tr></thead><tbody>`;
+  const row = (it, label, total) => {
+    h += `<tr${total?' class="total"':''}><td>${label}</td>` + YEARS.map(y=>{
+      const g = gp(get(it,y), get(it,y-1));
+      return g===null ? `<td class="flat">n/a</td>` : `<td ${heat(g,25)}>${pct(g)}</td>`;
+    }).join("") + `</tr>`;
+  };
+  items.forEach(it=>row(it,labelFn(it),false));
+  row(null,"Total regional",true);
+  document.getElementById(tblId).innerHTML = h + "</tbody>";
+}
+
+function cross(){
+  const k = state.kpi;
+  const cell = (g,c) => S(k,2026,g,c)-S(k,2025,g,c);
+  let max = 0; DATA.ger.forEach(g=>DATA.canal.forEach(c=>{ max = Math.max(max,Math.abs(cell(g.code,c))); }));
+  let h = `<thead><tr><th>Gerencia</th>${DATA.canal.map(c=>`<th>${CANAL_LBL[c]}</th>`).join("")}<th>Total</th></tr></thead><tbody>`;
+  DATA.ger.forEach(g=>{
+    h += `<tr><td>${g.label}</td>` + DATA.canal.map(c=>{
+      const d = cell(g.code,c), p = gp(S(k,2026,g.code,c), S(k,2025,g.code,c));
+      if(S(k,2025,g.code,c)+S(k,2026,g.code,c) < 1) return `<td class="flat">&ndash;</td>`;
+      return `<td ${heat(d,max)}>${nom(d)}<small>${S(k,2025,g.code,c)>1?pct(p):"n/a"}</small></td>`;
+    }).join("");
+    const dg = S(k,2026,g.code)-S(k,2025,g.code);
+    h += `<td class="${cls(dg)}"><b>${nom(dg)}</b><small>${pct(gp(S(k,2026,g.code),S(k,2025,g.code)))}</small></td></tr>`;
+  });
+  h += `<tr class="total"><td>Total regional</td>` + DATA.canal.map(c=>{
+    const d = S(k,2026,null,c)-S(k,2025,null,c);
+    return `<td class="${cls(d)}">${nom(d)}<small>${pct(gp(S(k,2026,null,c),S(k,2025,null,c)))}</small></td>`;
+  }).join("") + `<td class="${cls(S(k,2026)-S(k,2025))}">${nom(S(k,2026)-S(k,2025))}<small>${pct(gp(S(k,2026),S(k,2025)))}</small></td></tr></tbody>`;
+  document.getElementById("tbl-cross").innerHTML = h;
+  document.getElementById("meta-cross").textContent = `${k} · mil HL`;
+}
+
+function render(){
+  tiles(); headline(); yearsTable();
+  breakdown("tbl-canal", DATA.canal, 'c', c=>CANAL_LBL[c], "Canal");
+  yoyMatrix("tbl-canal-yoy", DATA.canal, 'c', c=>CANAL_LBL[c], "Canal");
+  breakdown("tbl-ger", gCodes, 'g', g=>DATA.ger.find(x=>x.code===g).label, "Gerencia");
+  yoyMatrix("tbl-ger-yoy", gCodes, 'g', g=>DATA.ger.find(x=>x.code===g).label, "Gerencia");
+  cross();
+  document.getElementById("meta-canal").textContent = `${state.kpi} · YTD Ene–${MES[YTD_M]} · mil HL`;
+  document.getElementById("meta-ger").textContent = `${state.kpi} · YTD Ene–${MES[YTD_M]} · mil HL`;
+}
+
+document.getElementById("ytd-end").textContent = ["","enero","febrero","marzo","abril","mayo","junio","julio","agosto","setiembre","octubre","noviembre","diciembre"][YTD_M];
+document.getElementById("tiles").addEventListener("click", e=>{
+  const b = e.target.closest(".tile"); if(!b) return;
+  state.kpi = b.dataset.k; render();
+  const t = document.getElementById("tile-"+state.kpi.replace(/\W/g,'')); if(t) t.focus();
+});
+render();
+</script>

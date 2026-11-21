@@ -216,6 +216,11 @@ son estandar en otras companias de consumo masivo. Definiciones validadas por el
 directamente (join a `gld_maz_sales_portfolio_pe.pe_portfolio_material` por `material_id` para
 atributos de marca/pack). Detalle completo de columnas en `BITACORA_TABLAS.md`.
 
+**Budget de Brand Distribution = "meta bono"** (o simplemente "bono"): la meta oficial 2026 por GV
+(confirmado por el usuario, 2026-11-11). Cuando pida BD "vs budget", comparar contra esa meta, no contra
+otra cifra. El LE (last estimate) de BD se arma como real a mes cerrado + meses restantes = mismo mes
+LY x (1 + crecimiento LE que da el usuario). LE nov-dic 2026 vigente (usuario, 13.11.26): Nov +24% vs LY y Dic ajustado para cerrar BD en 98% de la meta bono (~+25.9%) (reemplaza el +10.2% / +11.7% del 11.11). Oct'26 sigue en carga parcial en `pe_portfolio_hm_brand_distribution` al 13.11 (167.5 mil vs 214.5 mil oficial): usar el oficial. Hay historia de BD oficial desde Ene'23 (FY23 1,880.7 mil; FY24 1,970.7 mil).
+
 **Mapeo a Databricks — Drops:** ya identificado. La vista
 `slv_maz_dataexperience_peru_revenue.revenue_dev_vw_rev_maestro_drops_brandpack` trae el resultado
 de Drops ya calculado a grano cliente-brandpack (ver `querys/Query_Drops.sql`), filtrar por

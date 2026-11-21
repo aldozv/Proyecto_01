@@ -367,6 +367,13 @@ function buildYearPeriods(){
 }
 const YEAR_PERIODS = buildYearPeriods();
 const PERIODS = { month:buildMonthPeriods(), quarter:buildQuarterPeriods(), year:YEAR_PERIODS, ytd:[YEAR_PERIODS[YEAR_PERIODS.length-1]] };
+// Columna "YTD" al final de las vistas Mensual y Trimestral: suma de enero al ultimo mes CERRADO
+// (mismo periodo que la vista YTD del toolbar), con variacion vs el mismo tramo del anio anterior.
+const YTD_COLUMN = (()=>{
+  const y = PERIODS.ytd[0];
+  const last = y.months[y.months.length-1][1];
+  return { key:"ytd-col", label:"YTD", badge:`Ene&ndash;${MES_LBL[last]}`, months:y.months, priorMonths:y.priorMonths, complete:true };
+})();
 function lastCompleteQuarter(){
   const complete = PERIODS.quarter.filter(p=>p.complete);
   return complete[complete.length-1];
@@ -555,14 +562,14 @@ function selectedGerLabel(){
 
 // ---------- render de tabla generica ----------
 function renderSection(tableEl, opts){
-  const periods = PERIODS[state.period];
+  const periods = (state.period==="month"||state.period==="quarter") ? [...PERIODS[state.period], YTD_COLUMN] : PERIODS[state.period];
   const gerCodes = opts.gerCodes;
   const centros = activeCentros(gerCodes);
   const cats = CAT_ORDER.filter(c=>state.categories.has(c));
   const canales = [...state.canales];
 
   let thead = `<tr><th class="rowhead">${opts.rowLabel}</th>`;
-  for(const p of periods) thead += `<th>${p.label}${!p.complete?'<span class="badge">parcial</span>':''}</th>`;
+  for(const p of periods) thead += `<th>${p.label}${!p.complete?'<span class="badge">parcial</span>':(p.badge?`<span class="badge">${p.badge}</span>`:'')}</th>`;
   thead += `</tr>`;
 
   let tbody = "";

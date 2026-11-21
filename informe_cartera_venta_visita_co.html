@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Informe Cartera, Venta y Visita Centro Oriente</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+@page { size: A4; margin: 14mm 14mm 14mm 14mm; }
+:root { --y: #FFF200; --k: #111; --g: #5f5f5f; --up: #0f7b3e; --dn: #c62828; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #fff; color: var(--k); font-family: "Barlow", "Segoe UI", Arial, sans-serif; font-size: 10.2pt; line-height: 1.42; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.wrap { max-width: 790px; margin: 0 auto; }
+.cover { border-top: 10px solid var(--y); padding: 16px 0 8px; margin-bottom: 10px; }
+.cover .lbl { font-family: "Barlow Condensed", sans-serif; font-weight: 700; letter-spacing: .2em; color: #666; font-size: 10pt; text-transform: uppercase; }
+h1 { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 25pt; line-height: 1.05; margin: 6px 0 8px; text-transform: uppercase; }
+.meta { font-size: 9.3pt; color: var(--g); } .meta b { color: var(--k); }
+h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 15.5pt; text-transform: uppercase; margin: 14px 0 6px; padding-top: 6px; border-top: 3px solid var(--y); break-after: avoid; line-height: 1.15; }
+h2 .n { background: var(--k); color: var(--y); padding: 0 8px; margin-right: 8px; }
+h3 { font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 12pt; margin: 10px 0 4px; break-after: avoid; }
+p { margin: 4px 0 6px; }
+ul { margin: 3px 0 6px; padding-left: 17px; } li { margin-bottom: 3px; }
+.box { background: #f4f4f4; border-left: 6px solid var(--y); padding: 8px 12px; margin: 8px 0; break-inside: avoid; }
+.box.k { background: var(--k); color: #fff; } .box.k b { color: var(--y); }
+.impl { border-left: 4px solid var(--k); padding: 5px 10px; margin: 8px 0; background: #fffbd1; break-inside: avoid; }
+.impl .h { font-family: "Barlow Condensed", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; display: block; margin-bottom: 2px; }
+.risk { border-left: 4px solid var(--dn); padding: 5px 10px; margin: 8px 0; background: #fdeeee; break-inside: avoid; }
+.risk .h { font-family: "Barlow Condensed", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; display: block; margin-bottom: 2px; color: var(--dn); }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; margin: 8px 0; break-inside: avoid; }
+.kpi { background: var(--k); color: #fff; padding: 7px 9px; }
+.kpi .v { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 18pt; color: var(--y); line-height: 1; }
+.kpi .t { font-size: 8.3pt; margin-top: 3px; line-height: 1.25; }
+table { width: 100%; border-collapse: collapse; font-size: 8.8pt; margin: 6px 0; break-inside: avoid; }
+th { background: var(--k); color: #fff; font-family: "Barlow Condensed", sans-serif; font-weight: 600; font-size: 9.6pt; text-align: right; padding: 3px 5px; }
+td { padding: 3px 5px; border-bottom: 1px solid #e2e2e2; text-align: right; vertical-align: top; }
+th:first-child, td:first-child, th.l, td.l { text-align: left; }
+tr.tt td { background: var(--y); font-weight: 700; }
+.up { color: var(--up); } .dn { color: var(--dn); } .mut { color: #888; }
+figure { margin: 8px 0 8px; break-inside: avoid; }
+figcaption { font-size: 8pt; color: #777; margin-top: 2px; }
+.chart svg { width: 100%; height: auto; display: block; }
+.chart text { font-family: "Barlow", Arial, sans-serif; }
+.pb { break-before: page; }
+.src { font-size: 8pt; color: #888; }
+.foot { font-size: 8pt; color: #888; margin-top: 14px; border-top: 1px solid #ddd; padding-top: 6px; }
+</style>
+</head>
+<body><div class="wrap">
+
+<!-- ============ PORTADA + RESUMEN ============ -->
+<div class="cover">
+  <div class="lbl">Informe · Dirección Centro Oriente</div>
+  <h1>Cartera, venta y visita: dónde ganamos y dónde perdimos volumen en 2026</h1>
+  <div class="meta"><b>Para:</b> Directora de Ventas · <b>De:</b> PPM Centro Oriente · <b>Fecha:</b> 11 de noviembre de 2026<br>
+  <b>Base:</b> maestro de clientes de Centro Oriente (foto vigente y fotos mensuales desde ene'23), cruzado cliente a cliente con la venta Beer+Rtds (Cervezas + Licores + RTD, dm_venta) YTD Ene–Oct de 2023 a 2026, y con la frecuencia de visita de cada mes.</div>
+</div>
+
+<h2>Resumen ejecutivo</h2>
+<div class="box k"><b>Centro Oriente crece en Beer+Rtds +3.2% (+71,893 HL) en el YTD Ene–Oct, pero todo el crecimiento viene de clientes nuevos.</b> Los clientes antiguos (código creado antes de 2025) restan −157,069 HL; los creados en 2025 y 2026 suman +228,275 HL. A la vez, la cartera "crece" +14.8% por altas masivas de códigos genéricos que no compran, y en bodegas (DSD) la visita se está reduciendo.</div>
+<ul>
+  <li><b>Perdimos en los antiguos.</b> 3,848 clientes que compraban en Ene–Oct 2025 no han vuelto a comprar en 2026 y se llevan −145,197 HL. Los que siguen comprando caen −0.9% (−18,986 HL).</li>
+  <li><b>El problema de fondo está en las bodegas.</b> En DSD OFF, a mismos clientes la venta cae −5.2% (−34,678 HL); en Tarapoto −7.9% y en Pucallpa −7.2%. Sumando los que dejaron de comprar, la base antigua de bodegas pierde −70,735 HL y los nuevos apenas lo compensan.</li>
+  <li><b>La base histórica se achica todos los años.</b> Los clientes creados antes de 2023 venden −7.4% vs 2025 en Ene–Oct y acumulan −23% desde 2023. Cada generación nueva de clientes es la que sostiene el volumen.</li>
+  <li><b>Una parte de lo "perdido" no es pérdida.</b> En cuentas grandes (DAs, eventeros, mayoristas) hay recodificaciones y rotación: el caso más claro es Bonanza en Iquitos (concesionario que cambió de razón social y de códigos).</li>
+  <li><b>La cartera crece en códigos, no en compradores.</b> 45,489 clientes activos (+14.8% vs Nov'25), pero 7,973 son de promotores genéricos y solo 2.7% de ellos compró desde agosto. Sin genéricos la cartera cae −1.4%, y los compradores YTD bajan −914 (−2.8%).</li>
+  <li><b>Menos visita, menos venta.</b> En bodegas, las visitas por cliente al mes bajan de 2.63 a 2.50 (oct'25 vs oct'26) y los clientes semanales caen −2,305. Quienes perdieron la visita venden −28.7%; quienes la subieron, +22.5%.</li>
+</ul>
+<h3>Las 5 preguntas que nos van a hacer</h3>
+<table>
+<tr><th class="l" style="width:42%">Pregunta</th><th class="l">Respuesta</th></tr>
+<tr><td>¿Crecemos en volumen?</td><td class="l">Sí: Beer+Rtds +3.2% (+71,893 HL) vs Ene–Oct 2025, +5.8% vs 2024 y +8.1% vs 2023.</td></tr>
+<tr><td>¿Perdimos en los nuevos o en los antiguos?</td><td class="l">En los antiguos (−157,069 HL). Los nuevos aportan +228,275 HL.</td></tr>
+<tr><td>¿Cuánto volumen perdimos?</td><td class="l">−164,197 HL entre clientes que dejaron de comprar (−145,211) y menor compra de recurrentes (−18,986); parte es recodificación de cuentas grandes.</td></tr>
+<tr><td>¿Por qué la cartera sube +14.8% si los compradores bajan?</td><td class="l">Altas masivas de set–oct'26 (4,527 códigos) asignadas a promotores genéricos que casi no compran.</td></tr>
+<tr><td>¿Tiene que ver la visita?</td><td class="l">Sí: la frecuencia de visita en bodegas baja y la venta se mueve en la misma dirección que la frecuencia.</td></tr>
+</table>
+
+<!-- ============ 1 ============ -->
+<h2 class="pb"><span class="n">1</span>La cartera crece en códigos, no en clientes que compran</h2>
+<p>La cartera activa de Centro Oriente llega a 45,489 clientes en Nov'26, +14.8% vs Nov'25. Ese salto viene casi todo de set y oct'26, cuando se crearon 4,527 códigos en dos meses (el promedio de 2025 fue 387 al mes). La mayoría quedó asignada a supervisores "Promotor genérico", y en jun'26 Huancayo además pasó ~2,600 clientes existentes, que casi no compraban, a un promotor genérico.</p>
+<div class="kpis">
+  <div class="kpi"><div class="v">45,489</div><div class="t">clientes activos Nov'26 (+14.8% vs Nov'25)</div></div>
+  <div class="kpi"><div class="v">7,973</div><div class="t">de promotores genéricos (17.5% de la cartera)</div></div>
+  <div class="kpi"><div class="v">2.7%</div><div class="t">de los genéricos compró ago–nov'26 (vs 73.5% con supervisor)</div></div>
+  <div class="kpi"><div class="v">−1.4%</div><div class="t">cartera sin genéricos vs Nov'25 (37,516 clientes)</div></div>
+</div>
+<table>
+<tr><th>Gerencia</th><th>Cartera Nov'26</th><th>vs Nov'25</th><th>Genéricos</th><th>% compra genéricos</th><th>Sin genéricos</th><th>Sin gen. vs Nov'25</th><th>Compradores YTD 26</th><th>vs YTD 25</th></tr>
+<tr><td>Huancay Ch</td><td>16,552</td><td class="up">+8.3%</td><td>3,224</td><td>4.8%</td><td>13,328</td><td class="dn">−12.5%</td><td>13,373</td><td class="dn">−143</td></tr>
+<tr><td>Pucall Hco</td><td>11,302</td><td class="up">+18.7%</td><td>1,402</td><td>0.4%</td><td>9,900</td><td class="up">+4.1%</td><td>7,586</td><td class="dn">−325</td></tr>
+<tr><td>Tarapoto</td><td>10,032</td><td class="up">+17.7%</td><td>2,387</td><td>2.0%</td><td>7,645</td><td class="up">+9.1%</td><td>6,466</td><td class="dn">−232</td></tr>
+<tr><td>Iquitos</td><td>7,569</td><td class="up">+20.3%</td><td>960</td><td>1.0%</td><td>6,609</td><td class="up">+5.1%</td><td>4,466</td><td class="dn">−213</td></tr>
+<tr><td>DA Jun Puc</td><td>34</td><td class="mut">—</td><td>0</td><td class="mut">—</td><td>34</td><td class="mut">—</td><td>20</td><td class="dn">−1</td></tr>
+<tr class="tt"><td>Centro Oriente</td><td>45,489</td><td>+14.8%</td><td>7,973</td><td>2.7%</td><td>37,516</td><td>−1.4%</td><td>31,911</td><td>−914</td></tr>
+</table>
+<div class="src">Cartera = clientes activos de 8 dígitos sin DAs Sellout, Consumidor ni Marketplace (se excluyen en todo el histórico ~1,350 clientes MTKP Gloria / "SUPERVISOR PRUEBA"). Compradores = clientes con HL &gt; 0 en Ene–Oct.</div>
+<div class="impl"><span class="h">Implicancia para Centro Oriente</span>El indicador de cartera activa hoy no mide clientes reales: para seguir crecimiento de clientes hay que usar la cartera sin genéricos o, mejor, los compradores. Antes de reportar la cartera de Nov'26 conviene validar con el equipo de maestros si los 3,711 códigos genéricos creados desde setiembre son prospectos que se van a trabajar o una carga que debe depurarse.</div>
+
+<!-- ============ 2 ============ -->
+<h2 class="pb"><span class="n">2</span>Crecemos +3.2%, pero solo por los clientes nuevos</h2>
+<p>La venta Beer+Rtds de Ene–Oct 2026 es 2,337,577 HL: +71,893 HL (+3.2%) vs 2025. Al separar la variación por tipo de cliente, los antiguos (alta antes de 2025) explican −157,069 HL y los nuevos +228,275 HL.</p>
+<div class="kpis">
+  <div class="kpi"><div class="v">+3.2%</div><div class="t">Beer+Rtds YTD vs 2025 (+71,893 HL)</div></div>
+  <div class="kpi"><div class="v">+5.8%</div><div class="t">vs Ene–Oct 2024 (+128,437 HL)</div></div>
+  <div class="kpi"><div class="v">−157,069</div><div class="t">HL de clientes antiguos vs 2025</div></div>
+  <div class="kpi"><div class="v">+228,275</div><div class="t">HL de clientes nuevos 2025 y 2026</div></div>
+</div>
+<figure class="chart"><div id="g1"></div><figcaption>Puente de la venta Beer+Rtds Ene–Oct 2025 → Ene–Oct 2026 por tipo de cliente (HL).</figcaption></figure>
+<table>
+<tr><th>Tipo de cliente</th><th>Clientes con compra</th><th>HL Ene–Oct 25</th><th>HL Ene–Oct 26</th><th>Δ HL</th><th>Δ%</th></tr>
+<tr><td>Antiguos que compraron ambos años</td><td>25,170</td><td>2,024,566</td><td>2,005,580</td><td class="dn">−18,986</td><td class="dn">−0.9%</td></tr>
+<tr><td>Antiguos que dejaron de comprar</td><td>3,848</td><td>145,197</td><td>−14</td><td class="dn">−145,211</td><td class="dn">−100%</td></tr>
+<tr><td>Antiguos que volvieron a comprar</td><td>613</td><td>0</td><td>7,128</td><td class="up">+7,128</td><td class="mut">nuevo</td></tr>
+<tr><td>Nuevos 2025</td><td>4,012</td><td>92,004</td><td>268,791</td><td class="up">+176,787</td><td class="up">+192%</td></tr>
+<tr><td>Nuevos 2026</td><td>2,251</td><td>0</td><td>51,488</td><td class="up">+51,488</td><td class="mut">nuevo</td></tr>
+<tr><td>Fuera de cartera</td><td class="mut">—</td><td>3,917</td><td>4,604</td><td class="up">+687</td><td class="up">+17.5%</td></tr>
+<tr class="tt"><td>Total Centro Oriente</td><td>35,894</td><td>2,265,684</td><td>2,337,577</td><td>+71,893</td><td>+3.2%</td></tr>
+</table>
+<div class="src">Antiguos = código creado antes de 2025. Clientes con compra = compraron en Ene–Oct 2025 o en Ene–Oct 2026. GV, canal y estado = los vigentes del cliente (regla de atribución actual).</div>
+<h3>Por gerencia de venta (Δ HL vs Ene–Oct 2025)</h3>
+<table>
+<tr><th>Gerencia</th><th>HL YTD 26</th><th>vs 25</th><th>vs 24</th><th>vs 23</th><th>Recurrentes</th><th>Dejaron de comprar</th><th>Volvieron</th><th>Nuevos 25</th><th>Nuevos 26</th><th>Δ total</th></tr>
+<tr><td>Tarapoto</td><td>655,528</td><td class="up">+6.5%</td><td class="up">+14.1%</td><td class="up">+15.7%</td><td class="up">+34,433</td><td class="dn">−27,072</td><td class="up">+1,724</td><td class="up">+22,626</td><td class="up">+8,064</td><td class="up"><b>+39,775</b></td></tr>
+<tr><td>Huancay Ch</td><td>594,820</td><td class="up">+1.9%</td><td class="up">+3.0%</td><td class="up">+2.8%</td><td class="dn">−4,722</td><td class="dn">−19,438</td><td class="up">+1,641</td><td class="up">+24,010</td><td class="up">+8,835</td><td class="up"><b>+11,096</b></td></tr>
+<tr><td>Pucall Hco</td><td>425,890</td><td class="up">+5.1%</td><td class="up">+6.2%</td><td class="up">+2.1%</td><td class="dn">−3,009</td><td class="dn">−47,857</td><td class="up">+2,590</td><td class="up">+42,864</td><td class="up">+26,127</td><td class="up"><b>+20,632</b></td></tr>
+<tr><td>DA Jun Puc</td><td>371,937</td><td class="dn">−6.6%</td><td class="dn">−2.6%</td><td class="up">+3.4%</td><td class="dn">−43,274</td><td class="dn">−10,701</td><td class="up">+75</td><td class="up">+26,433</td><td class="up">+1,134</td><td class="dn"><b>−26,334</b></td></tr>
+<tr><td>Iquitos</td><td>289,402</td><td class="up">+10.2%</td><td class="up">+5.6%</td><td class="up">+20.7%</td><td class="dn">−2,413</td><td class="dn">−40,143</td><td class="up">+1,099</td><td class="up">+60,854</td><td class="up">+7,329</td><td class="up"><b>+26,723</b></td></tr>
+<tr class="tt"><td>Centro Oriente</td><td>2,337,577</td><td>+3.2%</td><td>+5.8%</td><td>+8.1%</td><td>−18,986</td><td>−145,211</td><td>+7,128</td><td>+176,787</td><td>+51,488</td><td>+71,893</td></tr>
+</table>
+<div class="src">Δ total incluye "Fuera de cartera" (+687 HL en la Dirección). Tarapoto es la única GV donde los recurrentes crecen, por sus cuentas grandes (DAs y mayoristas); en sus bodegas cae (ver sección 3).</div>
+<h3>Venta Ene–Oct por año de creación del cliente</h3>
+<figure class="chart"><div id="g2"></div><figcaption>HL Beer+Rtds Ene–Oct de cada año, según el año de alta del código del cliente.</figcaption></figure>
+<table>
+<tr><th>Año de alta del cliente</th><th>Ene–Oct 23</th><th>Ene–Oct 24</th><th>Ene–Oct 25</th><th>Ene–Oct 26</th><th>Δ 26 vs 25</th><th>Δ%</th></tr>
+<tr><td>Antes de 2023</td><td>2,073,333</td><td>1,879,856</td><td>1,720,748</td><td>1,593,874</td><td class="dn">−126,874</td><td class="dn">−7.4%</td></tr>
+<tr><td>2023</td><td>88,443</td><td>187,200</td><td>177,372</td><td>171,765</td><td class="dn">−5,607</td><td class="dn">−3.2%</td></tr>
+<tr><td>2024</td><td>—</td><td>142,084</td><td>275,560</td><td>251,660</td><td class="dn">−23,900</td><td class="dn">−8.7%</td></tr>
+<tr><td>2025</td><td>—</td><td>—</td><td>92,004</td><td>268,791</td><td class="up">+176,787</td><td class="up">+192%</td></tr>
+<tr><td>2026</td><td>—</td><td>—</td><td>—</td><td>51,488</td><td class="up">+51,488</td><td class="mut">nuevo</td></tr>
+<tr class="tt"><td>Total</td><td>2,161,776</td><td>2,209,140</td><td>2,265,684</td><td>2,337,578</td><td>+71,894</td><td>+3.2%</td></tr>
+</table>
+<div class="src">Incluye todos los clientes con dirección vigente Centro Oriente (cartera y fuera de cartera). Diferencias de 1 HL por redondeo.</div>
+<div class="impl"><span class="h">Implicancia para Centro Oriente</span>La base de clientes antiguos pierde entre 7% y 9% de su venta cada año, y lo compensamos dando de alta clientes nuevos. Ese modelo depende de seguir abriendo ~4 mil clientes con compra al año: si las altas de 2027 se parecen a las de set–oct'26 (códigos genéricos sin compra), el crecimiento se detiene. La palanca más barata es retener: cada punto de caída que frenemos en los clientes creados antes de 2023 vale ~16 mil HL en Ene–Oct.</div>
+
+<!-- ============ 3 ============ -->
+<h2 class="pb"><span class="n">3</span>Las bodegas son donde se pierde la venta a mismos clientes</h2>
+<p>Separando por canal, la caída de recurrentes se concentra en DSD OFF (bodegas): −5.2% a mismos clientes. En DAs y mayoristas los recurrentes crecen, y la pérdida viene de cuentas que dejan de comprar, en buena parte reemplazadas por cuentas nuevas.</p>
+<table>
+<tr><th>Canal</th><th>HL 25</th><th>HL 26</th><th>Δ HL</th><th>Δ%</th><th>Δ recurrentes</th><th>Δ% recurrentes</th><th>Dejaron de comprar</th><th>Volvieron</th><th>Nuevos 25–26</th></tr>
+<tr><td>DAs</td><td>774,664</td><td>798,905</td><td class="up">+24,241</td><td class="up">+3.1%</td><td class="up">+11,137</td><td class="up">+1.6%</td><td class="dn">−51,985</td><td class="up">+75</td><td class="up">+65,014</td></tr>
+<tr><td><b>DSD OFF</b></td><td>741,205</td><td>751,976</td><td class="up">+10,771</td><td class="up">+1.5%</td><td class="dn"><b>−34,678</b></td><td class="dn"><b>−5.2%</b></td><td class="dn">−36,057</td><td class="up">+4,321</td><td class="up">+76,511</td></tr>
+<tr><td>Mayoristas</td><td>279,564</td><td>294,524</td><td class="up">+14,960</td><td class="up">+5.4%</td><td class="up">+7,971</td><td class="up">+3.5%</td><td class="dn">−27,854</td><td class="up">+1,739</td><td class="up">+33,104</td></tr>
+<tr><td>Eventos</td><td>249,067</td><td>258,568</td><td class="up">+9,501</td><td class="up">+3.8%</td><td class="dn">−946</td><td class="dn">−0.4%</td><td class="dn">−21,188</td><td class="up">+103</td><td class="up">+31,532</td></tr>
+<tr><td>DSD ON</td><td>148,143</td><td>159,969</td><td class="up">+11,826</td><td class="up">+8.0%</td><td class="dn">−998</td><td class="dn">−0.7%</td><td class="dn">−5,892</td><td class="up">+890</td><td class="up">+17,813</td></tr>
+<tr><td>Key Accounts</td><td>73,021</td><td>73,614</td><td class="up">+592</td><td class="up">+0.8%</td><td class="dn">−1,473</td><td class="dn">−2.2%</td><td class="dn">−2,235</td><td>0</td><td class="up">+4,301</td></tr>
+<tr class="tt"><td>Total</td><td>2,265,684</td><td>2,337,577</td><td>+71,893</td><td>+3.2%</td><td>−18,986</td><td>−0.9%</td><td>−145,211</td><td>+7,128</td><td>+228,275</td></tr>
+</table>
+<div class="src">Canal vigente del cliente (unidad de negocio revenue meta; High End sumado a DSD ON). El total incluye +687 HL fuera de cartera y +1 HL sin canal.</div>
+<h3>DSD OFF por gerencia</h3>
+<table>
+<tr><th>Gerencia</th><th>HL 25</th><th>HL 26</th><th>Δ%</th><th>Δ recurrentes</th><th>Δ% recurrentes</th><th>Dejaron de comprar</th><th>Nuevos 25–26</th></tr>
+<tr><td>Huancay Ch</td><td>273,543</td><td>279,798</td><td class="up">+2.3%</td><td class="dn">−5,395</td><td class="dn">−2.2%</td><td class="dn">−12,416</td><td class="up">+22,664</td></tr>
+<tr><td>Tarapoto</td><td>199,553</td><td>198,380</td><td class="dn">−0.6%</td><td class="dn">−14,291</td><td class="dn"><b>−7.9%</b></td><td class="dn">−9,358</td><td class="up">+21,586</td></tr>
+<tr><td>Pucall Hco</td><td>169,641</td><td>168,711</td><td class="dn">−0.5%</td><td class="dn">−11,027</td><td class="dn"><b>−7.2%</b></td><td class="dn">−9,921</td><td class="up">+18,997</td></tr>
+<tr><td>Iquitos</td><td>94,552</td><td>100,497</td><td class="up">+6.3%</td><td class="dn">−3,965</td><td class="dn">−4.7%</td><td class="dn">−4,362</td><td class="up">+13,264</td></tr>
+<tr class="tt"><td>Centro Oriente</td><td>737,289</td><td>747,386</td><td>+1.4%</td><td>−34,678</td><td>−5.2%</td><td>−36,057</td><td>+76,511</td></tr>
+</table>
+<div class="src">Solo clientes en cartera (sin "fuera de cartera"). El total no suma DA Jun Puc, que no tiene clientes DSD.</div>
+<div class="impl"><span class="h">Implicancia para Centro Oriente</span>En bodegas, la base que ya teníamos vende menos (−34,678 HL a mismos clientes y −36,057 HL de bodegas que dejaron de comprar). Es la caída que menos se ve en el total, porque la tapan las altas nuevas, y es la que se puede atacar con la ruta: frecuencia de visita (sección 5), recuperación de clientes perdidos y ejecución en el punto de venta. Tarapoto y Pucallpa son las prioridades.</div>
+
+<!-- ============ 4 ============ -->
+<h2 class="pb"><span class="n">4</span>Cuentas grandes: parte de lo "perdido" es recodificación</h2>
+<p>En DAs, eventos y mayoristas pocas cuentas mueven decenas de miles de HL. Cuando un distribuidor o mayorista cambia de razón social, se crea un código nuevo: el antiguo aparece como "dejó de comprar" y el nuevo como "cliente nuevo". El cruce por número de documento no lo detecta, porque el RUC también cambia.</p>
+<table>
+<tr><th class="l">GV</th><th class="l">Dejó de comprar (código antiguo)</th><th>HL 25</th><th class="l">Entró (código nuevo)</th><th>HL 26</th><th class="l">Lectura</th></tr>
+<tr><td class="l">Iquitos</td><td class="l">Inversiones Bonanza del Oriente (DAs, 3 códigos)</td><td>33,901</td><td class="l">Grupo Bonanza SAC (DAs, 3 códigos)</td><td>37,447</td><td class="l">recodificación del mismo grupo</td></tr>
+<tr><td class="l">DA Jun Puc</td><td class="l">Operador Logístico San Pedro (concesionario)</td><td>10,481</td><td class="l">Inv. Globales Olarte · Transblanco J &amp; M</td><td>42,301</td><td class="l">rotación de distribuidores</td></tr>
+<tr><td class="l">Pucall Hco</td><td class="l">Saldaña Hernández, Marlith (eventero)</td><td>11,906</td><td class="l">Offer Solutions (eventero)</td><td>21,524</td><td class="l">rotación de eventeros</td></tr>
+<tr><td class="l">Pucall Hco</td><td class="l">Pezo López · Santillán Meléndez (mayoristas)</td><td>18,666</td><td class="l">Naro Rodríguez · Quispe Condori (mayoristas)</td><td>15,691</td><td class="l">rotación de mayoristas</td></tr>
+<tr><td class="l">Tarapoto</td><td class="l">Dávila López (eventero) · Repr. y Distr. del Norte · Dismar Cinco (DAs)</td><td>12,021</td><td class="l">mayoristas nuevos en Tarapoto y Yurimaguas</td><td class="mut">varios</td><td class="l">cuentas que no se reemplazan 1 a 1</td></tr>
+</table>
+<div class="src">HL Ene–Oct. Fuente: top 5 por GV de clientes antiguos que dejaron de comprar y de nuevos con más compra (Query_CentroOriente_Top_Clientes_Perdidos_Nuevos_YTD.sql). Los nombres y la relación entre cuentas deben validarse con cada GV.</div>
+<div class="risk"><span class="h">A validar</span>Si se corrigen las recodificaciones, la pérdida de "antiguos que dejaron de comprar" baja y la ganancia de "nuevos" también: el neto no cambia, pero sí la lectura. Para medir bien la retención conviene marcar en el maestro los códigos que reemplazan a otro (mismo grupo o mismo punto). En DA Jun Puc, además, los recurrentes caen −11.6% (−43,274 HL), que no se explica por recodificación.</div>
+
+<!-- ============ 5 ============ -->
+<h2 class="pb"><span class="n">5</span>Visita en bodegas: menos frecuencia y la venta la sigue</h2>
+<p>En los clientes DSD de la cartera (sin promotores genéricos), la frecuencia de visita se redujo en 2026. En jun'26 se reorganizaron las rutas: bajan los clientes semanales, aparece la frecuencia "OTROS" (~2,100 clientes) y suben los bisemanales. Para comparar se convierte la frecuencia a visitas al mes: bisemanal 8, semanal 4, quincenal 2, mensual 1, sin visita 0.</p>
+<div class="kpis">
+  <div class="kpi"><div class="v">2.63 → 2.50</div><div class="t">visitas por cliente al mes, oct'25 → oct'26</div></div>
+  <div class="kpi"><div class="v">−4.7%</div><div class="t">visitas al mes (96,122 → 91,611)</div></div>
+  <div class="kpi"><div class="v">−2,305</div><div class="t">clientes con visita semanal (18,478 → 16,173)</div></div>
+  <div class="kpi"><div class="v">69.5% → 64.9%</div><div class="t">clientes que compran en el mes</div></div>
+</div>
+<table>
+<tr><th>Gerencia</th><th>Clientes oct'26</th><th>Visitas/cliente oct'25</th><th>Visitas/cliente oct'26</th><th>Semanales oct'25</th><th>Semanales oct'26</th><th>% compra oct'25</th><th>% compra oct'26</th><th>HL/cliente oct'26</th></tr>
+<tr><td>Huancay Ch</td><td>13,078</td><td>2.67</td><td class="dn">2.61</td><td>6,717</td><td class="dn">4,042</td><td>72.5%</td><td class="up">76.5%</td><td>2.61</td></tr>
+<tr><td>Pucall Hco</td><td>9,662</td><td>2.70</td><td class="dn">2.45</td><td>5,368</td><td class="dn">5,137</td><td>66.9%</td><td class="dn">59.2%</td><td>2.42</td></tr>
+<tr><td>Tarapoto</td><td>7,504</td><td>2.85</td><td class="dn">2.56</td><td>3,849</td><td class="up">3,864</td><td>76.8%</td><td class="dn">66.1%</td><td>3.79</td></tr>
+<tr><td>Iquitos</td><td>6,420</td><td>2.20</td><td class="up">2.27</td><td>2,544</td><td class="up">3,130</td><td>57.8%</td><td class="dn">48.8%</td><td>2.06</td></tr>
+<tr class="tt"><td>Centro Oriente</td><td>36,664</td><td>2.63</td><td>2.50</td><td>18,478</td><td>16,173</td><td>69.5%</td><td>64.9%</td><td>2.70</td></tr>
+</table>
+<div class="src">Clientes DSD OFF y DSD ON en la cartera de cada mes, sin promotores genéricos. HL/cliente = venta Beer+Rtds del mes / clientes. En Huancayo la caída de semanales va hacia "OTROS" y bisemanal, por eso sus visitas/cliente casi no bajan.</div>
+<h3>Clientes a los que les cambió la frecuencia (oct'25 → oct'26) y su venta Ene–Oct</h3>
+<figure class="chart"><div id="g3"></div><figcaption>Δ% de venta Beer+Rtds Ene–Oct 2026 vs 2025 según cómo cambió la frecuencia de visita del cliente. Clientes DSD en la cartera en ambos meses.</figcaption></figure>
+<table>
+<tr><th>Cambio de frecuencia</th><th>Clientes</th><th>HL 25</th><th>HL 26</th><th>Δ HL</th><th>Δ%</th><th>Huancay Ch</th><th>Pucall Hco</th><th>Tarapoto</th><th>Iquitos</th></tr>
+<tr><td>Ganó visita</td><td>1,370</td><td>9,443</td><td>25,795</td><td class="up">+16,352</td><td class="up">+173.2%</td><td class="up">+58.9%</td><td class="up">+361.2%</td><td class="up">+192.3%</td><td class="up">+173.5%</td></tr>
+<tr><td>Subió frecuencia</td><td>3,503</td><td>106,143</td><td>130,048</td><td class="up">+23,905</td><td class="up">+22.5%</td><td class="up">+10.0%</td><td class="up">+82.6%</td><td class="up">+50.8%</td><td class="up">+39.5%</td></tr>
+<tr><td>Igual</td><td>19,826</td><td>551,477</td><td>544,429</td><td class="dn">−7,048</td><td class="dn">−1.3%</td><td class="up">+2.2%</td><td class="dn">−3.0%</td><td class="dn">−2.8%</td><td class="up">+0.1%</td></tr>
+<tr><td>Pasó a/desde OTROS</td><td>1,956</td><td>66,815</td><td>72,520</td><td class="up">+5,705</td><td class="up">+8.5%</td><td class="up">+9.5%</td><td class="up">+5.3%</td><td class="up">+5.3%</td><td class="up">+7.6%</td></tr>
+<tr><td>Bajó frecuencia</td><td>3,332</td><td>45,005</td><td>38,868</td><td class="dn">−6,137</td><td class="dn">−13.6%</td><td class="dn">−9.4%</td><td class="dn">−12.0%</td><td class="dn">−25.6%</td><td class="dn">−18.7%</td></tr>
+<tr><td>Perdió visita</td><td>2,966</td><td>59,267</td><td>42,237</td><td class="dn">−17,030</td><td class="dn">−28.7%</td><td class="dn">−18.2%</td><td class="dn">−38.0%</td><td class="dn">−28.5%</td><td class="dn">−37.9%</td></tr>
+<tr class="tt"><td>Total</td><td>32,953</td><td>838,150</td><td>853,897</td><td>+15,747</td><td>+1.9%</td><td colspan="4"></td></tr>
+</table>
+<div class="impl"><span class="h">Implicancia para Centro Oriente</span>La venta se mueve en la misma dirección que la frecuencia en las cuatro gerencias. Los 2,966 clientes que perdieron la visita y los 3,332 a los que se les bajó la frecuencia explican −23,167 HL. En Pucallpa y Tarapoto coincide con la mayor caída de bodegas a mismos clientes (sección 3) y con la mayor caída de % de compra mensual. Antes de seguir reduciendo rutas conviene revisar qué clientes con compra quedaron sin visita.</div>
+<div class="risk"><span class="h">Cuidado con la lectura</span>La relación va en los dos sentidos: también se baja la frecuencia o se quita la visita a clientes que ya venían comprando menos. El dato muestra asociación, no prueba que la visita cause la venta. Para medir el efecto real conviene un piloto: devolver la visita semanal a un grupo de clientes que la perdieron y comparar con un grupo similar que no.</div>
+
+<!-- ============ 6 ============ -->
+<h2 class="pb"><span class="n">6</span>Decisiones y próximos pasos</h2>
+<h3>Palancas</h3>
+<table>
+<tr><th class="l">Palanca</th><th>Volumen en juego</th><th class="l">Tipo</th></tr>
+<tr><td>Recuperar bodegas antiguas que dejaron de comprar en 2026</td><td>36,057 HL (DSD OFF)</td><td class="l">retención</td></tr>
+<tr><td>Frenar la caída a mismos clientes en bodegas (Tarapoto y Pucallpa primero)</td><td>34,678 HL (DSD OFF)</td><td class="l">retención</td></tr>
+<tr><td>Devolver visita o frecuencia a clientes con compra que la perdieron</td><td>hasta 23,167 HL</td><td class="l">ruta · referencia</td></tr>
+<tr><td>Convertir los códigos genéricos en compradores (o depurarlos)</td><td>7,973 clientes, 2.7% compra hoy</td><td class="l">calidad de cartera</td></tr>
+<tr><td>DA Jun Puc: caída de distribuidores recurrentes</td><td>43,274 HL</td><td class="l">canal DAs</td></tr>
+</table>
+<div class="src">Las palancas no se suman entre sí: bodegas perdidas, caída a mismos clientes y visita se superponen.</div>
+<h3>Decisiones y entregables</h3>
+<table>
+<tr><th class="l">Decisión o entregable</th><th class="l">Con quién</th><th>Cuándo</th></tr>
+<tr><td>Lista de bodegas que dejaron de comprar en 2026, por GV, supervisor y ruta, para plan de recuperación</td><td class="l">GVs · supervisores</td><td>Nov 2026</td></tr>
+<tr><td>Validar los 3,711 códigos genéricos creados desde set'26: prospectos a trabajar o depuración</td><td class="l">Maestros · GVs</td><td>Nov 2026</td></tr>
+<tr><td>Reportar cartera sin genéricos y compradores como indicador oficial de clientes</td><td class="l">PPM · Dirección</td><td>Dic 2026</td></tr>
+<tr><td>Revisar los clientes con compra que quedaron sin visita o con menos frecuencia tras el cambio de rutas de jun'26</td><td class="l">Ventas · Planeamiento de rutas</td><td>Dic 2026</td></tr>
+<tr><td>Piloto de frecuencia en Pucallpa y Tarapoto (grupo con visita devuelta vs grupo control)</td><td class="l">Ventas · PPM</td><td>Ene 2027</td></tr>
+<tr><td>Marcar en el maestro los códigos que reemplazan a otro (recodificaciones de DAs, eventeros, mayoristas)</td><td class="l">Maestros · Revenue</td><td>Q1 2027</td></tr>
+</table>
+<div class="box"><b>Material de soporte.</b> Dashboard "Cartera de Clientes Centro Oriente" (evolución mensual por GV, CD y supervisor) e informe interactivo "Venta y Visita Centro Oriente YTD", con selector por gerencia. Queries en la carpeta <i>querys/</i> (Query_CentroOriente_Venta_*, _Frecuencia_*, _Cartera_*).</div>
+<div class="foot">Fuentes: dm_hm_cliente (fotos mensuales del maestro, dic'22–oct'26) y dm_cliente (foto vigente al 11.11.26); dm_venta con indicadores comerciales, Beer+Rtds = Cervezas + Licores + RTD, YTD Ene–Oct (mes cerrado). GV, canal, estado y fecha de alta son los vigentes del cliente, incluso para la venta de años anteriores; la frecuencia de visita es la de cada mes. Antes de feb'26 la historia de cartera se arma con las gerencias de entonces (Huancay Ch = Huancayo + Chanchamayo; Pucall Hco = Pucallpa + Huánuco Tingo María).</div>
+</div>
+
+<script>
+const NS = 'http://www.w3.org/2000/svg';
+const f0 = v => Math.round(v).toLocaleString('en-US');
+const sg = v => (v >= 0 ? '+' : '−') + f0(Math.abs(v));
+function el(tag, attrs, parent, text) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; if (parent) parent.appendChild(e); return e; }
+function svg(id, W, H) { const s = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img' }); document.getElementById(id).appendChild(s); return s; }
+
+/* g1: puente */
+(function () {
+  const steps = [['Ene–Oct 25', 2265684, 'tot'], ['Recurrentes', -18986], ['Dejaron de comprar', -145211], ['Volvieron', 7128], ['Nuevos 2025', 176787], ['Nuevos 2026', 51488], ['Fuera de cartera', 687], ['Ene–Oct 26', 2337577, 'tot']];
+  const W = 760, H = 250, ml = 46, mr = 6, mt = 24, mb = 34, lo = 2000000, hi = 2400000;
+  const s = svg('g1', W, H);
+  s.setAttribute('aria-label', 'Puente de venta por tipo de cliente');
+  const y = v => mt + (hi - v) / (hi - lo) * (H - mt - mb);
+  const bw = (W - ml - mr) / steps.length;
+  [2000000, 2100000, 2200000, 2300000, 2400000].forEach(t => { el('line', { x1: ml, x2: W - mr, y1: y(t), y2: y(t), stroke: '#e6e6e6' }, s); el('text', { x: ml - 6, y: y(t) + 3, 'text-anchor': 'end', 'font-size': 9, fill: '#999' }, s, (t / 1e6).toFixed(1) + ' MM'); });
+  let run = 0;
+  steps.forEach((st, i) => {
+    const x = ml + i * bw + bw * 0.15, w = bw * 0.7;
+    let a, b, fill;
+    if (st[2] === 'tot') { a = lo; b = st[1]; run = st[1]; fill = '#111'; }
+    else { a = run; b = run + st[1]; run = b; fill = st[1] >= 0 ? '#0f7b3e' : '#c62828'; }
+    const top = y(Math.max(a, b)), h = Math.max(1.5, Math.abs(y(a) - y(b)));
+    el('rect', { x, y: top, width: w, height: h, fill }, s);
+    if (st[2] === 'tot') el('rect', { x, y: top, width: w, height: 4, fill: '#FFF200' }, s);
+    el('text', { x: x + w / 2, y: top - 5, 'text-anchor': 'middle', 'font-size': 10.5, 'font-weight': 700, fill: '#111' }, s, st[2] === 'tot' ? f0(st[1]) : sg(st[1]));
+    const words = st[0].split(' ');
+    const l1 = words.length > 2 ? words.slice(0, 2).join(' ') : words[0], l2 = words.length > 2 ? words.slice(2).join(' ') : words.slice(1).join(' ');
+    el('text', { x: x + w / 2, y: H - 20, 'text-anchor': 'middle', 'font-size': 9.5, fill: '#333' }, s, l1);
+    if (l2) el('text', { x: x + w / 2, y: H - 8, 'text-anchor': 'middle', 'font-size': 9.5, fill: '#333' }, s, l2);
+  });
+})();
+
+/* g2: venta por año de alta (barras apiladas) */
+(function () {
+  const yrs = ['Ene–Oct 23', 'Ene–Oct 24', 'Ene–Oct 25', 'Ene–Oct 26'];
+  const C = [['Antes de 2023', [2073333, 1879856, 1720748, 1593874], '#9a9a9a'], ['2023', [88443, 187200, 177372, 171765], '#5f5f5f'], ['2024', [0, 142084, 275560, 251660], '#111'], ['2025', [0, 0, 92004, 268791], '#d8c800'], ['2026', [0, 0, 0, 51488], '#0f7b3e']];
+  const W = 760, H = 230, ml = 10, mr = 150, mt = 14, mb = 22, hi = 2400000;
+  const s = svg('g2', W, H);
+  s.setAttribute('aria-label', 'Venta Ene-Oct por año de alta del cliente');
+  const y = v => mt + (1 - v / hi) * (H - mt - mb);
+  const bw = (W - ml - mr) / yrs.length;
+  yrs.forEach((yr, i) => {
+    const x = ml + i * bw + bw * 0.2, w = bw * 0.6; let base = 0;
+    C.forEach(c => { const v = c[1][i]; if (v <= 0) return; el('rect', { x, y: y(base + v), width: w, height: y(base) - y(base + v), fill: c[2] }, s);
+      if (v > 120000) el('text', { x: x + w / 2, y: y(base + v / 2) + 3.5, 'text-anchor': 'middle', 'font-size': 9.5, fill: c[2] === '#d8c800' ? '#111' : '#fff' }, s, f0(v / 1000) + ' mil');
+      base += v; });
+    el('text', { x: x + w / 2, y: y(base) - 4, 'text-anchor': 'middle', 'font-size': 10.5, 'font-weight': 700, fill: '#111' }, s, f0(base));
+    el('text', { x: x + w / 2, y: H - 6, 'text-anchor': 'middle', 'font-size': 10, fill: '#333' }, s, yr);
+  });
+  C.slice().reverse().forEach((c, i) => { el('rect', { x: W - mr + 20, y: mt + 10 + i * 20, width: 12, height: 12, fill: c[2] }, s); el('text', { x: W - mr + 38, y: mt + 20 + i * 20, 'font-size': 10, fill: '#333' }, s, 'Alta ' + c[0].toLowerCase()); });
+})();
+
+/* g3: cambio de frecuencia */
+(function () {
+  const R = [['Ganó visita', 173.2], ['Subió frecuencia', 22.5], ['Igual', -1.3], ['Pasó a/desde OTROS', 8.5], ['Bajó frecuencia', -13.6], ['Perdió visita', -28.7]];
+  const W = 760, rh = 26, H = R.length * rh + 10, lw = 140, cap = 60;
+  const s = svg('g3', W, H);
+  s.setAttribute('aria-label', 'Variación de venta según cambio de frecuencia de visita');
+  const x0 = 370, sc = (W - x0 - 70) / cap;
+  el('line', { x1: x0, x2: x0, y1: 0, y2: H - 6, stroke: '#999' }, s);
+  R.forEach((r, i) => {
+    const yy = i * rh + 4, v = r[1], vv = Math.max(-cap * 2, Math.min(cap, v));
+    el('text', { x: 0, y: yy + 13, 'font-size': 10.5, fill: '#111' }, s, r[0]);
+    const w = Math.abs(vv) * sc, x = vv >= 0 ? x0 : x0 - w;
+    el('rect', { x, y: yy, width: Math.max(1, w), height: rh - 9, fill: v >= 0 ? '#0f7b3e' : '#c62828' }, s);
+    if (v > cap) el('text', { x: x + w - 4, y: yy + 12, 'text-anchor': 'end', 'font-size': 9, fill: '#fff' }, s, '▸ recortada');
+    el('text', { x: vv >= 0 ? x + w + 5 : x - 5, y: yy + 12.5, 'text-anchor': vv >= 0 ? 'start' : 'end', 'font-size': 10.5, 'font-weight': 700, fill: v >= 0 ? '#0f7b3e' : '#c62828' }, s, (v >= 0 ? '+' : '−') + Math.abs(v).toFixed(1) + '%');
+  });
+})();
+</script>
+</body></html>

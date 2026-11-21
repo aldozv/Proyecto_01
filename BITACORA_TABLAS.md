@@ -69,6 +69,14 @@ aprox.). Para agregados de negocio normalmente se agrupa por `cliente_id`, `mate
 (desglosado en `descuento_canal`/`descuento_promocion`/`descuento_combo`), `nr`, `ptr`, `ptc`,
 `porte`, `vic`, `vlc`, `maco`, `subtotal`, `valor_venta`, `valor_neto`, `isc`, `igv`, `total`.
 Regla observada en la query original: `NR = GSI + EXCISE + DSCTO` (descuento ya viene en negativo).
+**MACO (validado con datos 2026-11-15, Oct'26 Centro Oriente):** `maco = nr + vic + vlc` cuadra exacto
+(`vic`/`vlc` vienen en negativo), sin nulos. Grano = el de `dm_venta` (linea de documento), asi que se
+abre por cualquier dimension (cliente, material/brandpack, gerencia, CD, canal, dia). Moneda: soles
+(misma que `nr`); los reportes globales (1YP) hablan de MACO en USD/HL, no comparar sin convertir.
+MACO/HL = `SUM(maco)/SUM(hl)` (no promediar ratios). Referencia Oct'26 Beer+Rtds CO: ~S/ 488/HL.
+
+**ALERTA `marca` (detectada 2026-11-04, GV Pucallpa):** `dm_venta.marca` viene NULL en el 100% de las filas de 2020-01 a 2023-12 (poblada desde 2024-01; validado en toda Centro Oriente). Usar `dm_material.marca` (join por `material_id`) en series multi-anio. Ojo: el filtro `NOT (v.estratificacion = 'Agua' AND v.marca = 'San Mateo')` evalua NULL con marca nula y **elimina TODA el Agua** de esos anios; escribir `COALESCE(m.marca,'') = 'San Mateo'`. Afecta Nabs 2020-2023 (no Beer+Rtds); `Query_CentroOriente_Historico_*` ya corregidas. Desde 2024 ambos filtros dan lo mismo en Agua, asi que las queries que arrancan en 2025 no cambian de resultado, pero las plantillas parametrizadas del skill `dashboard-gv-volumen` siguen con `v.marca`: no usarlas con `MES_DESDE` anterior a 2024. Ver `querys/Query_Pucallpa_Cubo_Mensual.sql`.
+**Agrupacion de marcas para reportes (usuario, 2026-11-10):** todas las variantes `Mikes H *` (sabores, mayus/minus) = **Mike's**; toda la familia `Cusqueña*` (Trigo, Malta, Negra, Cero Trigo, Quinua, etc.) = **Cusqueña**; `Corona Extra/Coronita/Cero/Tropical` = Corona; `Pilsen Fresh` + `Pilsen Callao Fresh` = Pilsen Fresh; `golden` = Golden (Licores); **Golden 6XX** = `620 RB` (hasta Jul'25) + `650 RB` (desde Abr'25), cambio de formato que se compara junto.
 
 **Metadata:** creada 2025-02-06, owner `gen_maz_pe_win053@gmodelo.com.mx`, formato Delta.
 
@@ -91,6 +99,12 @@ clasificacion actual, incluso para ventas historicas.
 centro/CD directamente, solo se obtiene via join a `dm_cliente`), `unidad_negocio_revenue_volumen_meta`
 (canal "meta", ver mapeo abajo).
 
+**Ojo con `centro_id` de los DAs (validado 2026-11-17):** el CD de un DA en `dm_cliente` es el que lo
+factura, no el de su zona. Ejemplo: en GV Tarapoto, `SJ97` (CD Pucallpa) concentra 45% del volumen
+Beer+Rtds YTD Oct'26 (297.6 mil HL), pero son solo **5 clientes canal `DAs`** de Jaén y San Ignacio
+(Cajamarca) y Utcubamba y Chachapoyas (Amazonas), todos con supervisor Raúl Delgado. Al cortar por CD,
+separar DAs de DSD; si no, los CD de reparto quedan subrepresentados.
+
 **Mapeo `unidad_negocio_revenue_volumen_meta` → canales PPM (validado con datos, gerencia
 Pucallpa):** este es el campo al que el usuario se refiere informalmente como "unidad_negocio_meta"
 para su clasificacion de canales. Valores observados y su equivalencia con la nomenclatura del rol
@@ -100,6 +114,20 @@ que maneja el usuario, volumen marginal). **No confundir con `dm_venta.unidad_ne
 (u `unidad_negocio`/`unidad_negocio_revenue`), que es un campo distinto con otro dominio de valores
 (`Off Premise`, `On Premise`, `Mayoristas y Eventos`, `Key Accounts`, `Consumidor`, `DAs`) — no sirve
 para este mapeo de canal.
+**Convencion de reporte (usuario, 2026-11-10):** `High End` se suma dentro de **DSD ON** al
+mostrar canales (queda en 6 canales: DAs, DSD OFF, Mayoristas, Eventos, DSD ON, KA). Campo de canal
+confirmado por el usuario (2026-11-10): `dm_cliente.unidad_negocio_revenue_volumen_meta` (vigente).
+**Apertura por CD en GV Iquitos y GV Tarapoto (usuario, 2026-11-10):** separar el canal DAs en lineas
+propias `DAS - CD <nombre>` (ej. `DAS - CD Iquitos`, `DAS - CD Pucallpa`); el resto de canales queda como
+`CD <nombre>`. Las demas GV se abren solo por CD. Query: `querys/Query_CentroOriente_Volumen_BeerRtds_Gerencia_CD_DAS_Mensual_2023_2026.sql`.
+
+**POCs compradores (2026-11-10):** cliente con `SUM(hl) > 0` en el periodo (Beer+Rtds,
+`indicadores_comerciales = 1`), agregando primero a grano cliente-periodo en `dm_venta`. Gerencia y canal salen de
+`dm_cliente` (vigentes), por eso los conteos son aditivos entre GV y canal. Mensual:
+`querys/Query_CentroOriente_POCs_BeerRtds_Gerencia_Canal_Mensual_2023_2026.sql`; distintos en el YTD Ene-Oct:
+`querys/Query_CentroOriente_POCs_BeerRtds_YTD_Gerencia_Canal_2023_2026.sql`. En DAs, KA y Eventos el "POC" es un
+codigo de distribuidor o cuenta: su variacion refleja consolidacion de codigos, no perdida de mercado. No es el KPI
+Cobertura por categoria (sigue pendiente de mapear).
 
 **Otros campos utiles para segmentacion/analisis:**
 - Jerarquia comercial **actual** del cliente: `direccion`, `director`, `gerencia`, `gerente`,
@@ -122,7 +150,86 @@ se reescriben retroactivamente, a diferencia de la reestructuracion de GV de ini
 generando saltos artificiales en series YoY. `dm_cliente` al ser una foto unica/vigente atribuye
 todo el historico del cliente a su gerencia actual de forma consistente.
 
+**`vendedor` vacio (confirmado 2026-11-04):** en la GV Pucallpa `dm_cliente.vendedor`, `vendedor_id` y `vendedor_nombre` no traen valor util en CD Pucallpa (DSD OFF, 2025-2026); `zona_venta` y `bees_segmento` tambien vienen vacios; el corte de jerarquia llega hasta `supervisor`.
+
+**`estado` y `fecha_baja` (validado con datos 2026-11-05, GV Pucallpa):** `estado` es INT: `1` = activo, `0` = inactivo. Inferido por compra real, no por definicion oficial: de 6,127 clientes con compra en `dm_venta` en oct'26, 6,121 tienen `estado = 1` y solo 6 tienen `estado = 0`. `fecha_baja` no sirve para identificar bajas: trae `1900-01-01` en todos los clientes de la GV, activos o no. `estado = 1` no implica compra reciente: solo ~50% de los activos compro en oct'26.
+
+**`fecha_alta` = fecha de creacion del codigo (validado con datos 2026-11-11, Centro Oriente):** viene
+llena en todos los clientes, sin nulos ni fechas dummy; va de `2009-04-21` (arranque del sistema, los
+codigos mas antiguos quedan con esa fecha) a ayer. Cuadra con la primera aparicion del codigo en
+`dm_hm_cliente`: de 25,431 codigos con alta entre may'23 y oct'26, el 97.5% aparece por primera vez
+en el mes de su `fecha_alta`, el 2.4% un mes antes (altas del dia 1-2 del mes siguiente que entraron
+en la foto anterior) y el 0.1% un mes despues. Usarla para identificar clientes nuevos por mes.
+
 **Metadata:** creada 2025-02-05, owner `gen_maz_pe_win053@gmodelo.com.mx`, formato Delta.
+
+---
+
+## `slv_maz_dataexperience_peru_dm.dm_hm_cliente` — Historico mensual del maestro de cliente
+
+**Que es (validado con `DESCRIBE TABLE EXTENDED` y datos, 2026-11-11):** fotos mensuales de
+`dm_cliente`, una fila por cliente por `mes` (string `YYYYMM`). Cubre `202210` a `202610`; no trae el
+mes en curso (`dm_cliente.mes` = `202611` al 11.11.26). Unas 1.1-1.3M filas por mes. Sin particion
+declarada, formato Delta, creada 2025-02-06, mismo owner que `dm_cliente`.
+
+**Esquema:** 112 columnas, mismas que `dm_cliente` salvo: solo aqui `fecha_carga` (null desde
+`202403`); solo en `dm_cliente` `cliente_id_central`, `club_b`, `kkaa_cadena_2`, `localidad`,
+`localidad_id`, `subcanal_regional`, `supervisor_desarrollo_id`, `supervisor_portfolio`,
+`via_pago_general`, `via_pago_sociedad`, `zona_transporte`, `zona_transporte_id`.
+
+**Ojo al usarla:**
+- **No se reescribe con la reestructuracion de GV.** `direccion = 'PE Dir Centro Orient'` existe solo
+  desde `202602`. Hasta `202601` la region estaba en `PE Dir Oriente` (~119K clientes) y la GV Huancayo
+  en `PE Dir Centro Sur`. Filtrar por la direccion actual devuelve 0 filas antes de feb'26.
+- **Sin filtro de `mes` apila todos los meses**: un cliente aparece una vez por mes.
+- **Duplicados en `202602`:** 32 clientes con 2-4 filas, algunos con 2 direcciones o gerencias.
+  Deduplicar antes de contar ese mes.
+- **Quiebre en `202505`:** pasa de 1.31M a 1.14M filas (depuracion del maestro), no es perdida real.
+- Cuadra con `dm_cliente`: Centro Oriente `202610` = 178,324 filas vs 178,360 en `dm_cliente`.
+- **La foto de cada mes es de cierre, tomada el dia 1-2 del mes siguiente.** Por eso algunas fotos
+  incluyen codigos creados el dia 1-2 del mes siguiente: `202609` trae 572 codigos de Centro Oriente con
+  alta del 01.10.26, `202403` trae 28 y `202306` trae 7. Las demas fotos (incluida `202512`) no traen
+  altas del mes siguiente. Para un corte exacto al ultimo dia, filtrar ademas `fecha_alta <= ultimo dia del mes`.
+
+- **`202210` a `202303` son la misma foto** (cargada el 05.04.23, misma cantidad de clientes por GV). Recien
+  desde `202304` hay fotos mensuales reales; no leer movimiento en ene-mar'23.
+- **GV Pucallpa historica:** hasta `202601` = `PE Ger P4 Pucallpa` (CD Pucallpa) + `PE Ger P4 Huánuc Tma`
+  (CD Huanuco y Tingo Maria); desde `202602` = `PE Ger P4 Pucall Hco`. El nombre del supervisor cambia de
+  formato en el tiempo (ej. "Trujillo Rubin, Cesar Jose" → "JOSE TRUJILLO"): agrupar por `supervisor_id`.
+- **Carga masiva oct'26 (GV Pucallpa):** ~1,380 codigos con alta 01.10.26, subcanal Particular, asignados
+  al supervisor "Promotor generico PEDLF6" (`supervisor_id` 8X); en la foto `202609` aparecen con los
+  supervisores reales. Solo 3 compraron al 11.11.26. Separarlos al medir crecimiento de cartera.
+- Queries de cartera mensual y flujos vs LM: `querys/Query_Pucallpa_Cartera_Mensual_CD_Supervisor.sql`,
+  `querys/Query_Pucallpa_Cartera_Flujos_vs_LM.sql`.
+- **Centro Oriente historico (confirmado por el usuario 2026-11-11):** hasta `202601` se arma con las gerencias
+  de entonces mapeadas a las 5 GV actuales: Huancay Ch = `PE Ger P3 Huancayo` (ex `PE Dir Centro Sur`) +
+  `PE Ger P4 Chanchamay`; Pucall Hco = `PE Ger P4 Pucallpa` + `PE Ger P4 Huánuc Tma`; Tarapoto e Iquitos con
+  su nombre; DA Jun Puc existe desde `202602`. Validado con cruce cliente a cliente ene'26 → feb'26.
+- **Excluir clientes de prueba/Marketplace a nivel cliente (usuario, 2026-11-11):** en feb'26 entraron a
+  Huancay Ch ~1,350 clientes MTKP Gloria desde `PE Ger P1 Lima Centr`, con supervisor "SUPERVISOR PRUEBA" y
+  CDs de todo el pais. En nov'26 parte de ellos se renombro a "Promotor generico PEDLF6", asi que filtrar por
+  nombre de supervisor del mes no alcanza: excluir en todo el historico a cualquier `cliente_id` que alguna vez
+  tuvo `subcanal LIKE 'MTKP%'` o supervisor `%PRUEBA%`.
+- **Promotores genericos en Centro Oriente (nov'26):** ~8 mil clientes (17.5% de la cartera), sobre todo altas
+  masivas set-oct'26 en Pucall Hco, Iquitos y Tarapoto, y ~2.6 mil clientes existentes reasignados en jun'26 en
+  Huancay Ch. Solo 2.7% compro ago-nov'26 vs 73.5% de clientes con supervisor. Sin ellos la cartera cae -1.4% vs LY.
+- **`frecuencia_visita` (validado 2026-11-11, Centro Oriente):** valores `Semanal`, `Quincenal` (con `q_visita`
+  Q1/Q2 = quincena), `Bisemanal` (2 veces por semana), `Mensual`, `OTROS` (aparece desde jun'26) y vacio = sin
+  visita asignada (todos los promotores genericos y las cuentas grandes: DAs, mayoristas, KA). Para comparar
+  intensidad se usa visitas/mes: Bisemanal 8, Semanal 4, Quincenal 2, Mensual 1, vacio 0. Analizar solo DSD
+  (OFF+ON) sin genericos. `frecuencia_b2p` es otro campo (no usado, significado sin confirmar).
+- **Recodificacion de cuentas grandes:** el cruce por `numero_documento` no detecta recodificaciones porque el
+  grupo cambia de RUC (ej. Iquitos: "Inversiones Bonanza del Oriente" dejo de comprar en 2026 y entro
+  "Grupo Bonanza SAC" con 3 codigos nuevos, ~34 vs ~37 mil HL). Revisar a mano los top clientes perdidos/nuevos.
+- Venta por cohorte y frecuencia (YTD Ene-Oct): `querys/Query_CentroOriente_Venta_Cartera_Cohorte_YTD.sql`,
+  `querys/Query_CentroOriente_Venta_Mensual_Cohorte_Alta.sql`, `querys/Query_CentroOriente_Frecuencia_Visita_Mensual_Venta.sql`,
+  `querys/Query_CentroOriente_Cambio_Frecuencia_Visita_vs_Venta.sql`, `querys/Query_CentroOriente_Top_Clientes_Perdidos_Nuevos_YTD.sql`,
+  `querys/Query_CentroOriente_Recodificacion_Clientes_YTD.sql`.
+- Queries regionales: `querys/Query_CentroOriente_Cartera_Mensual_GV_CD_Supervisor.sql`,
+  `querys/Query_CentroOriente_Cartera_Flujos_GV_vs_LM.sql`, `querys/Query_CentroOriente_Compra_Genericos_vs_Supervisor.sql`.
+
+**Uso:** solo para ver como estaba la cartera en un mes pasado. Para atribuir gerencia en reportes
+sigue la regla de `dm_cliente` (foto vigente).
 
 ---
 
@@ -169,6 +276,16 @@ manual esta al dia para este alcance. Cardinalidad manejable: 20-24 valores dist
 por gerencia (~22 en total). Revalidar esta cobertura si se corre para un periodo/alcance nuevo
 y aparece volumen relevante sin mapear.
 
+**Formato del valor de `pack`:** `<capacidad en ml><tipo de envase>`, ej. `355 CAN`, `473 CAN`,
+`269 CAN` (latas), `630 RB`/`620 RB`/`650 RB`/`305 RB`/`1000 RB` (retornable, botella de vidrio
+retornable), `330 NRB`/`310 NRB`/`305 NRB`/`355 NRB`/`210 NRB` (non-returnable, botella
+descartable). **Para filtrar solo LATAS: `r.pack LIKE '%CAN%'`** (validado 2026-09-10, Cervezas
+Centro Oriente Jun-Ago 2026: 3 valores de `pack` con `CAN`, todos exclusivamente latas — sin falsos
+positivos). Para "Brand Pack" (marca + formato) a nivel SKU-agregado, usar
+`CONCAT(marca, ' ', pack)` sobre `dm_venta.marca` + `revenue_maestro_sku.pack` (distinto del
+`brand_pack` de `dev_onep_fact_critical_items_summary_24h_brand_pack_gold`, que ya viene
+pre-armado con otra convención — ver esa tabla más abajo).
+
 **Metadata:** creada 2025-02-05, owner `gen_maz_pe_win053@gmodelo.com.mx`, formato Delta.
 
 **Campo `` `Agrupador (Tipo 2.0)` ``:** explorado 2026-09-03 (Centro Oriente, Beer+Rtds, YTD
@@ -183,6 +300,7 @@ en el futuro, no asumir que `` `Agrupador (Tipo 2.0)` `` alcanza solo — confir
 la fuente/logica exacta (podria ser una tabla o regla que RGM central arma aparte, no derivable
 solo de `revenue_maestro_sku`). Mientras tanto, los analisis de "categoria" en este proyecto usan
 la taxonomia propia ya validada: Beer/Rtds/Nabs por `estratificacion` (ver CLAUDE.md).
+**`SS x 24` (DSD ON, 2026-11-11):** en Centro Oriente son 3 SKUs retornables en caja de 24: Pilsen Callao 305 RB, Cristal 305 RB y Cusqueña 310 RB (Golden 305 RB solo tuvo 3 HL en 2023). `ms_ss` = 'SS' agrupa ademas latas, Corona, RTDs, GBs, SS x 6 y Cero. Queries: `querys/Query_CentroOriente_DSDON_*.sql`. **Ojo con `nr` de 2023:** en el agregado mensual DSD ON da NR/HL ~445 vs ~626-675 en 2024-2026; no comparar precio NR/HL de 2023 sin revisar la fuente.
 
 ---
 
@@ -233,6 +351,29 @@ agrupando por nombre, mismos clientes que "Por Cliente" en Volumen) — dejando 
 una fuente distinta y no oficial (el universo SELLIN completo de DA Jun Puc es ~365-y pico de
 `flag_brand_distro`/mes vs. ~30-37K del Total SELLOUT, no comparable ni sumable).
 
+**Resuelto (2026-09-08): sí existe una fuente con identidad de cliente para el SELLOUT de DA Jun
+Puc — no es esta tabla, es `dm_das_venta`/`dm_das_cliente` (ver seccion dedicada mas abajo).**
+Un query nuevo del usuario (`querys/Query_Brand_Distro_DAS.sql`) recalcula el flag de Brand
+Distribution desde el detalle transaccional de esa tabla, agregado a nivel **distribuidor**
+(`dm_das_cliente.sociedad`) — validado sumando los distribuidores contra el Total oficial de esta
+tabla (`pe_portfolio_hm_brand_distribution`, SELLOUT, DA Jun Puc): cuadra exacto en abr/may/jun'26
+y con diff <0.15% en jul/ago'26. El dashboard `da_jun_puc_dashboard.html` ya usa esta fuente para
+su segmento "Brand Distribution" (reemplazando el parche SELLIN anterior).
+
+**BD MTD (validado 2026-10-19):** cada fila con `flag_brand_distro = 1` cae en la `fecha_venta` de
+la **primera compra del mes** de esa combinacion cliente-material (la distribucion diaria del flag
+decrece a lo largo del mes, con casi nada en domingos). Por eso filtrar `fecha_venta` entre el dia 1
+y el dia -1 da directamente el Brand Distribution MTD comparable vs el mismo rango LY. Ver
+`querys/Query_Brand_Distribution_MTD_vs_LY_Detalle.sql`.
+
+**Carga detenida (detectado 2026-11-17):** la tabla llega solo hasta `fecha_venta` 22.10.26; no hay
+`mes = '202611'`. Para BD de meses sin carga, recalcular desde la venta: 1 punto por cliente-material
+con `sum(caja_fisica) > 0` en la ventana. SELLIN = `dm_venta` (`indicadores_comerciales = 1`) +
+`dm_cliente`; SELLOUT = `dm_das_venta` + `dm_das_cliente`. Validado en Nov 1-16 2025 vs esta tabla:
+SELLIN da +1% a +1.8% por GV (sesgo parejo, sirve para comparar vs LY con el mismo metodo); SELLOUT
+cuadra exacto. `dm_das_venta` llega con ~2-3 dias de rezago vs `dm_venta`: cortar SELLOUT en su
+ultima fecha cargada en ambos años. Query: `querys/Query_Brand_Distribution_Nov_MTD_vs_LY_Supervisor_BrandPack.sql`.
+
 **Llaves de join:** `material_id` → `pe_portfolio_material.material_id` (ver tabla siguiente —
 catalogo distinto).
 
@@ -248,6 +389,114 @@ investigar esto primero** — `flag_brand_distro` (la metrica de Brand Distribut
 afectado.
 
 **Metadata:** creada 2024-12-10, owner `lizbeth.leon@gmodelo.com.mx`, formato Delta, tabla EXTERNAL.
+
+---
+
+## `slv_maz_dataexperience_peru_dm.dm_das_venta` / `dm_das_cliente` — Venta y maestro de cliente del canal DAs
+
+**Que son:** par hecho/maestro **especifico del canal DAs** (Distribuidor Autorizado), separado de
+`dm_venta`/`dm_cliente`. Descubierto/documentado 2026-09-08 a partir de `querys/Query_Brand_
+Distro_DAS.sql` y `querys/Query_DAS_Sell_Out.sql` (ambos ya existentes en el proyecto). Mismo
+catalogo que `dm_venta` (`brewdat_uc_mazana_dev`), misma database `slv_maz_dataexperience_peru_dm`.
+
+**Por que existen aparte:** para gerencias de canal DAs (ej. `PE Ger P4 DA Jun Puc`), Backus no le
+vende directo al punto de venta (POC) final — le vende a un **distribuidor** (nuestro cliente
+directo, ej. "Dismar Cinco", "P & A Logistic S.A.C. - Huancayo"), y ese distribuidor revende a su
+propia red de POCs. `dm_das_venta`/`dm_das_cliente` reportan esa venta del **distribuidor a sus
+propios POCs** (el SELLOUT real de ese canal) — de ahi que sea la fuente detras del `tipo =
+'SELLOUT'` de `pe_portfolio_hm_brand_distribution` para estas gerencias.
+
+**Campos usados:** `dm_das_venta`: `mes`, `fecha_venta`, `direccion`, `gerencia`, `cliente_id`,
+`material_id`, `caja_fisica`, `hl`, `indicadores_comerciales`. `dm_das_cliente`: `cliente_id`,
+`sociedad` (razon social — **este es el nombre de nuestro distribuidor real**, ej. "Dismar Cinco
+Sociedad De Responsabilidad Limitada Huánuco"), `direccion`, `gerencia`, `zona_comisional`
+(codigo de ruta/zona del POC, ej. "PE05027").
+
+**GRANO CRITICO — `cliente_id` es el POC final, NO el distribuidor** (confirmado 2026-09-08,
+`PE Ger P4 DA Jun Puc`): un mismo distribuidor (`sociedad`) tiene **miles** de `cliente_id`
+distintos debajo — ej. "P & A Logistic S.A.C. - Huancayo" con 7,746 codigos, "Dismar Cinco" con
+4,722. **Nunca agregar/mostrar a nivel `cliente_id` sin agrupar por `sociedad` primero** — el
+grano fino es el punto de venta que el distribuidor abastece ("el cliente de nuestro cliente"),
+no algo que interese reportar en un dashboard de gerencia/distribuidor. Para Brand Distribution
+u otro KPI de venta de este canal, **agregar siempre por `sociedad`** (o, si hace falta mas
+detalle geografico, por `zona_comisional`, nunca por `cliente_id` suelto).
+**Impacto real:** una primera version de `Query_Brand_Distro_DAS.sql` que corria las window
+functions de Brand Distribution sin filtrar por distribuidor primero, y solo filtraba gerencia al
+final, escaneo el universo DAS completo a grano POC y exedio el limite de resultado inline de
+Databricks (26MB) — hubo que reescribir para filtrar `cliente_id` temprano (via subquery a
+`dm_das_cliente` por gerencia) y agregar el resultado final solo a nivel `sociedad`.
+
+**`gerencia` en `dm_das_cliente` es la jerarquia vigente del maestro de cliente** (mismo criterio
+que `dm_cliente.gerencia`, ver regla vigente en `CLAUDE.md` sobre usar el maestro de cliente y no
+el hecho de venta para gerencia) — filtrar por `dm_das_cliente.gerencia`, no por
+`dm_das_venta.gerencia`, para evitar el mismo problema de reasignaciones de cliente ya documentado
+para `dm_venta`/`dm_cliente`.
+
+**7 distribuidores confirmados en `PE Ger P4 DA Jun Puc`** (2026-09-08, por volumen de Brand
+Distribution SELLOUT descendente): P & A Logistic S.A.C. - Huancayo, Dismar Cinco Sociedad De
+Responsabilidad Limitada Huánuco, Transblanco J & M S.R.L, Inversiones Globales Olarte S.A.C.,
+Jhotogo Inversiones S.A.C., Representaciones e Inversiones Selva Oriente EIRL, Ucayali Beer
+(marginal, solo desde ago'26 — ver caso de reasignacion de gerencia de este mismo cliente en
+`CLAUDE.md`). Coincide en su mayoria con los distribuidores ya identificados via SELLIN en
+`dm_venta`/`dm_cliente` para "Por Cliente" en el dashboard de Volumen, aunque la razon social
+exacta puede variar levemente entre ambas fuentes (ej. "Inv. Globales Olarte" en `dm_cliente` vs.
+"Inversiones Globales Olarte S.A.C." en `dm_das_cliente`).
+
+**Otras notas de `Query_Brand_Distro_DAS.sql`:** el flag de Brand Distribution se recalcula desde
+cero (no viene precalculado como en `pe_portfolio_hm_brand_distribution`) con una logica de
+"primera venta neta positiva del mes por cliente-material" (acumulado que contempla notas de
+credito devolviendo el neto a cero y luego reactivandose). Usa `brand_category` de
+`pe_portfolio_material` (`'Megabrand'`, `'RTDs'`, `'Beer NO Megabrand'`) como filtro de alcance —
+taxonomia distinta a `estratificacion`, presumiblemente equivalente a "Beer+Rtds sin Marketplace/
+Nabs" pero no formalmente reconciliada campo a campo contra `estratificacion IN ('Cervezas',
+'Licores','Ready To Drink')` — si se necesita ese detalle, confirmar antes de asumir 1:1.
+
+**Para desglosar `dm_das_venta` por categoria (Beer/Rtds/Nabs), usar
+`pe_portfolio_material.estratificacion` (join por `material_id`), NO
+`revenue_material_agrupacion.grupo_id`** (confirmado 2026-09-08, construyendo "Por Cliente -
+Sell Out" en `da_jun_puc_dashboard.html`). `revenue_material_agrupacion` tiene **grano material x
+grupo** — un mismo `material_id` puede tener hasta 4 `grupo_id` distintos a la vez dentro del
+mismo mes (tags que se solapan, ej. un RTD esta simultaneamente en `'01'` Beer+Licores+RTD,
+`'53'` RTD y `'90'` SS+RTD) — filtrar con `grupo_id IN (...)` sobre varios tags a la vez
+**duplica volumen** por el join. Para un total combinado sin desglosar existe `grupo_id = '02'`
+("Beer + Licores + RTD + NABs", una sola fila por material, sin ese riesgo), pero no sirve para
+separar por categoria individual. `estratificacion` en cambio es un valor unico por material
+(mismo campo que se usa en el resto del proyecto), cobertura de join validada 100% (0 HL sin
+mapear) para el alcance DA Jun Puc 2025-2026. Query de referencia:
+`querys/Query_DAJunPuc_Cliente_SellOut_Mensual.sql`.
+
+**Metadata (DESCRIBE, 2026-11-11):** `dm_das_venta` tiene 43 columnas, entre ellas `razon_social`
+(= **distribuidor**, ~10 en CO) e `id_sucursal` (sucursal del distribuidor, ~27 en CO). Ambas son un
+grano seguro para reportar, a diferencia de `cliente_id` (POC final, ~16.6K/mes en CO). Tambien trae
+`canal_cliente`/`subcanal_cliente` del POC, `estratificacion`, `valor_neto`/`descuento`/`monto_soles`
+y los volumenes `caja_fisica`/`caja_equivalente`/`hl` (decimal(38,30)).
+- **Historia:** desde Ene'23. En CO aparecen **3 GV** con DAS (segun `dm_das_cliente.gerencia`):
+  DA Jun Puc, **Tarapoto** (Represent y Dist. del Norte + Dismar Cinco) e **Iquitos** (Inversiones
+  Bonanza del Oriente, **solo desde Jun'25**: su crecimiento YoY es incremental, no organico).
+- **`v.estratificacion` sirve para Beer+Rtds** (`IN ('Cervezas','Licores','Ready To Drink')`). Trae
+  ademas valores de Marketplace (`Licor MP`, `Sodas Marketplace`, `Comestibles`, etc.) que este
+  filtro ya excluye. Los nombres cambian de mayusculas entre años (`Licor MP`/`Licor Mp`).
+- **Join a `revenue_maestro_sku` por `material_id = sku`:** el `sku` es unico (1,340 filas), asi que
+  no duplica, y la cobertura es del 100% del volumen Beer+Rtds. El nombre `` `Agrupador (Tipo 2.0)` ``
+  requiere backticks.
+- **Subcanales reclasificados en 2026** (ej. `Pe Of Tr Bod  Barrio` → `BODEGA`): el subcanal no es
+  comparable con años previos, salvo los subcanales de `TERCEROS` (2025-2026). `canal_cliente` si es
+  comparable.
+- **No sumar con `dm_venta`:** el sell out DAS es la reventa del distribuidor de lo que ya le
+  facturamos (sell in). Sumar ambos cuenta dos veces el mismo volumen.
+- Queries curadas del informe de status DAS Sell Out (1YP 2027): `querys/Query_DAS_SellOut_*.sql`.
+- **Cruce sell in vs sell out (2026-11-11):** sell in = `dm_venta` a clientes con
+  `dm_cliente.unidad_negocio_revenue_volumen_meta = 'DAs'` (`querys/Query_DAS_SellIn_Mensual_Distribuidor.sql`).
+  Sell out = `querys/Query_DAS_SellOut_Mensual_Distribuidor.sql`. **No hay llave comun:** un DAS tiene
+  varios `cliente_id` en `dm_cliente` (ej. Dismar Huanuco 4 codigos, Bonanza 7+ con razones sociales
+  que cambian: "Inversiones Bonanza del Oriente", "Inversiones Bonanza Rio Amazonas", "Grupo Bonanza
+  S.A.C.") y el nombre difiere de `dm_das_venta.razon_social`. Se empareja **por nombre normalizado**.
+  Cuidado: `dm_cliente.nombre` puede traer comas ("Grupo Bonanza Sociedad Anonima Cerrada, Grupo
+  ..."), asi que no hay que parsear el resultado como CSV por coma.
+  - Resultado YTD Ene-Oct 2026: los 8 DAS con reporte completo cuadran al **99.8%**. Bonanza (Iquitos)
+    reporta solo el ~73% de su sell in. Ucayali Beer reporta sell out solo desde Ago'26. Hay **13 DAS
+    chicos** (en 5 GV, incluidas Huancay Ch y Pucall Hco) con sell in pero **sin** sell out en
+    `dm_das_venta` (~55 mil HL, ~7% del sell in DAS de CO).
 
 ---
 
@@ -309,7 +558,26 @@ select ... from delta.`/Volumes/brewdat_uc_mazana_dev/slv_maz_dataexperience_per
 - `pct_uptime_brand_pack` (double, 0-1) — % de tiempo disponible ("Uptime").
 - `hl_so_brand_pack` (double) — **volumen estimado perdido (HL) por el quiebre** — conecta el
   quiebre directo con venta perdida, muy relevante para el objetivo de acciones cuantificables.
-- `hl_pv_promedio_bp` (double) — promedio de HL/hora a nivel brand_pack (ultimos 6 meses).
+  **Formula confirmada empiricamente (2026-09-08, detalle diario de Cristal 650 RB en SJ91/Iquitos,
+  agosto 2026):** `hl_so_brand_pack = horas_oos_brand_pack * hl_pv_promedio_bp` — horas apagado ese
+  dia multiplicadas por la velocidad de venta promedio (HL/hora) de ese brand_pack en ese CD. Es una
+  **estimacion de demanda** ("lo que se habria vendido al ritmo habitual"), no venta perdida
+  contabilizada, y depende de un promedio movil de 6 meses que cambia dia a dia (dos dias con horas
+  OOS similares pueden dar HL perdido muy distinto). **Ojo:** no todos los dias del mes tienen fila
+  para cada combinacion CD×brand_pack (ej. ese caso solo tuvo 28 de 31 dias de agosto con registro) —
+  el % uptime se calcula sobre los dias con dato, no sobre el mes calendario completo.
+- `hl_pv_promedio_bp` (double) — promedio de HL/hora a nivel brand_pack (ultimos 6 meses), el
+  multiplicador usado en `hl_so_brand_pack` (ver arriba). **Denominador validado empiricamente
+  (2026-09-08):** son horas **calendario** del periodo (dias x 24h), no horas efectivamente
+  disponibles/sin quiebre. Validacion: HL real vendido de Cristal 650 (43 codigos SAP del mismo
+  producto) en clientes del CD SJ91/Iquitos, feb-jul 2026 via `dm_venta` = 108.238 HL en 181 dias
+  (4.344h calendario) => 108.238/4.344 ≈ 24,9 HL/hora, vs. promedio real de los 28 valores diarios
+  de `hl_pv_promedio_bp` en agosto 2026 de ese mismo brand_pack/CD ≈ 26,0 HL/hora (rango 7,2-57,7) —
+  coincide. (Intentar dividir por `horas_prendidas_brand_pack` de esta misma tabla NO cuadra: esa
+  tabla no tiene cobertura completa hacia atras, solo 456h de dato en 3 de los 6 meses previos.)
+  **Implicancia:** el promedio NO descuenta dias que el brand_pack ya estaba en quiebre en la
+  ventana de 6 meses -> si viene de quiebres sostenidos, el promedio (y por tanto `hl_so_brand_pack`)
+  puede subestimar la demanda real perdida.
 - `flag_preventa_dia` (int) — 1 si hubo preventa del brand_pack ese dia (ultimos 6 meses).
 - `max_length_of_time_days` (int) — maxima duracion de evento OOS en el grupo (dias).
 - `skus_en_quiebre` (bigint) — cantidad de SKUs distintos con evento OOS valido en el dia.
@@ -340,6 +608,36 @@ SKU Uptime. Esto confirma que el scope de `activo_en_cd=1` sigue siendo mas ampl
 oficial de SKUs que el equipo de Planning define a inicio de mes para medir el KPI (ver definicion
 en `CLAUDE.md` — ese listado sigue sin conseguirse, es un input externo mensual, no derivable de
 esta tabla sola). No reportar el ~41% como el KPI oficial de SKU Uptime sin esa aclaracion.
+
+**Ultimo dia del mes con corte parcial (confirmado 2026-10-07):** el ultimo dia calendario de cada
+mes trae `horas_disponibles` < 24 (31-ago: 17.04h; 30-set: 16.61h — este ultimo sigue asi 7 dias
+despues del cierre, o sea no se completa con el tiempo). **Hipotesis (no verificada con Data
+Engineering):** la corrida del dia siguiente completa d-1 dentro del mismo mes, pero para el ultimo
+dia del mes ya cae en otra particion y no lo completa. Evidencia a favor (2026-10-07): el dia en
+curso (07-oct) trae 11.53h por fila mientras que 01 a 06-oct vienen completos (24h). Consecuencia
+para MTD: el dia en curso siempre viene parcial -> cortar a d-1. Efecto: el maximo de
+`horas_disponibles_mes` por combinacion CD x brand_pack es
+`dias_operativos x 24 - ~7h`, no un multiplo exacto de 24 (ej. setiembre con 26 dias operativos:
+max 616.61h, no 624h). Es un sesgo menor y parejo entre meses; no invalida el % uptime ponderado.
+**Filas solo en dias con quiebre (validado 2026-11-10, `P.Callao 305 RB` en SJ90/SJ97, ago-oct'26):**
+a nivel CD x brand_pack la tabla trae fila **solo los dias con OOS > 0** (0 filas con `horas_oos = 0`).
+Por eso `sum(horas_prendidas)/sum(horas_disponibles)` de un solo brand_pack mide el uptime **de los
+dias con quiebre**, no del mes. Para el % del mes usar `horas_oos / (24 x dias operativos del mes)`.
+Query: `querys/Query_Pucallpa_Pilsen305x24_Venta_OOS_Mensual.sql`.
+**Historia y huecos (validado 2026-11-15):** hay datos todos los dias desde **Ene'25** para los 11 CDs
+de Centro Oriente (antes de 2025 no hay). Hueco: **SJ92/Moyobamba sin filas en Jun y Jul'26** (no es
+cero quiebre, es ausencia de dato; excluir esos CD-mes al comparar). **Falso positivo del join por
+prefijo:** `Cristalina 500 PET` (agua, `dm_material.estratificacion = 'Agua'`) entra por el prefijo de
+marca `Cristal` — excluir `brand_pack not ilike 'Cristalina%'`. Las variantes `Mikes Limon/Limón`,
+`Maracuya/Maracuyá`, `Arandanos/Arándano` son el mismo brand_pack con nombre cambiado en el tiempo.
+`skus_oos_list` son codigos SAP que cruzan con `dm_material.material_id` (sin ceros a la izquierda).
+Query del deep dive mensual Ene'25-Oct'26: `querys/Query_OOS_DeepDive_GV_CD_BrandPack_Mensual.sql`.
+**Cobertura por dia:** agosto (31/31) y setiembre (30/30) tienen filas todos los dias a nivel
+agregado de Centro Oriente (80-140 combinaciones por dia; domingos ~20% mas bajos). Queries por
+mes de la prueba de OOS: `querys/Query_OOS_Gerencia_CD_BrandPack_Agosto2026.sql`,
+`..._Setiembre2026.sql` y `..._Octubre2026_MTD.sql` (misma metodologia: domingos excluidos, SJ01 y
+BK31 fuera; octubre corta en d-1). Fuentes HTML de los dashboards en la raiz del proyecto:
+`radar_oos_setiembre.html` y `radar_oos_octubre_mtd.html` (el de agosto solo vive publicado).
 
 ---
 
@@ -740,3 +1038,15 @@ pasa de proyectado a real).
   las filas cliente x material que trae la tabla.
 - Nombre exacto del campo de cruce `pe_promo_adherenciadiaria` → `dm_combo` cuando
   `proyecto = 'combos_promos'` (no verificado con una consulta real todavia).
+
+## Notas 2026-11-13 (v6 ejecutiva PR 2026 & 1YP 2027)
+
+- **`dm_material.marca` de Pilsen Fresh:** los SKUs nuevos desde Ago'26 (23383, 23384, 23385, 23550) vienen con marca
+  `Pilsen Callao Fresh`, no `Pilsen Fresh`. Para sumar la marca completa usar `marca IN ('Pilsen Fresh','Pilsen Callao Fresh')`.
+  Con eso cuadra con la serie por brand pack del deck (1.40/1.42/1.29 mil HL en Ago/Set/Oct'26).
+- **Nolo** (definido por el usuario): `dm_material.marca IN ('Corona Cero','Cusqueña Cero Trigo')`. Existen tambien
+  `Pilsen Cero` y Cristal Cero (marca `Cristal (Peru)`), que el usuario no incluyo.
+- **Flying Fish:** `dm_material.marca = 'Flying Fish'`, estratificacion Cervezas, venta en CO desde Feb'26.
+- **`pe_portfolio_hm_brand_distribution`** tiene historia desde Ene'23 (no solo desde Ene'25) y acepta join a
+  `dm_material` por `material_id` para filtrar por marca. Queries: `querys/Query_Brand_Distribution_Oficial_*`,
+  `querys/Query_Expansion_PilsenFresh_Nolo_FlyingFish_*`.

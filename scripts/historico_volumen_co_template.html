@@ -1,0 +1,238 @@
+<meta charset="utf-8">
+<title>Histórico Volumen - CO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EEE9DC; --surface:#FFFFFF; --surface-2:#F7F3E8; --ink:#211C15; --ink-muted:#6E6656;
+    --accent:#B87A2A; --accent-strong:#8C5A17; --accent-soft:#B87A2A1a;
+    --positive:#2E7D4F; --negative:#B23C3C; --border:#DAD2BF; --border-strong:#C7BC9F;
+    --band:#EFE8D6; --band-2:#E6DDC6;
+    --ger-total:#3A332A; --ger-dajunpuc:#A6567E; --ger-huancay:#C1652E; --ger-iquitos:#3F8F5D; --ger-pucallpa:#3E6FA6; --ger-tarapoto:#AB8A2C;
+    --shadow: 0 1px 2px rgba(33,28,21,0.06), 0 8px 24px -12px rgba(33,28,21,0.18);
+    --font-display:'Fraunces', ui-serif, Georgia, serif;
+    --font-body:'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-mono:'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#16130E; --surface:#201B13; --surface-2:#241F16; --ink:#F1ECDF; --ink-muted:#A89C82;
+      --accent:#E7A94E; --accent-strong:#F2C078; --accent-soft:#E7A94E22;
+      --positive:#4FAE79; --negative:#E17272; --border:#3A3222; --border-strong:#4A4128;
+      --band:#2B2518; --band-2:#332C1C;
+      --ger-total:#D8D0BC; --ger-dajunpuc:#E28FB0; --ger-huancay:#F0925A; --ger-iquitos:#6FC694; --ger-pucallpa:#7FAEE0; --ger-tarapoto:#E0C066;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#16130E; --surface:#201B13; --surface-2:#241F16; --ink:#F1ECDF; --ink-muted:#A89C82;
+    --accent:#E7A94E; --accent-strong:#F2C078; --accent-soft:#E7A94E22;
+    --positive:#4FAE79; --negative:#E17272; --border:#3A3222; --border-strong:#4A4128;
+    --band:#2B2518; --band-2:#332C1C;
+    --ger-total:#D8D0BC; --ger-dajunpuc:#E28FB0; --ger-huancay:#F0925A; --ger-iquitos:#6FC694; --ger-pucallpa:#7FAEE0; --ger-tarapoto:#E0C066;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{ background:var(--bg); color:var(--ink); font-family:var(--font-body); font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+  .wrap{ max-width:1280px; margin:0 auto; padding:28px 20px 80px; display:flex; flex-direction:column; gap:22px; }
+  header.page{ display:flex; flex-direction:column; gap:6px; }
+  .eyebrow{ font-family:var(--font-mono); font-size:11px; letter-spacing:.09em; text-transform:uppercase; color:var(--accent-strong); font-weight:600; }
+  h1{ font-family:var(--font-display); font-weight:600; font-size:clamp(28px,4vw,38px); margin:0; text-wrap:balance; letter-spacing:-0.01em; }
+  .sub{ color:var(--ink-muted); font-size:14px; max-width:84ch; }
+  .sub b{ color:var(--ink); font-weight:600; }
+  .toolbar{ position:sticky; top:12px; z-index:20; display:flex; flex-wrap:wrap; gap:10px 18px; align-items:center; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:10px 14px; box-shadow:var(--shadow); }
+  .toolbar .label{ font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-muted); font-weight:600; margin-right:6px; }
+  .toolbar .grp{ display:flex; align-items:center; flex-wrap:wrap; gap:6px; }
+  .segset{ display:inline-flex; flex-wrap:wrap; gap:2px; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:3px; }
+  .segset button{ font-family:var(--font-body); font-weight:600; font-size:12.5px; border:none; background:transparent; color:var(--ink-muted); padding:6px 12px; border-radius:8px; cursor:pointer; transition:background .15s ease, color .15s ease; }
+  .segset button.active{ background:var(--accent); color:#1a1207; }
+  .segset button:not(.active):hover{ color:var(--ink); }
+  .segset.multi button.active::before{ content:"\2713\a0"; }
+  .segset.multi button:not(.active){ opacity:0.65; }
+  .segset .dot{ width:8px; height:8px; border-radius:50%; background:var(--dot, var(--ink-muted)); display:inline-block; margin-right:6px; vertical-align:middle; }
+  section.card{ background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:18px 18px 8px; box-shadow:var(--shadow); }
+  section.card > .head{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:4px; }
+  section.card h2{ font-family:var(--font-display); font-size:20px; font-weight:600; margin:0; }
+  section.card .meta{ font-size:12px; color:var(--ink-muted); }
+  section.card .note{ font-size:11.5px; color:var(--ink-muted); margin:6px 2px 12px; line-height:1.5; }
+  section.card .note b{ color:var(--ink); }
+  .tblwrap{ overflow:auto; border-radius:10px; border:1px solid var(--border); margin-bottom:14px; max-height:640px; }
+  table.data{ border-collapse:separate; border-spacing:0; font-family:var(--font-mono); font-size:12.5px; width:100%; }
+  table.data th, table.data td{ white-space:nowrap; }
+  table.data thead th{ position:sticky; top:0; z-index:3; background:var(--surface-2); color:var(--ink-muted); font-family:var(--font-body); font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:.05em; text-align:right; padding:9px 12px; border-bottom:1px solid var(--border-strong); }
+  table.data thead th.c1{ left:0; text-align:left; z-index:5; min-width:190px; }
+  table.data thead th.c2{ left:190px; text-align:left; z-index:5; min-width:64px; border-right:1px solid var(--border-strong); }
+  table.data thead th.tot{ background:var(--band-2); color:var(--ink); }
+  table.data thead th .badge{ display:block; font-family:var(--font-mono); font-weight:600; color:var(--accent-strong); font-size:9.5px; margin-top:2px; text-transform:none; letter-spacing:0; }
+  table.data tbody td{ text-align:right; padding:7px 12px; border-bottom:1px solid var(--border); font-variant-numeric:tabular-nums; }
+  table.data tbody td.c1{ position:sticky; left:0; z-index:2; background:var(--surface); text-align:left; font-family:var(--font-body); font-weight:600; min-width:190px; vertical-align:top; }
+  table.data tbody td.c2{ position:sticky; left:190px; z-index:2; background:var(--surface); text-align:left; font-family:var(--font-body); font-weight:600; color:var(--ink-muted); border-right:1px solid var(--border); min-width:64px; }
+  table.data tbody td.tot{ background:var(--band); font-weight:600; border-left:1px solid var(--border-strong); }
+  table.data tbody tr.first td{ border-top:2px solid var(--border-strong); }
+  table.data tbody tr.grp-total td.c1, table.data tbody tr.grp-total td.c2{ background:var(--surface-2); }
+  table.data tbody tr.grp-total td:not(.c1):not(.c2):not(.tot){ background:var(--surface-2); }
+  table.data tbody tr.grp-total td.tot{ background:var(--band-2); }
+  table.data tbody tr:last-child td{ border-bottom:none; }
+  table.data tbody tr:hover td:not(.c1):not(.c2){ background:var(--accent-soft); }
+  .cell-val{ display:block; }
+  .cell-delta{ display:block; font-size:10.5px; margin-top:1px; }
+  .pos{ color:var(--positive); } .neg{ color:var(--negative); } .flat{ color:var(--ink-muted); }
+  .empty{ color:var(--ink-muted); opacity:.5; }
+  footer.page{ font-size:11.5px; color:var(--ink-muted); text-align:center; padding:10px 0 0; }
+</style>
+
+<div class="wrap">
+  <header class="page">
+    <span class="eyebrow">{{EYEBROW}}</span>
+    <h1 id="page-title">Histórico de volumen desde 2020</h1>
+    <p class="sub">Volumen (<b>HL</b>) mes a mes desde <b>enero 2020</b> hasta hoy: <b>meses en columnas</b>, <b>CD y año en filas</b>, con el crecimiento % de <b>2026 vs el año de cada fila</b> (mismo mes) debajo de cada valor: en la fila 2021 es 2026 vs 2021, en la 2022 es 2026 vs 2022, y así. {{PICK_TEXT}}</p>
+  </header>
+
+  <div class="toolbar">
+    <div class="grp"><span class="label">Gerencia</span><div class="segset" id="seg-ger"></div></div>
+    <div class="grp" style="flex-basis:100%"><span class="label">CD</span><div class="segset" id="seg-cd"></div></div>
+    <div class="grp"><span class="label">Categoría</span>
+      <div class="segset multi" id="seg-cat">
+        <button data-v="Beer" class="active">Beer</button>
+        <button data-v="Rtds" class="active">Rtds</button>
+        <button data-v="Nabs">Nabs</button>
+      </div>
+    </div>
+    <div class="grp"><span class="label">Desde</span><div class="segset" id="seg-from"></div></div>
+  </div>
+
+  <section class="card">
+    <div class="head"><h2>Por gerencia</h2><span class="meta" id="meta-ger"></span></div>
+    <p class="note">Gerencia según la ficha <b>vigente</b> del cliente (<code>dm_cliente</code>): todo el histórico de un cliente se atribuye a su gerencia actual, así un cambio de gerencia no genera saltos artificiales entre meses.</p>
+    <div class="tblwrap"><table class="data" id="tbl-ger"></table></div>
+  </section>
+
+  <section class="card">
+    <div class="head"><h2>Por Centro de Distribución (CD)</h2><span class="meta" id="meta-cd"></span></div>
+    <p class="note">{{CD_NOTE}}</p>
+    <div class="tblwrap"><table class="data" id="tbl-cd"></table></div>
+  </section>
+
+  <footer class="page">
+    Fuente: <span style="font-family:var(--font-mono)">dm_venta</span> &times; <span style="font-family:var(--font-mono)">dm_cliente</span>, <span style="font-family:var(--font-mono)">indicadores_comerciales=1</span>. Beer = Cervezas + Licores &middot; Rtds = Ready To Drink &middot; Nabs = Gaseosas + Agua + Maltas (sin San Mateo). Por defecto Beer + Rtds. {{SCOPE_NOTE}} <b>YTD</b> = enero a mes cerrado, igual para todos los años, para que el crecimiento sea comparable.
+  </footer>
+</div>
+
+<script>
+const DATA = {{DATA}};
+const LATEST_PARTIAL = {{PARTIAL}};
+const MES = ["","Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Set","Oct","Nov","Dic"];
+const CATS = ["Beer","Rtds","Nabs"];
+const GCOLOR = {"PE Ger P4 DA Jun Puc":"var(--ger-dajunpuc)","PE Ger P4 Huancay Ch":"var(--ger-huancay)","PE Ger P4 Iquitos":"var(--ger-iquitos)","PE Ger P4 Pucall Hco":"var(--ger-pucallpa)","PE Ger P4 Tarapoto":"var(--ger-tarapoto)"};
+const months = DATA.months, N = months.length;
+const [LAST_Y, LAST_M] = months[N-1];
+const YTD_M = LATEST_PARTIAL ? LAST_M-1 : LAST_M;
+const YEARS = [...new Set(months.map(m=>m[0]))];
+const SINGLE = DATA.ger.length===1;
+const state = { ger:SINGLE?DATA.ger[0].code:"ALL", cd:"ALL", cats:new Set(["Beer","Rtds"]), from:YEARS[0] };
+// gerencia dominante de cada CD (solo para el color del punto del filtro; mismo criterio que el Dashboard Volumen - CO)
+const CD_DOM = {"CD Huancayo":"PE Ger P4 Huancay Ch","CD Huancavelica":"PE Ger P4 Huancay Ch","CD Chanchamayo":"PE Ger P4 Huancay Ch","CD Satipo":"PE Ger P4 Huancay Ch","CD Iquitos":"PE Ger P4 Iquitos","CD Pucallpa":"PE Ger P4 Pucall Hco","CD Huánuco":"PE Ger P4 Pucall Hco","CD Tingo María":"PE Ger P4 Pucall Hco","CD Tarapoto":"PE Ger P4 Tarapoto","CD Yurimaguas":"PE Ger P4 Tarapoto","CD Moyobamba":"PE Ger P4 Tarapoto","CD San Benedicto I (Ate)":"PE Ger P4 Tarapoto","CD Motupe":"PE Ger P4 Tarapoto","CD Chiclayo":"PE Ger P4 Tarapoto"};
+
+const fmt = v => Math.round(v).toLocaleString("en-US");
+const pct = v => v>999 ? ">+999%" : (v>0?"+":"") + v.toFixed(1) + "%";
+const cls = v => v>0.05?"pos":v<-0.05?"neg":"flat";
+const idxOf = (y,m) => months.findIndex(x=>x[0]===y&&x[1]===m);
+const gerCodes = () => state.ger==="ALL" ? DATA.ger.map(g=>g.code) : [state.ger];
+
+// serie mensual (N) sumando las categorias activas, para una lista de pares [gerencia, cd]
+function serie(pairs){
+  const a = new Array(N).fill(0);
+  for(const [g,cd] of pairs){
+    const cell = (DATA.d[g]||{})[cd]; if(!cell) continue;
+    for(const c of state.cats){ const s = cell[c]; if(!s) continue; for(let i=0;i<N;i++) a[i]+=s[i]; }
+  }
+  return a;
+}
+
+// groups = [{label, a(serie)}]; una fila por (grupo, anio), meses en columnas.
+// Crecimiento de CADA fila = LAST_Y (2026) vs el anio de esa fila, mismo mes (fila 2021: 2026 vs 2021).
+function renderTable(el, groups, corner){
+  const years = YEARS.filter(y=>y>=state.from);
+  let head = `<thead><tr><th class="c1">${corner}</th><th class="c2">Año</th>`;
+  for(let m=1;m<=12;m++) head += `<th>${MES[m]}</th>`;
+  head += `<th class="tot">Total año<span class="badge">año completo</span></th><th class="tot">YTD<span class="badge">Ene&ndash;${MES[YTD_M]}</span></th></tr></thead>`;
+  const ytdOf = (a,y) => { let t=0; for(let m=1;m<=YTD_M;m++){ const i=idxOf(y,m); if(i>=0) t+=a[i]; } return t; };
+  const blank = '<span class="cell-delta flat">&nbsp;</span>';
+  const growth = (cur, base) => { if(!(base>0)) return blank; const g=(cur/base-1)*100; return `<span class="cell-delta ${cls(g)}">${pct(g)}</span>`; };
+  let body = "";
+  groups.forEach(gr=>{
+    years.forEach((y,yi)=>{
+      body += `<tr class="${yi===0?'first':''}${gr.total?' grp-total':''}">`;
+      if(yi===0) body += `<td class="c1" rowspan="${years.length}">${gr.label}</td>`;
+      body += `<td class="c2">${y}</td>`;
+      for(let m=1;m<=12;m++){
+        const i = idxOf(y,m);
+        if(i<0){ body += `<td class="empty">&ndash;</td>`; continue; }
+        const cur = gr.a[i];
+        let dl = blank;
+        if(y===LAST_Y){ if(LATEST_PARTIAL && m===LAST_M) dl = '<span class="cell-delta flat">parcial</span>'; }
+        else { const j = idxOf(LAST_Y,m); if(j>=0 && !(LATEST_PARTIAL && m===LAST_M)) dl = growth(gr.a[j], cur); }
+        body += `<td><span class="cell-val">${fmt(cur)}</span>${dl}</td>`;
+      }
+      // Total año (anio completo) -- el anio en curso aun no cierra
+      if(y===LAST_Y) body += `<td class="tot empty">&ndash;</td>`;
+      else { let t=0; for(let m=1;m<=12;m++) t+=gr.a[idxOf(y,m)]; body += `<td class="tot"><span class="cell-val">${fmt(t)}</span>${blank}</td>`; }
+      // YTD (Ene..mes cerrado), comparable entre anios
+      const yt = ytdOf(gr.a,y);
+      body += `<td class="tot"><span class="cell-val">${fmt(yt)}</span>${y===LAST_Y?blank:growth(ytdOf(gr.a,LAST_Y), yt)}</td></tr>`;
+    });
+  });
+  el.innerHTML = head + "<tbody>" + body + "</tbody>";
+}
+
+const NZ = a => a.some(v=>Math.abs(v)>0.05);
+// CD con volumen para la(s) gerencia(s) elegida(s) y las categorias activas -> opciones del filtro CD
+function cdAvailable(gcs){ return DATA.cd.filter(cd=>NZ(serie(gcs.map(code=>[code,cd])))); }
+function rebuildCdFilter(avail){
+  document.getElementById("seg-cd").innerHTML =
+    `<button data-v="ALL" style="--dot:var(--ger-total)"><span class="dot"></span>Todos los CD</button>` +
+    avail.map(cd=>`<button data-v="${cd}" style="--dot:${CD_DOM[cd]?GCOLOR[CD_DOM[cd]]:'var(--ink-muted)'}"><span class="dot"></span>${cd}</button>`).join("");
+}
+
+function render(){
+  const gcs = gerCodes();
+  const avail = cdAvailable(gcs);
+  if(state.cd!=="ALL" && !avail.includes(state.cd)) state.cd = "ALL";   // el CD elegido ya no pertenece a la gerencia
+  rebuildCdFilter(avail);
+  const cdList = state.cd==="ALL" ? DATA.cd : [state.cd];
+  const gGroups = gcs.map(code=>({ label: DATA.ger.find(g=>g.code===code).label, a: serie(cdList.map(cd=>[code,cd])) })).filter(g=>NZ(g.a));
+  const total = serie(gcs.flatMap(code=>cdList.map(cd=>[code,cd])));
+  if(gGroups.length>1) gGroups.push({label:"Total", a:total, total:true});
+  renderTable(document.getElementById("tbl-ger"), gGroups, "Gerencia");
+  const cdGroups = cdList.map(cd=>({label:cd, a: serie(gcs.map(code=>[code,cd]))})).filter(g=>NZ(g.a));
+  if(cdGroups.length>1) cdGroups.push({label:"Total", a:total, total:true});
+  renderTable(document.getElementById("tbl-cd"), cdGroups, "CD");
+  const gl = state.ger==="ALL" ? "Total Dirección" : DATA.ger.find(g=>g.code===state.ger).label;
+  const scope = state.cd==="ALL" ? gl : `${gl} · ${state.cd}`;
+  const meta = `${scope} &middot; ${CATS.filter(c=>state.cats.has(c)).join(" + ")} &middot; Ene'${String(months[0][0]).slice(2)}–${MES[LAST_M]}'${String(LAST_Y).slice(2)}${LATEST_PARTIAL?" (último mes parcial)":""} &middot; HL`;
+  document.getElementById("meta-ger").innerHTML = meta;
+  document.getElementById("meta-cd").innerHTML = meta;
+  document.querySelectorAll("#seg-ger button").forEach(b=>b.classList.toggle("active", b.dataset.v===state.ger));
+  document.querySelectorAll("#seg-cd button").forEach(b=>b.classList.toggle("active", b.dataset.v===state.cd));
+  document.querySelectorAll("#seg-cat button").forEach(b=>b.classList.toggle("active", state.cats.has(b.dataset.v)));
+  document.querySelectorAll("#seg-from button").forEach(b=>b.classList.toggle("active", +b.dataset.v===state.from));
+  document.getElementById("page-title").textContent = (state.ger==="ALL" && state.cd==="ALL") ? "Histórico de volumen desde 2020" : `Histórico de volumen — ${scope}`;
+}
+
+document.getElementById("seg-ger").innerHTML =
+  `<button data-v="ALL" style="--dot:var(--ger-total)"><span class="dot"></span>Total Dirección</button>` +
+  DATA.ger.map(g=>`<button data-v="${g.code}" style="--dot:${GCOLOR[g.code]||'var(--ink-muted)'}"><span class="dot"></span>${g.label}</button>`).join("");
+document.getElementById("seg-from").innerHTML = YEARS.filter(y=>y<LAST_Y).map(y=>`<button data-v="${y}">${y}</button>`).join("");
+document.getElementById("seg-ger").addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return; state.ger=b.dataset.v; render(); });
+document.getElementById("seg-cd").addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return; state.cd=b.dataset.v; render(); });
+document.getElementById("seg-cat").addEventListener("click", e=>{
+  const b=e.target.closest("button"); if(!b) return; const v=b.dataset.v;
+  if(state.cats.has(v)){ if(state.cats.size>1) state.cats.delete(v); } else state.cats.add(v);
+  render();
+});
+document.getElementById("seg-from").addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return; state.from=+b.dataset.v; render(); });
+if(SINGLE){ document.getElementById("seg-ger").parentElement.style.display="none"; }
+render();
+</script>
