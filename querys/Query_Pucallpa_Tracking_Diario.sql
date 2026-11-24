@@ -1,24 +1,29 @@
+-- Tracking diario GV Pucallpa, modelo ALZ 4.0 con nombres de campo nativos (sin alias antiguos).
+-- FACT: pe_invoice | PLAN: pe_planned_order | cliente: pe_customer | material: pe_product.
+-- PV D+1 (dm_preventa_flash_actual_fe), PV FUT (dm_preventa) y revenue_maestro_sku siguen en el modelo anterior.
+-- Columnas de salida iguales a Query_Pucallpa_Tracking_Diario.sql.
+
 /*VENTA FACTURADA MTD*/
 (
 SELECT
-b.cliente_id as codigo,
-b.nombre,
-b.gerencia,
-b.centro,
+b.customer_short_code as codigo,
+b.customer_name as nombre,
+b.sales_region_name as gerencia,
+b.distribution_center_name as centro,
 CASE
-WHEN b.unidad_negocio_revenue_volumen_meta in ('DSD OFF') then 'DSD OFF'
-WHEN b.unidad_negocio_revenue_volumen_meta in ('DSD ON','High End') then 'DSD ON'
-WHEN b.unidad_negocio_revenue_volumen_meta in ('Mayoristas') then 'WHL'
-WHEN b.unidad_negocio_revenue_volumen_meta in ('Eventos') then 'EVE'
-WHEN b.unidad_negocio_revenue_volumen_meta in ('C&C','SMK','TCs','Key Accounts') then 'KA'
-WHEN b.unidad_negocio_revenue_volumen_meta in ('DAs') then 'DAS'
-WHEN unidad_negocio_revenue_volumen_meta is null then 'DSD OFF'
-ELSE unidad_negocio_revenue_volumen_meta
+WHEN b.business_unit_target_volume in ('DSD OFF') then 'DSD OFF'
+WHEN b.business_unit_target_volume in ('DSD ON','High End') then 'DSD ON'
+WHEN b.business_unit_target_volume in ('Mayoristas') then 'WHL'
+WHEN b.business_unit_target_volume in ('Eventos') then 'EVE'
+WHEN b.business_unit_target_volume in ('C&C','SMK','TCs','Key Accounts') then 'KA'
+WHEN b.business_unit_target_volume in ('DAs') then 'DAS'
+WHEN b.business_unit_target_volume is null then 'DSD OFF'
+ELSE b.business_unit_target_volume
 END AS canal_grupo,
-b.unidad_negocio_revenue_1yp as unidad_negocio_1yp,
-b.unidad_negocio_revenue_volumen_meta as unidad_negocio_meta,
-b.supervisor,
-b.zona_comisional,
+b.business_unit_one_year_plan as unidad_negocio_1yp,
+b.business_unit_target_volume as unidad_negocio_meta,
+b.sales_subregion_name as supervisor,
+b.sales_zone_comission_code as zona_comisional,
 
 CASE
 WHEN d.categoria in ('Cervezas','Licores') then 'BEER'
@@ -35,33 +40,33 @@ d.pack,
 d.pack_xxx,
 d.sku,
 d.`Agrupador (Sku)`,
-c.nombre as nombre_sku,
+c.product_name as nombre_sku,
 d.ms_ss,
 d.kpi_premium as premium,
-a.fecha_preventa_flujo1 as fecha_preventa,
-a.fecha_venta as fecha_entrega,
-sum(a.hl) as HL,
-sum(a.caja_equivalente) as CE,
+a.order_date as fecha_preventa,
+a.invoice_date as fecha_entrega,
+sum(a.sales_volume_official) as HL,
+sum(a.sales_volume_official)*13.4408602150538 as CE,
 --Caja fisica por SKU: HL x 100000 / (ml por unidad x unidades por caja). Misma formula en los 4 tipos
-CAST(ROUND(SUM(a.hl*100000/NULLIF(c.volumen*c.unidades_caja,0)),0) AS BIGINT) as CF,
+CAST(ROUND(SUM(a.sales_volume_official*100000/NULLIF(c.base_uom_volume*c.base_uom_quantity,0)),0) AS BIGINT) as CF,
 DATEADD(hour, -5, CURRENT_TIMESTAMP()) as hora_corte,
 'FACT' as TIPO,
-a.numero_venta
+a.invoice_number as numero_venta
 
-FROM slv_maz_dataexperience_peru_dm.dm_venta a
-LEFT JOIN slv_maz_dataexperience_peru_dm.dm_cliente b on b.cliente_id = a.cliente_id
-LEFT JOIN slv_maz_dataexperience_peru_dm.dm_material c on c.material_id = a.material_id
-LEFT JOIN slv_maz_dataexperience_peru_revenue.revenue_maestro_sku d on d.sku = a.material_id
+FROM brewdat_uc_delta_maz_prod.gld_maz_sales_sell_in.pe_invoice a
+LEFT JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer b on b.customer_short_code = a.sold_to_customer_short_code
+LEFT JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_product c on c.product_short_code = a.product_short_code
+LEFT JOIN brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_revenue.revenue_maestro_sku d on d.sku = a.product_short_code
 
-WHERE b.direccion in ('PE Dir Centro Orient')
-AND b.gerencia IN ('PE Ger P4 Pucall Hco')
+WHERE b.sales_area_name in ('PE Dir Centro Orient')
+AND b.sales_region_name IN ('PE Ger P4 Pucall Hco')
 AND d.categoria IN ('Cervezas', 'Licores','Ready to drink','Gaseosas','Agua','Maltas')
 --AND d.categoria IN ('Cervezas', 'Licores','Ready to drink')
 --Mes en curso, a hora de Lima
-AND a.mes = DATE_FORMAT(CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE), "yyyyMM")
-AND a.indicadores_comerciales= 1
+AND cast(a.__partition_column as string) = DATE_FORMAT(CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE), "yyyyMM")
+AND a.invoice_commercial_flag = 1
 --Hasta ayer: lo de hoy esta en PLAN
-AND a.fecha_venta < CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE)
+AND a.invoice_date < CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE)
 GROUP BY ALL
 )
 UNION ALL
@@ -69,24 +74,24 @@ UNION ALL
 /*PLAN ENTREGA DE HOY*/
 (
 SELECT
-b.cliente_id as codigo,
-b.nombre,
-b.gerencia,
-b.centro,
+b.customer_short_code as codigo,
+b.customer_name as nombre,
+b.sales_region_name as gerencia,
+b.distribution_center_name as centro,
 CASE
-WHEN b.unidad_negocio_revenue_volumen_meta in ('DSD OFF') then 'DSD OFF'
-WHEN b.unidad_negocio_revenue_volumen_meta in ('DSD ON','High End') then 'DSD ON'
-WHEN b.unidad_negocio_revenue_volumen_meta in ('Mayoristas') then 'WHL'
-WHEN b.unidad_negocio_revenue_volumen_meta in ('Eventos') then 'EVE'
-WHEN b.unidad_negocio_revenue_volumen_meta in ('C&C','SMK','TCs','Key Accounts') then 'KA'
-WHEN b.unidad_negocio_revenue_volumen_meta in ('DAs') then 'DAS'
-WHEN unidad_negocio_revenue_volumen_meta is null then 'DSD OFF'
-ELSE unidad_negocio_revenue_volumen_meta
+WHEN b.business_unit_target_volume in ('DSD OFF') then 'DSD OFF'
+WHEN b.business_unit_target_volume in ('DSD ON','High End') then 'DSD ON'
+WHEN b.business_unit_target_volume in ('Mayoristas') then 'WHL'
+WHEN b.business_unit_target_volume in ('Eventos') then 'EVE'
+WHEN b.business_unit_target_volume in ('C&C','SMK','TCs','Key Accounts') then 'KA'
+WHEN b.business_unit_target_volume in ('DAs') then 'DAS'
+WHEN b.business_unit_target_volume is null then 'DSD OFF'
+ELSE b.business_unit_target_volume
 END AS canal_grupo,
-b.unidad_negocio_revenue_1yp as unidad_negocio_1yp,
-b.unidad_negocio_revenue_volumen_meta as unidad_negocio_meta,
-b.supervisor,
-b.zona_comisional,
+b.business_unit_one_year_plan as unidad_negocio_1yp,
+b.business_unit_target_volume as unidad_negocio_meta,
+b.sales_subregion_name as supervisor,
+b.sales_zone_comission_code as zona_comisional,
 
 CASE
 WHEN d.categoria in ('Cervezas','Licores') then 'BEER'
@@ -103,31 +108,29 @@ d.pack,
 d.pack_xxx,
 d.sku,
 d.`Agrupador (Sku)`,
-c.nombre as nombre_sku,
+c.product_name as nombre_sku,
 d.ms_ss,
 d.kpi_premium as premium,
-a.FechaCreacionPedido as fecha_creacion,
-a.FechaPlan as fecha_entrega,
-sum(HLPlaneado) as HL,
-sum(HLPlaneado)*13.4408602150538 as CE,
-CAST(ROUND(SUM(HLPlaneado*100000/NULLIF(c.volumen*c.unidades_caja,0)),0) AS BIGINT) as CF,
+a.order_creation_date as fecha_creacion,
+a.planned_delivery_date as fecha_entrega,
+sum(a.planned_volume_hl) as HL,
+sum(a.planned_volume_hl)*13.4408602150538 as CE,
+CAST(ROUND(SUM(a.planned_volume_hl*100000/NULLIF(c.base_uom_volume*c.base_uom_quantity,0)),0) AS BIGINT) as CF,
 DATEADD(hour, -5, CURRENT_TIMESTAMP()) as hora_corte,
 'PLAN' as TIPO,
-a.NumeroPedido
+a.order_number as NumeroPedido
 
-FROM slv_maz_dataexperience_peru_revenue.revenue_h_pv_planeada a
-LEFT JOIN slv_maz_dataexperience_peru_dm.dm_cliente b on b.cliente_id = a.codcliente
-LEFT JOIN slv_maz_dataexperience_peru_dm.dm_material c on c.material_id = a.sku
-LEFT JOIN slv_maz_dataexperience_peru_revenue.revenue_maestro_sku d on d.sku = a.sku
+FROM brewdat_uc_maz_prod.gld_maz_sales_order.pe_planned_order a
+LEFT JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer b on b.customer_short_code = a.customer_short_code
+LEFT JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_product c on c.product_short_code = a.product_short_code
+LEFT JOIN brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_revenue.revenue_maestro_sku d on d.sku = a.product_short_code
 
-WHERE b.direccion in ('PE Dir Centro Orient')
-AND b.gerencia IN ('PE Ger P4 Pucall Hco')
+WHERE b.sales_area_name in ('PE Dir Centro Orient')
+AND b.sales_region_name IN ('PE Ger P4 Pucall Hco')
 AND d.categoria IN ('Cervezas', 'Licores','Ready to drink','Gaseosas','Agua','Maltas')
 --AND d.categoria IN ('Cervezas', 'Licores','Ready to drink')
-AND a.FechaPlan = CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE)
-AND b.cliente_id > 10000000
---AND a.FechaPlan = DATE_SUB(CAST(GETDATE() AS DATE), 0) /*fecha de hoy*/
-
+AND a.planned_delivery_date = CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE)
+AND b.customer_short_code > 10000000
 GROUP BY ALL
 )
 UNION ALL
@@ -135,24 +138,24 @@ UNION ALL
 /*PREVENTA D+1*/
 (
 SELECT
-b.cliente_id as codigo,
-b.nombre,
-b.gerencia,
-b.centro,
+b.customer_short_code as codigo,
+b.customer_name as nombre,
+b.sales_region_name as gerencia,
+b.distribution_center_name as centro,
 CASE
-WHEN b.unidad_negocio_revenue_volumen_meta in ('DSD OFF') then 'DSD OFF'
-WHEN b.unidad_negocio_revenue_volumen_meta in ('DSD ON','High End') then 'DSD ON'
-WHEN b.unidad_negocio_revenue_volumen_meta in ('Mayoristas') then 'WHL'
-WHEN b.unidad_negocio_revenue_volumen_meta in ('Eventos') then 'EVE'
-WHEN b.unidad_negocio_revenue_volumen_meta in ('C&C','SMK','TCs','Key Accounts') then 'KA'
-WHEN b.unidad_negocio_revenue_volumen_meta in ('DAs') then 'DAS'
-WHEN unidad_negocio_revenue_volumen_meta is null then 'DSD OFF'
-ELSE unidad_negocio_revenue_volumen_meta
+WHEN b.business_unit_target_volume in ('DSD OFF') then 'DSD OFF'
+WHEN b.business_unit_target_volume in ('DSD ON','High End') then 'DSD ON'
+WHEN b.business_unit_target_volume in ('Mayoristas') then 'WHL'
+WHEN b.business_unit_target_volume in ('Eventos') then 'EVE'
+WHEN b.business_unit_target_volume in ('C&C','SMK','TCs','Key Accounts') then 'KA'
+WHEN b.business_unit_target_volume in ('DAs') then 'DAS'
+WHEN b.business_unit_target_volume is null then 'DSD OFF'
+ELSE b.business_unit_target_volume
 END AS canal_grupo,
-b.unidad_negocio_revenue_1yp as unidad_negocio_1yp,
-b.unidad_negocio_revenue_volumen_meta as unidad_negocio_meta,
-b.supervisor,
-b.zona_comisional,
+b.business_unit_one_year_plan as unidad_negocio_1yp,
+b.business_unit_target_volume as unidad_negocio_meta,
+b.sales_subregion_name as supervisor,
+b.sales_zone_comission_code as zona_comisional,
 
 CASE
 WHEN d.categoria in ('Cervezas','Licores') then 'BEER'
@@ -169,34 +172,31 @@ d.pack,
 d.pack_xxx,
 d.sku,
 d.`Agrupador (Sku)`,
-c.nombre as nombre_sku,
+c.product_name as nombre_sku,
 d.ms_ss,
 d.kpi_premium as premium,
 a.FechaCreado as fecha_creacion,
 a.FechaEntrega as fecha_entrega,
 sum(a.VolumenHl) as HL,
 sum(a.VolumenHl)*13.4408602150538 as CE,
-CAST(ROUND(SUM(a.VolumenHl*100000/NULLIF(c.volumen*c.unidades_caja,0)),0) AS BIGINT) as CF,
+CAST(ROUND(SUM(a.VolumenHl*100000/NULLIF(c.base_uom_volume*c.base_uom_quantity,0)),0) AS BIGINT) as CF,
 DATEADD(hour, -5, CURRENT_TIMESTAMP()) as hora_corte,
 'PV D+1' as TIPO,
 a.pedido
 
+FROM brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_dm.dm_preventa_flash_actual_fe a
+LEFT JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer b on b.customer_short_code = a.codcliente
+LEFT JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_product c on c.product_short_code = a.codmaterial
+LEFT JOIN brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_revenue.revenue_maestro_sku d on d.sku = a.codmaterial
 
-FROM slv_maz_dataexperience_peru_dm.dm_preventa_flash_actual_fe a
-LEFT JOIN slv_maz_dataexperience_peru_dm.dm_cliente b on b.cliente_id = a.codcliente
-LEFT JOIN slv_maz_dataexperience_peru_dm.dm_material c on c.material_id = a.codmaterial
-LEFT JOIN slv_maz_dataexperience_peru_revenue.revenue_maestro_sku d on d.sku = a.codmaterial
-
-WHERE b.direccion in ('PE Dir Centro Orient')
-AND b.gerencia IN ('PE Ger P4 Pucall Hco')
+WHERE b.sales_area_name in ('PE Dir Centro Orient')
+AND b.sales_region_name IN ('PE Ger P4 Pucall Hco')
 AND d.categoria IN ('Cervezas', 'Licores','Ready to drink','Gaseosas','Agua','Maltas')
 --AND d.categoria IN ('Cervezas', 'Licores','Ready to drink')
---AND a.FechaEntrega = (CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE)+1)
---AND a.FechaEntrega = DATE_SUB(CAST(GETDATE() AS DATE)+1, 0) /*fecha de mañana*/
-AND b.cliente_id > 10000000
+AND b.customer_short_code > 10000000
 AND a.Anulado = 0
 --Solo la siguiente fecha de reparto de la GV (el sabado es el lunes). Las posteriores van en PV FUT
-AND a.FechaEntrega = (SELECT MIN(f.FechaEntrega) FROM slv_maz_dataexperience_peru_dm.dm_preventa_flash_actual_fe f JOIN slv_maz_dataexperience_peru_dm.dm_cliente g ON g.cliente_id = f.codcliente WHERE g.gerencia = 'PE Ger P4 Pucall Hco' AND f.FechaEntrega > CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE))
+AND a.FechaEntrega = (SELECT MIN(f.FechaEntrega) FROM brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_dm.dm_preventa_flash_actual_fe f JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer g ON g.customer_short_code = f.codcliente WHERE g.sales_region_name = 'PE Ger P4 Pucall Hco' AND f.FechaEntrega > CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE))
 GROUP BY ALL
 )
 UNION ALL
@@ -204,24 +204,24 @@ UNION ALL
 /*PREVENTA FUTURA (SIN PLAN DE HOY NI PREVENTA DE HOY) */
 (
 SELECT
-b.cliente_id as codigo,
-b.nombre,
-b.gerencia,
-b.centro,
+b.customer_short_code as codigo,
+b.customer_name as nombre,
+b.sales_region_name as gerencia,
+b.distribution_center_name as centro,
 CASE
-WHEN b.unidad_negocio_revenue_volumen_meta in ('DSD OFF') then 'DSD OFF'
-WHEN b.unidad_negocio_revenue_volumen_meta in ('DSD ON','High End') then 'DSD ON'
-WHEN b.unidad_negocio_revenue_volumen_meta in ('Mayoristas') then 'WHL'
-WHEN b.unidad_negocio_revenue_volumen_meta in ('Eventos') then 'EVE'
-WHEN b.unidad_negocio_revenue_volumen_meta in ('C&C','SMK','TCs','Key Accounts') then 'KA'
-WHEN b.unidad_negocio_revenue_volumen_meta in ('DAs') then 'DAS'
-WHEN unidad_negocio_revenue_volumen_meta is null then 'DSD OFF'
-ELSE unidad_negocio_revenue_volumen_meta
+WHEN b.business_unit_target_volume in ('DSD OFF') then 'DSD OFF'
+WHEN b.business_unit_target_volume in ('DSD ON','High End') then 'DSD ON'
+WHEN b.business_unit_target_volume in ('Mayoristas') then 'WHL'
+WHEN b.business_unit_target_volume in ('Eventos') then 'EVE'
+WHEN b.business_unit_target_volume in ('C&C','SMK','TCs','Key Accounts') then 'KA'
+WHEN b.business_unit_target_volume in ('DAs') then 'DAS'
+WHEN b.business_unit_target_volume is null then 'DSD OFF'
+ELSE b.business_unit_target_volume
 END AS canal_grupo,
-b.unidad_negocio_revenue_1yp as unidad_negocio_1yp,
-b.unidad_negocio_revenue_volumen_meta as unidad_negocio_meta,
-b.supervisor,
-b.zona_comisional,
+b.business_unit_one_year_plan as unidad_negocio_1yp,
+b.business_unit_target_volume as unidad_negocio_meta,
+b.sales_subregion_name as supervisor,
+b.sales_zone_comission_code as zona_comisional,
 
 CASE
 WHEN d.categoria in ('Cervezas','Licores') then 'BEER'
@@ -238,34 +238,34 @@ d.pack,
 d.pack_xxx,
 d.sku,
 d.`Agrupador (Sku)`,
-c.nombre as nombre_sku,
+c.product_name as nombre_sku,
 d.ms_ss,
 d.kpi_premium as premium,
 a.Fecha_Preventa as fecha_creacion,
 a.Fecha_Preferente_Entrega as fecha_entrega,
 sum(a.hl) as HL,
 sum(a.hl)*13.4408602150538 as CE,
-CAST(ROUND(SUM(a.hl*100000/NULLIF(c.volumen*c.unidades_caja,0)),0) AS BIGINT) as CF,
+CAST(ROUND(SUM(a.hl*100000/NULLIF(c.base_uom_volume*c.base_uom_quantity,0)),0) AS BIGINT) as CF,
 DATEADD(hour, -5, CURRENT_TIMESTAMP()) as hora_corte,
 'PV FUT' as TIPO,
 a.numero_preventa
 
-FROM slv_maz_dataexperience_peru_dm.dm_preventa a
-LEFT JOIN slv_maz_dataexperience_peru_dm.dm_cliente b on b.cliente_id = a.cliente_id
-LEFT JOIN slv_maz_dataexperience_peru_dm.dm_material c on c.material_id = a.material_id
-LEFT JOIN slv_maz_dataexperience_peru_revenue.revenue_maestro_sku d on d.sku = a.material_id
+FROM brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_dm.dm_preventa a
+LEFT JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer b on b.customer_short_code = a.cliente_id
+LEFT JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_product c on c.product_short_code = a.material_id
+LEFT JOIN brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_revenue.revenue_maestro_sku d on d.sku = a.material_id
 
-WHERE b.direccion in ('PE Dir Centro Orient')
-AND b.gerencia IN ('PE Ger P4 Pucall Hco')
+WHERE b.sales_area_name in ('PE Dir Centro Orient')
+AND b.sales_region_name IN ('PE Ger P4 Pucall Hco')
 AND d.categoria IN ('Cervezas', 'Licores','Ready to drink','Gaseosas','Agua','Maltas')
 --AND d.categoria IN ('Cervezas', 'Licores','Ready to drink')
 AND a.fecha_preferente_entrega > CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE)
 --Hasta el ultimo dia del mes en curso, a hora de Lima
 AND a.fecha_preferente_entrega <= LAST_DAY(CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE))
 --Excluye solo la fecha que trae PV D+1. IS DISTINCT FROM evita que PV FUT quede vacio si esa fecha es nula
-AND a.fecha_preferente_entrega IS DISTINCT FROM (SELECT MIN(f.FechaEntrega) FROM slv_maz_dataexperience_peru_dm.dm_preventa_flash_actual_fe f JOIN slv_maz_dataexperience_peru_dm.dm_cliente g ON g.cliente_id = f.codcliente WHERE g.gerencia = 'PE Ger P4 Pucall Hco' AND f.FechaEntrega > CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE))
+AND a.fecha_preferente_entrega IS DISTINCT FROM (SELECT MIN(f.FechaEntrega) FROM brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_dm.dm_preventa_flash_actual_fe f JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer g ON g.customer_short_code = f.codcliente WHERE g.sales_region_name = 'PE Ger P4 Pucall Hco' AND f.FechaEntrega > CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE))
 AND a.flujo = 1
-AND b.cliente_id > 10000000
+AND b.customer_short_code > 10000000
 AND a.motivo_anulacion IS NULL
 GROUP BY ALL
 )

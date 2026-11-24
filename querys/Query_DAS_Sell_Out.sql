@@ -17,12 +17,12 @@ SELECT
 --   e.sku as material_id,
 sum(hl) as hl
 FROM slv_maz_dataexperience_peru_dm.dm_das_venta f
-    left join brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_das_cliente c
+    left join brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_dm.dm_das_cliente c
       on f.cliente_id = c.cliente_id
-    left join brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_revenue.revenue_material_agrupacion d
+    left join brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_revenue.revenue_material_agrupacion d
       on d.material_id = f.material_id
       and d.mes = date_format(current_date,'yyyyMM')
-    left join brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_revenue.revenue_maestro_sku e
+    left join brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_revenue.revenue_maestro_sku e
       on e.sku = f.material_id
 where
   f.mes = '202609'

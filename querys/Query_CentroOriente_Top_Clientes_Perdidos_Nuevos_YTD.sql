@@ -2,23 +2,24 @@
    clientes nuevos (alta 2025-2026) que mas compran en Ene-Oct 2026. Beer+Rtds, cartera de Centro Oriente (dm_cliente vigente).
    Sirve para detectar recodificaciones (mismo grupo con codigo/RUC nuevo, ej. Bonanza en Iquitos) y rotacion de cuentas grandes. */
 WITH cli AS (
-  SELECT c.cliente_id, REPLACE(c.gerencia, 'PE Ger P4 ', '') AS gv, c.nombre, c.estado, YEAR(c.fecha_alta) AS anio_alta,
-    c.unidad_negocio_revenue_volumen_meta AS canal, c.subcanal, c.centro_id
-  FROM slv_maz_dataexperience_peru_dm.dm_cliente c
-  WHERE c.direccion = 'PE Dir Centro Orient' AND LEN(c.cliente_id) = 8
-    AND c.unidad_negocio NOT LIKE 'DAs Sellout' AND c.unidad_negocio NOT LIKE 'Consumidor'
+  SELECT c.customer_short_code as cliente_id, REPLACE(c.sales_region_name, 'PE Ger P4 ', '') AS gv, c.customer_name as nombre, c.customer_status as estado, YEAR(c.customer_updated_at) AS anio_alta,
+    c.business_unit_target_volume AS canal, c.subchannel_name as subcanal, c.distribution_center_code as centro_id
+  FROM brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer c
+  WHERE c.sales_area_name = 'PE Dir Centro Orient' AND LEN(c.customer_short_code) = 8
+    AND c.business_unit NOT LIKE 'DAs Sellout' AND c.business_unit NOT LIKE 'Consumidor'
 
 ),
 v AS (
-  SELECT dv.cliente_id,
-    SUM(CASE WHEN dv.mes LIKE '2025%' THEN dv.hl ELSE 0 END) AS hl_25,
-    SUM(CASE WHEN dv.mes LIKE '2026%' THEN dv.hl ELSE 0 END) AS hl_26,
-    MAX(CASE WHEN dv.hl > 0 THEN dv.mes END) AS ult_mes
-  FROM slv_maz_dataexperience_peru_dm.dm_venta dv
-  WHERE dv.mes IN ('202501','202502','202503','202504','202505','202506','202507','202508','202509','202510',
+  SELECT dv.sold_to_customer_short_code as cliente_id,
+    SUM(CASE WHEN cast(dv.__partition_column as string) LIKE '2025%' THEN dv.sales_volume_official ELSE 0 END) AS hl_25,
+    SUM(CASE WHEN cast(dv.__partition_column as string) LIKE '2026%' THEN dv.sales_volume_official ELSE 0 END) AS hl_26,
+    MAX(CASE WHEN dv.sales_volume_official > 0 THEN cast(dv.__partition_column as string) END) AS ult_mes
+  FROM brewdat_uc_delta_maz_prod.gld_maz_sales_sell_in.pe_invoice dv
+    left join brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_product dv_p on dv_p.product_short_code = dv.product_short_code
+  WHERE cast(dv.__partition_column as string) IN ('202501','202502','202503','202504','202505','202506','202507','202508','202509','202510',
                    '202601','202602','202603','202604','202605','202606','202607','202608','202609','202610')
-    AND dv.indicadores_comerciales = 1 AND dv.estratificacion IN ('Cervezas', 'Licores', 'Ready To Drink')
-  GROUP BY dv.cliente_id
+    AND dv.invoice_commercial_flag = 1 AND dv_p.product_line IN ('Cervezas', 'Licores', 'Ready To Drink')
+  GROUP BY dv.sold_to_customer_short_code
 ),
 x AS (
   SELECT c.*, v.hl_25, v.hl_26, v.ult_mes,

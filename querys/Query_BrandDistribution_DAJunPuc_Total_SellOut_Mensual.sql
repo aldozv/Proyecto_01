@@ -2,8 +2,8 @@ SELECT
   CAST(SUBSTR(b.mes,1,4) AS INT) AS anio,
   CAST(SUBSTR(b.mes,5,2) AS INT) AS mes_num,
   SUM(b.flag_brand_distro) AS bd
-FROM brewdat_uc_mazana_dev.slv_maz_salesdata_salesdatadata_adb.pe_portfolio_hm_brand_distribution b
-INNER JOIN brewdat_uc_maz_scus_weu_sales_dev_ds.gld_maz_sales_portfolio_pe.pe_portfolio_material m
+FROM brewdat_uc_delta_maz_mazana_dev.slv_maz_salesdata_salesdatadata_adb.pe_portfolio_hm_brand_distribution b
+INNER JOIN brewdat_uc_maz_dev.gld_maz_sales_portfolio_pe.pe_portfolio_material m
   ON b.material_id = m.material_id
 WHERE b.gerencia = 'PE Ger P4 DA Jun Puc'
   AND b.tipo = 'SELLOUT'

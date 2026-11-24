@@ -14,12 +14,12 @@ WITH base AS (
     AND unidad_negocio NOT LIKE 'DAs Sellout' AND unidad_negocio NOT LIKE 'Consumidor'
     AND LEN(cliente_id) = 8
   UNION ALL
-  SELECT mes, cliente_id, centro_id, centro, supervisor_id, supervisor
-  FROM slv_maz_dataexperience_peru_dm.dm_cliente
-  WHERE gerencia = 'PE Ger P4 Pucall Hco'
-    AND estado = '1'
-    AND unidad_negocio NOT LIKE 'DAs Sellout' AND unidad_negocio NOT LIKE 'Consumidor'
-    AND LEN(cliente_id) = 8
+  SELECT date_format(from_utc_timestamp(current_timestamp(), 'America/Lima'), 'yyyyMM') as mes, dm_cliente.customer_short_code as cliente_id, dm_cliente.distribution_center_code as centro_id, dm_cliente.distribution_center_name as centro, dm_cliente.sales_subregion_code as supervisor_id, dm_cliente.sales_subregion_name as supervisor
+  FROM brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer dm_cliente
+  WHERE dm_cliente.sales_region_name = 'PE Ger P4 Pucall Hco'
+    AND dm_cliente.customer_status = '1'
+    AND dm_cliente.business_unit NOT LIKE 'DAs Sellout' AND dm_cliente.business_unit NOT LIKE 'Consumidor'
+    AND LEN(dm_cliente.customer_short_code) = 8
 )
 SELECT mes, centro_id, centro, supervisor_id, supervisor,
   COUNT(DISTINCT cliente_id) AS clientes_activos

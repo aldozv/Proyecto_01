@@ -5,10 +5,10 @@ WITH base AS (
   SELECT v.cliente_id, v.mes, v.hl,
     CASE WHEN v.estratificacion IN ('Cervezas','Licores','Ready To Drink') THEN 1 ELSE 0 END AS es_br,
     CASE WHEN m.marca = 'San Juan' AND r.pack = '620 RB' THEN 1 ELSE 0 END AS es_sj620
-  FROM brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_venta v
-  INNER JOIN brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_cliente c ON v.cliente_id = c.cliente_id
-  LEFT JOIN brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_material m ON v.material_id = m.material_id
-  LEFT JOIN brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_revenue.revenue_maestro_sku r ON v.material_id = r.sku
+  FROM brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_dm.dm_venta v
+  INNER JOIN brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_dm.dm_cliente c ON v.cliente_id = c.cliente_id
+  LEFT JOIN brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_dm.dm_material m ON v.material_id = m.material_id
+  LEFT JOIN brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_revenue.revenue_maestro_sku r ON v.material_id = r.sku
   WHERE v.mes BETWEEN '202501' AND '202610' AND c.gerencia = 'PE Ger P4 Pucall Hco' AND c.centro = 'CD Pucallpa'
     AND v.indicadores_comerciales = 1
     AND v.estratificacion IN ('Cervezas','Licores','Ready To Drink','Gaseosas','Agua','Maltas')
@@ -30,5 +30,5 @@ SELECT a.cliente_id, a.hl25, a.hl_nd25, a.hl26, a.sj25, a.sj26, a.nabs26, a.ult_
   c.nombre, COALESCE(c.unidad_negocio_revenue_volumen_meta,'Sin clasificar') canal, c.supervisor, c.vendedor_id, c.vendedor_nombre, c.vendedor,
   c.zona_venta, c.distrito, c.provincia, c.localidad, c.subcanal, c.subcanal_local, c.bees_segmento, c.obppc_cluster, c.estado, c.fecha_alta, c.fecha_baja, c.bees, c.frecuencia_visita,
   SHA2(c.numero_documento,256) doc_hash, SHA2(UPPER(TRIM(c.direccion_geo)),256) dir_hash, ROUND(c.x,4) x4, ROUND(c.y,4) y4
-FROM a INNER JOIN brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_cliente c ON a.cliente_id = c.cliente_id
+FROM a INNER JOIN brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_dm.dm_cliente c ON a.cliente_id = c.cliente_id
 LIMIT 12000

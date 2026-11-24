@@ -2,15 +2,16 @@
 -- Beer = Cervezas + Licores; Rtds = Ready To Drink. Nabs fuera (regla CLAUDE.md).
 -- Alcance por jerarquia vigente: c.direccion de dm_cliente (regla 2026-09-04).
 SELECT
-  v.mes,
-  v.estratificacion,
-  SUM(v.hl) AS hl
-FROM brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_venta v
-INNER JOIN brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_cliente c
-  ON v.cliente_id = c.cliente_id
-WHERE v.mes BETWEEN '202301' AND '202610'
-  AND c.direccion = 'PE Dir Centro Orient'
-  AND v.indicadores_comerciales = 1
-  AND v.estratificacion IN ('Cervezas','Licores','Ready To Drink')
-GROUP BY v.mes, v.estratificacion
-ORDER BY v.mes, v.estratificacion
+  cast(v.__partition_column as string) as mes,
+  v_p.product_line as estratificacion,
+  SUM(v.sales_volume_official) AS hl
+FROM brewdat_uc_delta_maz_prod.gld_maz_sales_sell_in.pe_invoice v
+    left join brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_product v_p on v_p.product_short_code = v.product_short_code
+INNER JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer c
+  ON v.sold_to_customer_short_code = c.customer_short_code
+WHERE cast(v.__partition_column as string) BETWEEN '202301' AND '202610'
+  AND c.sales_area_name = 'PE Dir Centro Orient'
+  AND v.invoice_commercial_flag = 1
+  AND v_p.product_line IN ('Cervezas','Licores','Ready To Drink')
+GROUP BY cast(v.__partition_column as string), v_p.product_line
+ORDER BY cast(v.__partition_column as string), v_p.product_line

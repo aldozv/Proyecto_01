@@ -8,7 +8,7 @@
 -- de tamano de resultado inline (26MB) por la explosion de filas a grano POC.
 with das_clientes_dajunpuc as (
     SELECT cliente_id, sociedad
-    FROM brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_das_cliente
+    FROM brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_dm.dm_das_cliente
     WHERE gerencia = 'PE Ger P4 DA Jun Puc'
 ),
 tmp_ventas_skuxpoc as (
@@ -18,7 +18,7 @@ tmp_ventas_skuxpoc as (
         v.cliente_id,
         v.material_id,
         SUM(v.caja_fisica) as hl
-    FROM brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_das_venta v
+    FROM brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_dm.dm_das_venta v
     INNER JOIN das_clientes_dajunpuc dc ON dc.cliente_id = v.cliente_id
     WHERE v.mes BETWEEN '202401' AND '202609'
     GROUP BY ALL
@@ -53,7 +53,7 @@ SELECT
     dc.sociedad AS razon_social,
     SUM(flag_brand_distro) AS BrandDistro
 FROM tmp_skuxpoc_mayor_0_acum_brand_distro a
-INNER JOIN brewdat_uc_maz_scus_weu_sales_dev_ds.gld_maz_sales_portfolio_pe.pe_portfolio_material m ON m.material_id = a.material_id
+INNER JOIN brewdat_uc_maz_dev.gld_maz_sales_portfolio_pe.pe_portfolio_material m ON m.material_id = a.material_id
 INNER JOIN das_clientes_dajunpuc dc ON dc.cliente_id = a.cliente_id
 WHERE flag_brand_distro = 1
   AND m.brand_category IN ('Megabrand','RTDs','Beer NO Megabrand')

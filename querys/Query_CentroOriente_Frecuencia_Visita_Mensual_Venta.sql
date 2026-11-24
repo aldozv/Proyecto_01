@@ -7,8 +7,8 @@ WITH excl AS (
   SELECT DISTINCT cliente_id FROM slv_maz_dataexperience_peru_dm.dm_hm_cliente
   WHERE mes >= '202212' AND (UPPER(COALESCE(supervisor, '')) LIKE '%PRUEBA%' OR COALESCE(subcanal, '') LIKE 'MTKP%')
   UNION
-  SELECT cliente_id FROM slv_maz_dataexperience_peru_dm.dm_cliente
-  WHERE UPPER(COALESCE(supervisor, '')) LIKE '%PRUEBA%' OR COALESCE(subcanal, '') LIKE 'MTKP%'
+  SELECT dm_cliente.customer_short_code as cliente_id FROM brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer dm_cliente
+  WHERE UPPER(COALESCE(dm_cliente.sales_subregion_name, '')) LIKE '%PRUEBA%' OR COALESCE(dm_cliente.subchannel_name, '') LIKE 'MTKP%'
 ),
 c AS (
   SELECT h.mes, h.cliente_id,
@@ -30,12 +30,13 @@ c AS (
   GROUP BY h.mes, h.cliente_id
 ),
 v AS (
-  SELECT v.mes, v.cliente_id, SUM(v.hl) AS hl
-  FROM slv_maz_dataexperience_peru_dm.dm_venta v
-  WHERE v.mes BETWEEN '202501' AND '202610'
-    AND v.indicadores_comerciales = 1
-    AND v.estratificacion IN ('Cervezas', 'Licores', 'Ready To Drink')
-  GROUP BY v.mes, v.cliente_id
+  SELECT cast(v.__partition_column as string) as mes, v.sold_to_customer_short_code as cliente_id, SUM(v.sales_volume_official) AS hl
+  FROM brewdat_uc_delta_maz_prod.gld_maz_sales_sell_in.pe_invoice v
+    left join brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_product v_p on v_p.product_short_code = v.product_short_code
+  WHERE cast(v.__partition_column as string) BETWEEN '202501' AND '202610'
+    AND v.invoice_commercial_flag = 1
+    AND v_p.product_line IN ('Cervezas', 'Licores', 'Ready To Drink')
+  GROUP BY cast(v.__partition_column as string), v.sold_to_customer_short_code
 )
 SELECT c.mes, c.gv, c.canal, c.frecuencia, c.generico,
   COUNT(*) AS clientes,

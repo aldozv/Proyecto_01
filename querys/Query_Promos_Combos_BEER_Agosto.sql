@@ -36,11 +36,11 @@ combo_map AS (
     GROUP BY combo_id
 ),
 etiquetas_promos AS (
-    SELECT abreviacion_sap, listado FROM slv_maz_dataexperience_peru_revenue.revenue_maestro_etiquetas
+    SELECT abreviacion_sap, listado FROM brewdat_uc_maz_dev.gld_maz_sales_promo_pe.revenue_maestro_etiquetas
     WHERE proyecto = 'promos'
 ),
 etiquetas_combos AS (
-    SELECT abreviacion_sap, listado FROM slv_maz_dataexperience_peru_revenue.revenue_maestro_etiquetas
+    SELECT abreviacion_sap, listado FROM brewdat_uc_maz_dev.gld_maz_sales_promo_pe.revenue_maestro_etiquetas
     WHERE proyecto = 'combos_promos'
 ),
 detalle AS (

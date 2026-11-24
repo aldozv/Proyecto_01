@@ -6,16 +6,17 @@
 -- Universo (denominador de cobertura) se recalcula por mes: cada mes tiene su propia base de
 -- clientes activos, no se reusa un solo universo fijo como en la version de un mes.
 WITH universo_mes AS (
-  SELECT v.mes, COUNT(DISTINCT v.cliente_id) AS total_clientes
-  FROM brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_venta v
-  INNER JOIN brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_cliente c
-    ON v.cliente_id = c.cliente_id
-  WHERE v.mes BETWEEN '202501' AND '202608'
-    AND SUBSTR(v.mes,5,2) BETWEEN '01' AND '08'
-    AND v.indicadores_comerciales = 1
-    AND c.direccion IN ('PE Dir Centro Orient')
-    AND v.estratificacion IN ('Cervezas','Licores','Ready To Drink')
-  GROUP BY v.mes
+  SELECT cast(v.__partition_column as string) as mes, COUNT(DISTINCT v.sold_to_customer_short_code) AS total_clientes
+  FROM brewdat_uc_delta_maz_prod.gld_maz_sales_sell_in.pe_invoice v
+    left join brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_product v_p on v_p.product_short_code = v.product_short_code
+  INNER JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer c
+    ON v.sold_to_customer_short_code = c.customer_short_code
+  WHERE cast(v.__partition_column as string) BETWEEN '202501' AND '202608'
+    AND SUBSTR(cast(v.__partition_column as string),5,2) BETWEEN '01' AND '08'
+    AND v.invoice_commercial_flag = 1
+    AND c.sales_area_name IN ('PE Dir Centro Orient')
+    AND v_p.product_line IN ('Cervezas','Licores','Ready To Drink')
+  GROUP BY cast(v.__partition_column as string)
 )
 SELECT
   s.marca,
@@ -23,24 +24,25 @@ SELECT
   s.pack,
   s.segmento,
   s.`Agrupador (Tipo)`,
-  CAST(SUBSTR(v.mes,1,4) AS INT) AS anio,
-  CAST(SUBSTR(v.mes,5,2) AS INT) AS mes_num,
-  COUNT(DISTINCT v.cliente_id) AS clientes,
+  CAST(SUBSTR(cast(v.__partition_column as string),1,4) AS INT) AS anio,
+  CAST(SUBSTR(cast(v.__partition_column as string),5,2) AS INT) AS mes_num,
+  COUNT(DISTINCT v.sold_to_customer_short_code) AS clientes,
   u.total_clientes AS universo_beer,
-  ROUND(COUNT(DISTINCT v.cliente_id) * 100.0 / u.total_clientes, 1) AS cobertura_pct,
-  ROUND(SUM(v.hl), 1) AS hl
-FROM brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_venta v
-INNER JOIN brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_cliente c
-  ON v.cliente_id = c.cliente_id
-INNER JOIN brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_revenue.revenue_maestro_sku s
-  ON CAST(v.material_id AS STRING) = s.sku
+  ROUND(COUNT(DISTINCT v.sold_to_customer_short_code) * 100.0 / u.total_clientes, 1) AS cobertura_pct,
+  ROUND(SUM(v.sales_volume_official), 1) AS hl
+FROM brewdat_uc_delta_maz_prod.gld_maz_sales_sell_in.pe_invoice v
+    left join brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_product v_p on v_p.product_short_code = v.product_short_code
+INNER JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer c
+  ON v.sold_to_customer_short_code = c.customer_short_code
+INNER JOIN brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_revenue.revenue_maestro_sku s
+  ON CAST(v.product_short_code AS STRING) = s.sku
 INNER JOIN universo_mes u
-  ON u.mes = v.mes
-WHERE v.mes BETWEEN '202501' AND '202608'
-  AND SUBSTR(v.mes,5,2) BETWEEN '01' AND '08'
-  AND v.indicadores_comerciales = 1
-  AND c.direccion IN ('PE Dir Centro Orient')
-  AND v.estratificacion IN ('Cervezas','Licores','Ready To Drink')
+  ON u.mes = cast(v.__partition_column as string)
+WHERE cast(v.__partition_column as string) BETWEEN '202501' AND '202608'
+  AND SUBSTR(cast(v.__partition_column as string),5,2) BETWEEN '01' AND '08'
+  AND v.invoice_commercial_flag = 1
+  AND c.sales_area_name IN ('PE Dir Centro Orient')
+  AND v_p.product_line IN ('Cervezas','Licores','Ready To Drink')
   AND (s.marca, s.marca_gpa, s.pack) IN (
     ('P.Callao','P.Callao','630 RB'),
     ('Cusqueña','Cusqueña Trigo','620 RB'),

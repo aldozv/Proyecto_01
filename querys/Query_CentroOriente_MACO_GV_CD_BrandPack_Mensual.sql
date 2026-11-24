@@ -21,12 +21,12 @@ select
     sum(v.vic)                              as vic,
     sum(v.vlc)                              as vlc,
     sum(v.maco)                             as maco
-from brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_venta v
-join brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_cliente c
+from brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_dm.dm_venta v
+join brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_dm.dm_cliente c
     on v.cliente_id = c.cliente_id
-left join brewdat_uc_maz_scus_weu_sales_dev_ds.gld_maz_sales_portfolio_pe.pe_portfolio_material m
+left join brewdat_uc_maz_dev.gld_maz_sales_portfolio_pe.pe_portfolio_material m
     on v.material_id = m.material_id
-left join brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_revenue.revenue_maestro_sku s
+left join brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_revenue.revenue_maestro_sku s
     on v.material_id = s.sku
 where v.mes between 202401 and 202610
   and v.indicadores_comerciales = 1

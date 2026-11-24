@@ -18,7 +18,7 @@
 SELECT
     a.proyecto,
     a.listado,
-    b.estratificacion,
+    b.product_line as estratificacion,
     COUNT(*) AS filas,
     COUNT(DISTINCT a.cliente_id) AS clientes_distintos,
     SUM(a.flag_venta) AS filas_compro_sku,
@@ -30,12 +30,12 @@ SELECT
     ROUND(SUM(a.flag_promo) / NULLIF(SUM(a.flag_venta), 0) * 100, 2) AS pct_adherencia_sobre_compradores,
     SUM(a.hl) AS hl_total,
     SUM(a.dscto) AS dscto_total
-FROM brewdat_uc_mazana_dev.slv_maz_salesdata_salesdatadata_adb.pe_promo_adherenciadiaria a
-LEFT JOIN brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_material b
-    ON b.material_id = a.material_id
+FROM brewdat_uc_delta_maz_mazana_dev.slv_maz_salesdata_salesdatadata_adb.pe_promo_adherenciadiaria a
+LEFT JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_product b
+    ON b.product_short_code = a.material_id
 WHERE
     a.direccion = 'PE Dir Centro Orient'
     AND a.periodo = 202608
-    AND b.estratificacion IN ('Cervezas', 'Licores', 'Ready To Drink')
-GROUP BY a.proyecto, a.listado, b.estratificacion
+    AND b.product_line IN ('Cervezas', 'Licores', 'Ready To Drink')
+GROUP BY a.proyecto, a.listado, b.product_line
 ORDER BY a.proyecto, filas DESC

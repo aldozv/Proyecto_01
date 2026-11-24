@@ -5,27 +5,28 @@ WITH excl AS (
   SELECT DISTINCT cliente_id FROM slv_maz_dataexperience_peru_dm.dm_hm_cliente
   WHERE mes >= '202212' AND (UPPER(COALESCE(supervisor, '')) LIKE '%PRUEBA%' OR COALESCE(subcanal, '') LIKE 'MTKP%')
   UNION
-  SELECT cliente_id FROM slv_maz_dataexperience_peru_dm.dm_cliente
-  WHERE UPPER(COALESCE(supervisor, '')) LIKE '%PRUEBA%' OR COALESCE(subcanal, '') LIKE 'MTKP%'
+  SELECT dm_cliente.customer_short_code as cliente_id FROM brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer dm_cliente
+  WHERE UPPER(COALESCE(dm_cliente.sales_subregion_name, '')) LIKE '%PRUEBA%' OR COALESCE(dm_cliente.subchannel_name, '') LIKE 'MTKP%'
 ),
 cli AS (
-  SELECT c.cliente_id,
-    REPLACE(c.gerencia, 'PE Ger P4 ', '') AS gv,
-    CASE WHEN e.cliente_id IS NULL AND LEN(c.cliente_id) = 8
-          AND c.unidad_negocio NOT LIKE 'DAs Sellout' AND c.unidad_negocio NOT LIKE 'Consumidor'
+  SELECT c.customer_short_code as cliente_id,
+    REPLACE(c.sales_region_name, 'PE Ger P4 ', '') AS gv,
+    CASE WHEN e.cliente_id IS NULL AND LEN(c.customer_short_code) = 8
+          AND c.business_unit NOT LIKE 'DAs Sellout' AND c.business_unit NOT LIKE 'Consumidor'
          THEN 'Cartera' ELSE 'Fuera de cartera' END AS en_cartera,
-    CASE WHEN YEAR(c.fecha_alta) <= 2022 THEN 'Antes de 2023' ELSE CAST(YEAR(c.fecha_alta) AS STRING) END AS cohorte
-  FROM slv_maz_dataexperience_peru_dm.dm_cliente c
-  LEFT JOIN excl e ON c.cliente_id = e.cliente_id
-  WHERE c.direccion = 'PE Dir Centro Orient'
+    CASE WHEN YEAR(c.customer_updated_at) <= 2022 THEN 'Antes de 2023' ELSE CAST(YEAR(c.customer_updated_at) AS STRING) END AS cohorte
+  FROM brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer c
+  LEFT JOIN excl e ON c.customer_short_code = e.cliente_id
+  WHERE c.sales_area_name = 'PE Dir Centro Orient'
 ),
 v AS (
-  SELECT v.mes, v.cliente_id, SUM(v.hl) AS hl
-  FROM slv_maz_dataexperience_peru_dm.dm_venta v
-  WHERE v.mes BETWEEN '202301' AND '202610'
-    AND v.indicadores_comerciales = 1
-    AND v.estratificacion IN ('Cervezas', 'Licores', 'Ready To Drink')
-  GROUP BY v.mes, v.cliente_id
+  SELECT cast(v.__partition_column as string) as mes, v.sold_to_customer_short_code as cliente_id, SUM(v.sales_volume_official) AS hl
+  FROM brewdat_uc_delta_maz_prod.gld_maz_sales_sell_in.pe_invoice v
+    left join brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_product v_p on v_p.product_short_code = v.product_short_code
+  WHERE cast(v.__partition_column as string) BETWEEN '202301' AND '202610'
+    AND v.invoice_commercial_flag = 1
+    AND v_p.product_line IN ('Cervezas', 'Licores', 'Ready To Drink')
+  GROUP BY cast(v.__partition_column as string), v.sold_to_customer_short_code
 )
 SELECT v.mes, c.gv, c.en_cartera, c.cohorte,
   SUM(v.hl) AS hl,

@@ -21,27 +21,27 @@
 -- comparar por HL por dia operativo y por % uptime.
 with brands as (
     select distinct brand, estratificacion
-    from brewdat_uc_maz_scus_weu_sales_dev_ds.gld_maz_sales_portfolio_pe.pe_portfolio_material
+    from brewdat_uc_maz_dev.gld_maz_sales_portfolio_pe.pe_portfolio_material
     where estratificacion in ('Cervezas', 'Licores', 'Ready To Drink')
 ),
 base as (
     select
-        v.centro_id,
-        v.brand_pack,
-        coalesce(b.brand, case when v.brand_pack ilike 'P.Fresh%' then 'P.Callao (Pilsen Fresh)' end) as brand,
-        v.horas_oos_brand_pack,
-        v.horas_prendidas_brand_pack,
-        v.horas_disponibles,
-        v.hl_so_brand_pack
-    from delta.`/Volumes/brewdat_uc_mazana_dev/slv_maz_dataexperience_peru_data/workspace/growth/dev_onep_fact_critical_items_summary_24h_brand_pack_gold` v
+        v.distribution_center_code as centro_id,
+        v.brand_pack_name as brand_pack,
+        coalesce(b.brand, case when v.brand_pack_name ilike 'P.Fresh%' then 'P.Callao (Pilsen Fresh)' end) as brand,
+        v.out_of_stock_hours as horas_oos_brand_pack,
+        v.in_stock_hours as horas_prendidas_brand_pack,
+        v.available_hours as horas_disponibles,
+        v.lost_sales_volume_hl as hl_so_brand_pack
+    from brewdat_uc_maz_prod.gld_maz_sales_bees.pe_stockout_brand_pack v
     left join brands b
-        on v.brand_pack ilike concat(b.brand, '%')
-        or v.brand_pack ilike concat(replace(b.brand, chr(39), ''), '%')
-    where v.mes = '202610'
+        on v.brand_pack_name ilike concat(b.brand, '%')
+        or v.brand_pack_name ilike concat(replace(b.brand, chr(39), ''), '%')
+    where v.period = '202610'
     and v.out_of_stock_date <= date'2026-10-19'
-    and v.activo_en_cd = 1
-    and v.centro_id in ('BK43','BK68','SJ86','SJ87','SJ90','SJ91','SJ92','SJ93','SJ94','SJ95','SJ97')
-    and (b.brand is not null or v.brand_pack ilike 'P.Fresh%')
+    and v.active_flag = 1
+    and v.distribution_center_code in ('BK43','BK68','SJ86','SJ87','SJ90','SJ91','SJ92','SJ93','SJ94','SJ95','SJ97')
+    and (b.brand is not null or v.brand_pack_name ilike 'P.Fresh%')
     and dayofweek(v.out_of_stock_date) <> 1
 )
 select

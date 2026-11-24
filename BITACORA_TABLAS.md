@@ -1,4 +1,79 @@
-# Bitacora de tablas — Databricks (catalogo `brewdat_uc_mazana_dev`)
+# Bitacora de tablas — Databricks (catalogo `brewdat_uc_delta_maz_mazana_dev`)
+
+> **Migracion de workspace (2026-11-24).** Nuevo workspace `adb-1508885077335396.16`, warehouse
+> `brewdat-maz-sales-pe-adb-ep01-p` (`8155ae18efb6c905`). El catalogo `brewdat_uc_mazana_dev` que se cita
+> abajo ahora es **`brewdat_uc_delta_maz_mazana_dev`** (Delta Share, mismos esquemas y nombres de tabla).
+> Las queries de `querys/` y de los skills ya se actualizaron. Cambios de ubicacion:
+> - `pe_portfolio_material`: `brewdat_uc_maz_scus_weu_sales_dev_ds` → **`brewdat_uc_maz_dev`**`.gld_maz_sales_portfolio_pe`.
+> - `revenue_dev_vw_rev_maestro_drops_brandpack`, `revenue_maestro_etiquetas`, `revenue_dev_aliados`,
+>   `rev_lider_aliado_estado_whls`: pasaron de `slv_maz_dataexperience_peru_revenue` a
+>   **`brewdat_uc_maz_dev.gld_maz_sales_promo_pe`**.
+> - **Sin equivalente encontrado:** `revenue_material_agrupacion`, `das_nombre_homologacion` (queries DAS afectadas).
+> - **Quiebres OOS:** la tabla por Volume `dev_onep_fact_critical_items_summary_24h_brand_pack_gold` no existe en el
+>   nuevo workspace. La mas cercana es `brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_data.onep_fact_critical_items_summary`,
+>   pero con **otro grano** (evento de quiebre a nivel `material_id` + `marca_pack`, con `start_ts`/`end_ts`,
+>   `total_out_of_stock_hours`, `hl_so`) y **datos solo hasta 2026-09-12**.
+>   **Resuelto (2026-11-24):** las 10 queries OOS de `querys/` se migraron a
+>   **`brewdat_uc_maz_prod.gld_maz_sales_bees.pe_stockout_brand_pack`** (ALZ 4.0, mismo grano, al dia). El `FROM`
+>   es una subconsulta que renombra los campos nuevos a los nombres de siempre (`period`→`mes`,
+>   `distribution_center_code`→`centro_id`, `brand_pack_name`→`brand_pack`, `active_flag`→`activo_en_cd`,
+>   `out_of_stock_hours`→`horas_oos_brand_pack`, `in_stock_hours`→`horas_prendidas_brand_pack`,
+>   `available_hours`→`horas_disponibles`, `lost_sales_volume_hl`→`hl_so_brand_pack`, etc.), asi que el resto de
+>   esta seccion sigue valiendo. **Validacion vs tabla vieja** (Oct'26 al 19-oct, CO sin domingos, Beer+Rtds):
+>   horas OOS **identicas** en las 185 combinaciones CD x brand_pack comunes; la nueva **no trae** Cusqueña
+>   Chocolate 355 CAN (10 CDs, 100% OOS, 3,840 h, probablemente descontinuada) ni Cusqueña Trigo 310 NRB en SJ90
+>   (0 h) → el uptime sale mas alto que en reportes antiguos; `hl_so` sale ~+5-8% (promedio de preventa
+>   recalculado) y viene **nulo en BK43** (Huancavelica). Para comparar con reportes previos, tener presente esta diferencia.
+>
+> **Modelo ALZ 4.0 (destino oficial).** El equipo de Data envio el diccionario de equivalencias (23-nov-2026):
+> `referencias/Diccionario_Datos_ALZ__MLP.html`, exportado a `referencias/Mapeo_ALZ40_Tablas.csv` y
+> `referencias/Mapeo_ALZ40_Campos.csv` (tabla y campo actual → nuevo). Las tablas nuevas tienen nombres en ingles
+> y estan al dia (validado 24-nov: quiebres al 24-nov, BD con Nov'26). Equivalencias principales (acceso confirmado):
+> - `dm_venta` → `brewdat_uc_delta_maz_prod.gld_maz_sales_sell_in.pe_invoice`
+> - `dm_cliente` → `brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer`
+> - `dm_material` → `brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_product`
+> - `revenue_maestro_sku` → `brewdat_uc_maz_prod.slv_maz_masterdata_manual.pe_product_additional_details`
+> - `pe_portfolio_hm_brand_distribution` → `brewdat_uc_maz_prod.gld_maz_sales_sell_in.pe_portfolio_brand_distribution` (campos sin mapear en el diccionario)
+> - quiebres `..._24h_brand_pack_gold` → `brewdat_uc_maz_prod.gld_maz_sales_bees.pe_stockout_brand_pack` (mismo grano, 18/19 campos mapeados)
+> - `dm_preventa_flash_actual_fe` → `brewdat_uc_maz_prod.gld_maz_sales_order.pe_flash_order`; `dm_preventa` → `...gld_maz_sales_order.pe_order`
+> - `revenue_material_agrupacion` → `brewdat_uc_maz_prod.gld_maz_masterdata_product.pe_material_group`; `das_nombre_homologacion` → `brewdat_uc_maz_prod.slv_maz_masterdata_manual.pe_name_homologation_das`
+> - `revenue_h_pv_planeada` (marcada "Eliminar") → **`brewdat_uc_maz_prod.gld_maz_sales_order.pe_planned_order`**, que es
+>   el destino de `revenue_pv_planeada` (mismos campos; lo encontro el usuario, 2026-11-24). Validado 21-23 nov GV Pucallpa:
+>   HL, POCs y pedidos identicos; la copia vieja ademas **no traia el plan del 20 ni del 24-nov** (PLAN incompleto).
+>   Las 6 queries que la usaban (tracking diario y deep dives de Pucallpa) ya leen la tabla nueva via subconsulta con
+>   alias a los nombres antiguos (`planned_delivery_date`→`FechaPlan`, `planned_volume_hl`→`HLPlaneado`,
+>   `customer_short_code`→`CodCliente`, `product_short_code`→`SKU`, `order_number`→`NumeroPedido`, etc.).
+> **Venta migrada a ALZ 4.0 (2026-11-24):** 126 queries (`querys/` + plantillas del skill `dashboard-gv-volumen`)
+> leen `dm_venta`/`dm_cliente`/`dm_material` desde `pe_invoice`/`pe_customer`/`pe_product` via subconsultas con alias a
+> los nombres antiguos (guardadas en `referencias/compat_alz40/`). Validacion corriendo cada query en ambos modelos:
+> 113 con diferencia <0.5% en sus totales (105 <0.01%). Volumen CO mensual identico Mar'21-Nov'26. Reglas del cruce:
+> - `hl` = **`sales_volume_official`** (no `sales_volume`, que desvia algunos SKU p.ej. San Juan 620 / Cristalina).
+> - `estratificacion` = `pe_product.product_line` (no `category_name`); `marca` = `pe_product.brand_name`.
+> - `mes` = `cast(__partition_column as string)` (particion yyyymm); `dm_cliente.mes` = mes actual Lima (foto vigente).
+> - `caja_equivalente` = HL x 13.44086022 (definicion de negocio). **El campo viejo de `dm_venta` usaba otro factor
+>   (~13.74-14.06)**: el CE del FACT del tracking baja ~2.3% y ahora es coherente con PLAN/PV.
+> - `vendedor` = `pe_customer.bdr_name` (0 diferencias en CO).
+> - Diferencias de dato conocidas: `nombre` de cliente cortado a 35 caracteres; `supervisor` generico con otro codigo
+>   ("Promotor Generico ..."); 109 clientes CO sin `unidad_negocio_revenue_volumen_meta`; `numero_documento` con ceros
+>   a la izquierda y algunos documentos distintos (afecta cruces por DNI/RUC); un SKU pasa de Cervezas a Licores en Dic'25.
+> **Se quedan en el modelo viejo (24 queries, ver lista abajo)** porque el nuevo **no tiene historia antes de Mar'21**
+> (Resumen/Top/Puente/Drivers/Cubo/Marca_Pack YTD de Pucallpa, Historicos 2020+, Volumen 2021-2022), porque usan
+> campos sin equivalente en `pe_invoice` (`vic`, `vlc`, `maco`, `descuento_promocion`, `agrupador` [esta en
+> `pe_invoice_class_position`], `dm_cliente.bees`, `vendedor_id`), por el cruce por documento (Recodificacion_Clientes),
+> o porque ya fallaban antes (DAS_Sell_In, Plan_Aliados, Promos_Combos, Volumen, Cartera_Flujos_GV_vs_LM).
+> Siguen en el modelo viejo tambien `revenue_maestro_sku`, `dm_preventa*`, `dm_hm_cliente`, `dm_das_*`, BD.
+> **Nombres nativos (2026-11-24, pedido del usuario):** las 134 queries migradas (venta, cliente, material, quiebres y
+> plan) ya no usan subconsultas con alias: leen `pe_invoice`/`pe_customer`/`pe_product`/`pe_stockout_brand_pack`/
+> `pe_planned_order` directo con sus campos en ingles; las columnas de salida conservan el nombre antiguo con `as`.
+> Cuando hace falta categoria/marca de la venta se agrega `left join pe_product <alias>_p` por `product_short_code`.
+> Validado corriendo version con alias vs nativa al mismo tiempo: 125 partes identicas (mismas filas, 0% de diferencia
+> en todos los totales); las 9 plantillas del skill solo corren con sus marcadores reemplazados (mismo codigo que sus
+> pares en `querys/`, validados). El guardrail de `run_query.sh` ahora tambien vigila `pe_invoice` y acepta
+> `__partition_column`/`invoice_date` como filtro de fecha.
+>
+> Campos clave ejemplo (`dm_venta`→`pe_invoice`): `fecha_venta`→`invoice_date`, `cliente_id`→`sold_to_customer_short_code`,
+> `hl`→`sales_volume`, `caja_fisica`→`billed_sales_boxes_quantity`, `nr`→`net_revenue_amount`, `gerencia`→`sales_region_name`,
+> `direccion`→`sales_area_name`; **sin mapeo:** `caja_equivalente` (= HL x 13.44086022), `marca`, `brand_pack`, `dscto` (salen de `pe_product`).
 
 Catalogo de tablas que se van conociendo, con foco en lo util para analisis comercial:
 llaves, filtros de negocio y campos que se usan seguido. Se alimenta con `DESCRIBE TABLE EXTENDED`
@@ -69,6 +144,11 @@ aprox.). Para agregados de negocio normalmente se agrupa por `cliente_id`, `mate
 (desglosado en `descuento_canal`/`descuento_promocion`/`descuento_combo`), `nr`, `ptr`, `ptc`,
 `porte`, `vic`, `vlc`, `maco`, `subtotal`, `valor_venta`, `valor_neto`, `isc`, `igv`, `total`.
 Regla observada en la query original: `NR = GSI + EXCISE + DSCTO` (descuento ya viene en negativo).
+**Desglose del descuento (validado 2026-11-20, Lima Ene-Oct 2023-2026):** `descuento = descuento_promocion + descuento_canal`
+exacto; `descuento_combo` es **parte** de `descuento_promocion`, no un tercer componente. No sumar el combo aparte (infla
+el descuento). Ver `querys/Query_Lima_SS_Cubo_Mensual_Precio.sql`. Ojo: en la misma validacion `NR = GSI + EXCISE + DSCTO`
+cuadra exacto en 2025-2026, pero en **2023-2024** el NR queda ~S/ 0.3-0.4 MM por año sobre la suma (≈0.03% del NR, casi
+todo Multipack, ej. Ene'24 DSD OFF) — irrelevante para ratios, pero no presentar el cuadre como exacto en esos años.
 **MACO (validado con datos 2026-11-15, Oct'26 Centro Oriente):** `maco = nr + vic + vlc` cuadra exacto
 (`vic`/`vlc` vienen en negativo), sin nulos. Grano = el de `dm_venta` (linea de documento), asi que se
 abre por cualquier dimension (cliente, material/brandpack, gerencia, CD, canal, dia). Moneda: soles
@@ -973,6 +1053,44 @@ Pucallpa (`TIPO` = `FACT`, `PLAN`, `PV D+1`, `PV FUT`). Esquemas tomados de `DES
 
 ---
 
+## `slv_maz_dataexperience_peru_dm.dm_volumen_meta` — Cuota de volumen (confirmado por el usuario, 2026-11-23)
+
+**Que es:** la tabla de **cuotas** de volumen ("meta"). El usuario la confirmo como la fuente de cuota
+(2026-11-23). Explorada con `DESCRIBE TABLE EXTENDED` y datos de Centro Oriente sep-nov'26
+(`querys/Query_Cuota_dm_volumen_meta_vs_Real_Pucallpa.sql`).
+
+**Columnas (16):** `mes` (string 'YYYYMM'), `direccion`, `gerencia`, `material_id`, `zona_pem`,
+`zona_comisional`, `unidad_negocio`, `unidad_negocio_rtm`, `canal`, `subcanal`, `cliente_id`, `fecha`
+(date), `accion`, `hl`, `caja_fisica`, `caja_equivalente` (decimal(38,30)). Delta externa, sin particion
+visible en el DESCRIBE: filtrar siempre por `mes`.
+
+**Grano:** mes x cliente x material. `fecha` es siempre el dia 1 del mes (una sola fecha por mes): es una
+cuota **mensual**, no diaria. `accion` = metodo con que se repartio la cuota a cada POC:
+`SPLITEAR POR POC (HL SUGERIDO)` (casi todo el volumen) o `SPLITEAR POR POC (HL HOMOGENEO)` (marginal).
+Sumar ambas para el total.
+
+**Alcance de categorias:** trae Cervezas, Licores, Ready To Drink, Gaseosas, Agua y Maltas (via
+`dm_material.estratificacion`); no trae Marketplace. Para comparar con los reportes ejecutivos usar
+Beer+Rtds (`estratificacion IN ('Cervezas','Licores','Ready To Drink')`).
+
+**Gerencia:** `dm_volumen_meta.gerencia` coincide con `dm_cliente.gerencia` para Pucallpa (mismo total en
+oct y nov'26), pero por la regla vigente usar `dm_cliente` (join por `cliente_id`).
+
+**Cifras de referencia GV Pucallpa (`PE Ger P4 Pucall Hco`, HL):**
+
+| Mes | Cuota Beer+Rtds | Cuota Nabs | Real Beer+Rtds | Cumplimiento |
+|---|---|---|---|---|
+| Oct'26 | 48,415 | 4,879 | 46,421 | 95.9% |
+| Nov'26 | 44,869 | 4,570 | (en curso) | |
+
+Nov'26 en Pucallpa: 34 zonas comisionales y 5 supervisores con cuota. Cuota total GV Pucallpa (todas las
+categorias) ~49.4 mil HL en nov, ~53.3 mil en oct.
+
+**Pendiente:** confirmar con el usuario si la cuota "oficial" de la GV es la de Beer+Rtds o la total con
+Nabs, y si hay cuota para Marketplace en otra tabla.
+
+---
+
 ## CD reales por gerencia — Direccion Centro Oriente (validado con el usuario, 2026-08-27)
 
 `dm_cliente.centro` puede traer, para clientes de una gerencia dada, CD que en realidad
@@ -1050,3 +1168,11 @@ pasa de proyectado a real).
 - **`pe_portfolio_hm_brand_distribution`** tiene historia desde Ene'23 (no solo desde Ene'25) y acepta join a
   `dm_material` por `material_id` para filtrar por marca. Queries: `querys/Query_Brand_Distribution_Oficial_*`,
   `querys/Query_Expansion_PilsenFresh_Nolo_FlyingFish_*`.
+
+**Sesgo del recalculo desde venta en Lima (validado 2026-11-21):** el metodo "1 punto por cliente-material con
+`caja_fisica` > 0" sobre `dm_venta` + `dm_cliente` da en `PE Dir Lima` entre +4% (Lima Norte) y +13% (Lima Centr)
+por encima de esta tabla, mucho mas que en CO (+0.7% a +1.1%). El sesgo es estable de un mes al siguiente
+(Set vs Oct'25 difieren <0.3 pp) pero sube ~2-3 pp en 2026 vs 2025, asi que **no sirve comparar recalculo 2026
+vs oficial 2025 directo**. Para estimar un mes sin carga, dividir el recalculo por el ratio recalculo/oficial del
+mes previo del mismo año. `PE Ger P1 May Ev Lim` cuadra exacto. `PE Ger P1 Central KA` tiene clientes en
+`dm_cliente` bajo Lima pero 0 BD en esta tabla. Query: `querys/Query_Lima_BD_Oct26_Estimado.sql`.

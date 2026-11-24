@@ -8,31 +8,31 @@
 -- (nivel2 = distribuidor, no hay supervisor). Regla oficial por GV (aplicar post-query):
 -- Pucall Hco/Huancay Ch -> SELLIN; Iquitos/Tarapoto -> SELLIN+SELLOUT; DA Jun Puc -> SELLOUT.
 with sellin as (
-  select v.cliente_id, v.material_id, year(v.fecha_venta) as anio
-  from brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_venta v
-  where v.mes in ('202511','202611')
-    and (v.fecha_venta between '2025-11-01' and '2025-11-16' or v.fecha_venta between '2026-11-01' and '2026-11-16')
-    and v.indicadores_comerciales = 1
-  group by 1,2,3 having sum(v.caja_fisica) > 0
+  select v.sold_to_customer_short_code as cliente_id, v.product_short_code as material_id, year(v.invoice_date) as anio
+  from brewdat_uc_delta_maz_prod.gld_maz_sales_sell_in.pe_invoice v
+  where cast(v.__partition_column as string) in ('202511','202611')
+    and (v.invoice_date between '2025-11-01' and '2025-11-16' or v.invoice_date between '2026-11-01' and '2026-11-16')
+    and v.invoice_commercial_flag = 1
+  group by 1,2,3 having sum(v.billed_sales_boxes_quantity) > 0
 ),
 dc as (
   select cliente_id, gerencia, sociedad
-  from brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_das_cliente
+  from brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_dm.dm_das_cliente
   where direccion = 'PE Dir Centro Orient'
 ),
 sellout as (
   select v.cliente_id, v.material_id, year(v.fecha_venta) as anio
-  from brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_das_venta v
+  from brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_dm.dm_das_venta v
   join dc on dc.cliente_id = v.cliente_id
   where v.mes in ('202511','202611')
     and (v.fecha_venta between '2025-11-01' and '2025-11-14' or v.fecha_venta between '2026-11-01' and '2026-11-14')
   group by 1,2,3 having sum(v.caja_fisica) > 0
 ),
 base as (
-  select 'SELLIN' as tipo, c.gerencia, coalesce(c.supervisor, 'SIN SUPERVISOR') as nivel2, s.cliente_id, s.material_id, s.anio
+  select 'SELLIN' as tipo, c.sales_region_name as gerencia, coalesce(c.sales_subregion_name, 'SIN SUPERVISOR') as nivel2, s.cliente_id, s.material_id, s.anio
   from sellin s
-  join brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_cliente c on c.cliente_id = s.cliente_id
-  where c.direccion = 'PE Dir Centro Orient'
+  join brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer c on c.customer_short_code = s.cliente_id
+  where c.sales_area_name = 'PE Dir Centro Orient'
   union all
   select 'SELLOUT' as tipo, dc.gerencia, dc.sociedad as nivel2, o.cliente_id, o.material_id, o.anio
   from sellout o
@@ -42,7 +42,7 @@ select b.tipo, b.gerencia, b.nivel2, m.brand, m.brand_pack, b.anio,
        count(*) as bd,
        count(distinct b.cliente_id) as pocs
 from base b
-join brewdat_uc_maz_scus_weu_sales_dev_ds.gld_maz_sales_portfolio_pe.pe_portfolio_material m on m.material_id = b.material_id
+join brewdat_uc_maz_dev.gld_maz_sales_portfolio_pe.pe_portfolio_material m on m.material_id = b.material_id
 where m.estratificacion in ('Cervezas','Licores','Ready To Drink')
   and m.brand_pack not in ('N.A','Corona Tropical 355 CAN','P.Trujillo 620 RB','P.Trujillo 473 CAN','P.Trujillo 355 CAN',
                            'Arequipeña 620 RB','Arequipeña 473 CAN','Kauffmann 355 CAN','Pacífico Clara 355 CAN','Barbarian 269 CAN')

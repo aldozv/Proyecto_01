@@ -2,7 +2,7 @@
 -- Estado: Nuevo (0 a >0), Perdido (>0 a 0), Crece / Cae (activo en ambos).
 WITH cy AS (
   SELECT v.cliente_id, c.centro, COALESCE(c.unidad_negocio_revenue_volumen_meta,'Sin clasificar') AS canal, CAST(SUBSTR(v.mes,1,4) AS INT) AS anio, SUM(v.hl) AS hl
-  FROM brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_venta v INNER JOIN brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_cliente c ON v.cliente_id = c.cliente_id
+  FROM brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_dm.dm_venta v INNER JOIN brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_dm.dm_cliente c ON v.cliente_id = c.cliente_id
   WHERE v.mes BETWEEN '202101' AND '202610' AND c.gerencia = 'PE Ger P4 Pucall Hco' AND v.indicadores_comerciales = 1 AND CAST(SUBSTR(v.mes,5,2) AS INT) <= 10 AND v.estratificacion IN ('Cervezas','Licores','Ready To Drink')
   GROUP BY 1,2,3,4
 ), piv AS (

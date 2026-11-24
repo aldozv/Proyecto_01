@@ -16,9 +16,9 @@ WITH raw AS (
   WHERE mes BETWEEN '202212' AND '202610'
     AND LEN(cliente_id) = 8
   UNION ALL
-  SELECT mes, cliente_id, gerencia, estado, unidad_negocio
-  FROM slv_maz_dataexperience_peru_dm.dm_cliente
-  WHERE LEN(cliente_id) = 8
+  SELECT date_format(from_utc_timestamp(current_timestamp(), 'America/Lima'), 'yyyyMM') as mes, dm_cliente.customer_short_code as cliente_id, dm_cliente.sales_region_name as gerencia, dm_cliente.customer_status as estado, dm_cliente.business_unit as unidad_negocio
+  FROM brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer dm_cliente
+  WHERE LEN(dm_cliente.customer_short_code) = 8
 ),
 flag AS (
   SELECT mes, cliente_id,

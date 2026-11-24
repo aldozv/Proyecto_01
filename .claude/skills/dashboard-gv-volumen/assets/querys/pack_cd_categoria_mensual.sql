@@ -9,36 +9,37 @@
 -- CORREGIDO 2026-09-06: gerencia sale de dm_cliente (vigente), no de dm_venta -- ver CLAUDE.md
 -- (caso Ucayali Beer, reasignado Huancay Ch -> DA Jun Puc en abril 2026).
 SELECT
-  c.gerencia,
-  CAST(SUBSTR(v.mes,1,4) AS INT) AS anio,
-  CAST(SUBSTR(v.mes,5,2) AS INT) AS mes_num,
-  c.centro,
+  c.sales_region_name as gerencia,
+  CAST(SUBSTR(cast(v.__partition_column as string),1,4) AS INT) AS anio,
+  CAST(SUBSTR(cast(v.__partition_column as string),5,2) AS INT) AS mes_num,
+  c.distribution_center_name as centro,
   CASE
-    WHEN v.estratificacion IN ('Cervezas','Licores') THEN 'Beer'
-    WHEN v.estratificacion = 'Ready To Drink' THEN 'Rtds'
-    WHEN v.estratificacion IN ('Gaseosas','Agua','Maltas') THEN 'Nabs'
+    WHEN v_p.product_line IN ('Cervezas','Licores') THEN 'Beer'
+    WHEN v_p.product_line = 'Ready To Drink' THEN 'Rtds'
+    WHEN v_p.product_line IN ('Gaseosas','Agua','Maltas') THEN 'Nabs'
   END AS categoria_grupo,
-  COALESCE(c.unidad_negocio_revenue_volumen_meta, 'Sin clasificar') AS canal_meta,
+  COALESCE(c.business_unit_target_volume, 'Sin clasificar') AS canal_meta,
   COALESCE(r.pack_xxx, 'Sin mapear') AS pack_xxx,
-  SUM(v.hl) AS hl
-FROM brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_venta v
-INNER JOIN brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_cliente c
-  ON v.cliente_id = c.cliente_id
-LEFT JOIN brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_revenue.revenue_maestro_sku r
-  ON v.material_id = r.sku
-WHERE v.mes BETWEEN '{{MES_DESDE}}' AND '{{MES_HASTA}}'
-  AND c.gerencia IN ({{GERENCIA_IN_LIST}})
-  AND v.indicadores_comerciales = 1
-  AND v.estratificacion IN ('Cervezas','Licores','Ready To Drink','Gaseosas','Agua','Maltas')
-  AND NOT (v.estratificacion = 'Agua' AND v.marca = 'San Mateo')
-  AND c.centro IN ({{CD_IN_LIST}})
+  SUM(v.sales_volume_official) AS hl
+FROM brewdat_uc_delta_maz_prod.gld_maz_sales_sell_in.pe_invoice v
+    left join brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_product v_p on v_p.product_short_code = v.product_short_code
+INNER JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer c
+  ON v.sold_to_customer_short_code = c.customer_short_code
+LEFT JOIN brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_revenue.revenue_maestro_sku r
+  ON v.product_short_code = r.sku
+WHERE cast(v.__partition_column as string) BETWEEN '{{MES_DESDE}}' AND '{{MES_HASTA}}'
+  AND c.sales_region_name IN ({{GERENCIA_IN_LIST}})
+  AND v.invoice_commercial_flag = 1
+  AND v_p.product_line IN ('Cervezas','Licores','Ready To Drink','Gaseosas','Agua','Maltas')
+  AND NOT (v_p.product_line = 'Agua' AND v_p.brand_name = 'San Mateo')
+  AND c.distribution_center_name IN ({{CD_IN_LIST}})
 GROUP BY
-  c.gerencia, CAST(SUBSTR(v.mes,1,4) AS INT), CAST(SUBSTR(v.mes,5,2) AS INT), c.centro,
+  c.sales_region_name, CAST(SUBSTR(cast(v.__partition_column as string),1,4) AS INT), CAST(SUBSTR(cast(v.__partition_column as string),5,2) AS INT), c.distribution_center_name,
   CASE
-    WHEN v.estratificacion IN ('Cervezas','Licores') THEN 'Beer'
-    WHEN v.estratificacion = 'Ready To Drink' THEN 'Rtds'
-    WHEN v.estratificacion IN ('Gaseosas','Agua','Maltas') THEN 'Nabs'
+    WHEN v_p.product_line IN ('Cervezas','Licores') THEN 'Beer'
+    WHEN v_p.product_line = 'Ready To Drink' THEN 'Rtds'
+    WHEN v_p.product_line IN ('Gaseosas','Agua','Maltas') THEN 'Nabs'
   END,
-  COALESCE(c.unidad_negocio_revenue_volumen_meta, 'Sin clasificar'),
+  COALESCE(c.business_unit_target_volume, 'Sin clasificar'),
   COALESCE(r.pack_xxx, 'Sin mapear')
-ORDER BY c.gerencia, anio, mes_num, centro, categoria_grupo, canal_meta, pack_xxx
+ORDER BY c.sales_region_name, anio, mes_num, centro, categoria_grupo, canal_meta, pack_xxx

@@ -7,9 +7,9 @@
 -- vigente en el mes -- viene de dm_promocion/dm_combo (inscripcion/elegibilidad), NO de venta real.
 
 WITH clientes_co AS (
-    SELECT cliente_id
-    FROM slv_maz_dataexperience_peru_dm.dm_cliente
-    WHERE direccion = 'PE Dir Centro Orient'
+    SELECT dm_cliente.customer_short_code as cliente_id
+    FROM brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer dm_cliente
+    WHERE dm_cliente.sales_area_name = 'PE Dir Centro Orient'
 ),
 promos_activas AS (
     SELECT DISTINCT
@@ -38,11 +38,11 @@ combos_activos AS (
     WHERE co.desde <= '2026-09-30' AND co.hasta >= '2026-09-01'
 ),
 etiquetas_promos AS (
-    SELECT abreviacion_sap, listado FROM slv_maz_dataexperience_peru_revenue.revenue_maestro_etiquetas
+    SELECT abreviacion_sap, listado FROM brewdat_uc_maz_dev.gld_maz_sales_promo_pe.revenue_maestro_etiquetas
     WHERE proyecto = 'promos'
 ),
 etiquetas_combos AS (
-    SELECT abreviacion_sap, listado FROM slv_maz_dataexperience_peru_revenue.revenue_maestro_etiquetas
+    SELECT abreviacion_sap, listado FROM brewdat_uc_maz_dev.gld_maz_sales_promo_pe.revenue_maestro_etiquetas
     WHERE proyecto = 'combos_promos'
 )
 -- Solo campanas con nombre de campana reconocido (listado mapeado en revenue_maestro_etiquetas).

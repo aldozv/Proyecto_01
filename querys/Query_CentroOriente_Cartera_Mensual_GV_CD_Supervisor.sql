@@ -15,9 +15,9 @@ WITH raw AS (
   FROM slv_maz_dataexperience_peru_dm.dm_hm_cliente
   WHERE mes BETWEEN '202212' AND '202610' AND LEN(cliente_id) = 8
   UNION ALL
-  SELECT mes, cliente_id, gerencia, centro_id, centro, supervisor_id, supervisor, estado, unidad_negocio, subcanal
-  FROM slv_maz_dataexperience_peru_dm.dm_cliente
-  WHERE LEN(cliente_id) = 8
+  SELECT date_format(from_utc_timestamp(current_timestamp(), 'America/Lima'), 'yyyyMM') as mes, dm_cliente.customer_short_code as cliente_id, dm_cliente.sales_region_name as gerencia, dm_cliente.distribution_center_code as centro_id, dm_cliente.distribution_center_name as centro, dm_cliente.sales_subregion_code as supervisor_id, dm_cliente.sales_subregion_name as supervisor, dm_cliente.customer_status as estado, dm_cliente.business_unit as unidad_negocio, dm_cliente.subchannel_name as subcanal
+  FROM brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer dm_cliente
+  WHERE LEN(dm_cliente.customer_short_code) = 8
 ),
 excl AS (
   -- clientes de prueba/Marketplace: se excluyen en TODO el historico si alguna vez tuvieron esa marca

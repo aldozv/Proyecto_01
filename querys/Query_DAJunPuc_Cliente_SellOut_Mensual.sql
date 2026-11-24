@@ -26,10 +26,10 @@ SELECT
     ELSE f.razon_social
   END AS razon_social,
   SUM(f.hl) AS hl
-FROM brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_das_venta f
-INNER JOIN brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_das_cliente c
+FROM brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_dm.dm_das_venta f
+INNER JOIN brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_dm.dm_das_cliente c
   ON f.cliente_id = c.cliente_id
-INNER JOIN brewdat_uc_maz_scus_weu_sales_dev_ds.gld_maz_sales_portfolio_pe.pe_portfolio_material m
+INNER JOIN brewdat_uc_maz_dev.gld_maz_sales_portfolio_pe.pe_portfolio_material m
   ON m.material_id = f.material_id
 WHERE f.mes BETWEEN '202501' AND '202609'
   AND c.gerencia = 'PE Ger P4 DA Jun Puc'

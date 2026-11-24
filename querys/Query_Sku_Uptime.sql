@@ -22,31 +22,31 @@
 -- lo agarra ni el match exacto ni el de prefijo por brand, requiere excepcion manual.
 with brands as (
     select distinct brand, estratificacion
-    from brewdat_uc_maz_scus_weu_sales_dev_ds.gld_maz_sales_portfolio_pe.pe_portfolio_material
+    from brewdat_uc_maz_dev.gld_maz_sales_portfolio_pe.pe_portfolio_material
     where estratificacion in ('Cervezas', 'Licores', 'Ready To Drink')
 )
 select
-    v.mes,
-    v.out_of_stock_date,
-    v.centro_id,
-    v.brand_pack,
-    coalesce(b.brand, case when v.brand_pack ilike 'P.Fresh%' then 'P.Callao (Pilsen Fresh)' end) as brand,
-    coalesce(b.estratificacion, case when v.brand_pack ilike 'P.Fresh%' then 'Cervezas' end) as estratificacion,
-    v.cant_skus_brand_pack,
-    v.horas_oos_brand_pack,
-    v.horas_prendidas_brand_pack,
-    v.pct_horas_oos_brand_pack,
-    v.pct_uptime_brand_pack,
-    v.hl_so_brand_pack,
-    v.hl_pv_promedio_bp,
-    v.skus_en_quiebre
-from delta.`/Volumes/brewdat_uc_mazana_dev/slv_maz_dataexperience_peru_data/workspace/growth/dev_onep_fact_critical_items_summary_24h_brand_pack_gold` v
+    v.period as mes,
+    v.out_of_stock_date as out_of_stock_date,
+    v.distribution_center_code as centro_id,
+    v.brand_pack_name as brand_pack,
+    coalesce(b.brand, case when v.brand_pack_name ilike 'P.Fresh%' then 'P.Callao (Pilsen Fresh)' end) as brand,
+    coalesce(b.estratificacion, case when v.brand_pack_name ilike 'P.Fresh%' then 'Cervezas' end) as estratificacion,
+    v.brand_pack_product_quantity as cant_skus_brand_pack,
+    v.out_of_stock_hours as horas_oos_brand_pack,
+    v.in_stock_hours as horas_prendidas_brand_pack,
+    v.out_of_stock_hours_percentage as pct_horas_oos_brand_pack,
+    v.uptime_percentage as pct_uptime_brand_pack,
+    v.lost_sales_volume_hl as hl_so_brand_pack,
+    v.average_presale_volume_hl as hl_pv_promedio_bp,
+    v.out_of_stock_product_quantity as skus_en_quiebre
+from brewdat_uc_maz_prod.gld_maz_sales_bees.pe_stockout_brand_pack v
 left join brands b
-    on v.brand_pack ilike concat(b.brand, '%')
-    or v.brand_pack ilike concat(replace(b.brand, chr(39), ''), '%')
-where v.mes = '202608'
-and v.activo_en_cd = 1
-and v.centro_id in ('BK31','BK43','BK68',
+    on v.brand_pack_name ilike concat(b.brand, '%')
+    or v.brand_pack_name ilike concat(replace(b.brand, chr(39), ''), '%')
+where v.period = '202608'
+and v.active_flag = 1
+and v.distribution_center_code in ('BK31','BK43','BK68',
                    'SJ01','SJ86','SJ87','SJ90','SJ91','SJ92','SJ93','SJ94','SJ95','SJ97')
-and (b.brand is not null or v.brand_pack ilike 'P.Fresh%')
-order by v.out_of_stock_date, v.centro_id, v.brand_pack
+and (b.brand is not null or v.brand_pack_name ilike 'P.Fresh%')
+order by v.out_of_stock_date, v.distribution_center_code, v.brand_pack_name

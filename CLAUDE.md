@@ -44,7 +44,24 @@ El script de conexion ya bloquea automaticamente escritura/DDL, falta de `LIMIT`
 5. **Validar el resultado antes de reportarlo:** `row_count`, nulos inesperados, cuadre de metricas (ej. `NR ~= GSI + EXCISE + DSCTO`).
 6. **Confirmar antes de ejecutar** si el rango de fechas supera ~1 mes o no hay filtro por cliente/gerencia/direccion.
 
-## Modelo de datos (catalogo `brewdat_uc_mazana_dev`)
+## Modelo de datos (catalogo `brewdat_uc_delta_maz_mazana_dev`)
+
+**Workspace nuevo desde 2026-11-24** (`adb-1508885077335396.16`): el antiguo `brewdat_uc_mazana_dev` es
+ahora `brewdat_uc_delta_maz_mazana_dev` (mismos esquemas y nombres de tabla); login via CLI de Databricks
+(perfil `nuevo`), no token en `.env`. Las tablas que cambiaron de lugar y las que no se encontraron estan
+en `BITACORA_TABLAS.md` (encabezado). En el resto de este archivo, donde dice `brewdat_uc_mazana_dev`, hay
+que leer el catalogo nuevo.
+
+**Modelo ALZ 4.0 (destino oficial, nombres en ingles):** venta, cliente, material, quiebres y plan de entrega ya se
+leen de las tablas nuevas (`pe_invoice`, `pe_customer`, `pe_product`, `pe_stockout_brand_pack`, `pe_planned_order`).
+**Escribir el SQL con las tablas y campos nativos (en ingles), sin subconsultas de alias a los nombres antiguos**
+(pedido del usuario, 2026-11-24; todas las queries migradas ya estan asi). Para saber que campo nativo corresponde a
+cada nombre antiguo, ver `referencias/compat_alz40/` (solo como diccionario, no para pegar en las queries) y
+`referencias/Mapeo_ALZ40_Campos.csv`. Las columnas de salida pueden conservar el nombre de siempre con `as`.
+Ejemplos: `hl` = `sales_volume_official`, `mes` = `cast(__partition_column as string)`, `estratificacion` =
+`pe_product.product_line`, `gerencia` = `sales_region_name`, `cliente_id` = `sold_to_customer_short_code` (venta) /
+`customer_short_code` (cliente), `caja_equivalente` = `sales_volume_official * 13.44086022`.
+**Ojo:** `pe_invoice` solo tiene historia desde **Mar'21** — para 2020 o Ene-Feb'21 usar el modelo viejo.
 
 El detalle completo (campos por tabla, llaves de join, filtros de negocio, particionado, pendientes
 por confirmar) vive en [`BITACORA_TABLAS.md`](BITACORA_TABLAS.md) — consultarlo antes de escribir
@@ -173,7 +190,8 @@ son estandar en otras companias de consumo masivo. Definiciones validadas por el
   tabla", es un input externo mensual que hay que conseguir aparte (no derivable solo de los
   datos).
   **Mapeo a Databricks:** misma tabla que `Brand Distribution` de stock/quiebres —
-  `dev_onep_fact_critical_items_summary_24h_brand_pack_gold` (ver `BITACORA_TABLAS.md`). Se calcula
+  `dev_onep_fact_critical_items_summary_24h_brand_pack_gold`, desde 2026-11-24 reemplazada por
+  `brewdat_uc_maz_prod.gld_maz_sales_bees.pe_stockout_brand_pack` (ALZ 4.0, ver `BITACORA_TABLAS.md`). Se calcula
   como `SUM(horas_prendidas_brand_pack) / SUM(horas_disponibles)` sobre el scope de fechas/SKUs/CDs
   — **sumar numerador y denominador, no promediar `pct_uptime_brand_pack` fila por fila** (da un
   resultado distinto si los grupos no tienen el mismo peso).

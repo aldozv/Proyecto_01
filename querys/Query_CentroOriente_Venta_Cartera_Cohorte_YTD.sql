@@ -11,38 +11,39 @@ WITH excl AS (
   SELECT DISTINCT cliente_id FROM slv_maz_dataexperience_peru_dm.dm_hm_cliente
   WHERE mes >= '202212' AND (UPPER(COALESCE(supervisor, '')) LIKE '%PRUEBA%' OR COALESCE(subcanal, '') LIKE 'MTKP%')
   UNION
-  SELECT cliente_id FROM slv_maz_dataexperience_peru_dm.dm_cliente
-  WHERE UPPER(COALESCE(supervisor, '')) LIKE '%PRUEBA%' OR COALESCE(subcanal, '') LIKE 'MTKP%'
+  SELECT dm_cliente.customer_short_code as cliente_id FROM brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer dm_cliente
+  WHERE UPPER(COALESCE(dm_cliente.sales_subregion_name, '')) LIKE '%PRUEBA%' OR COALESCE(dm_cliente.subchannel_name, '') LIKE 'MTKP%'
 ),
 cli AS (
-  SELECT c.cliente_id,
-    REPLACE(c.gerencia, 'PE Ger P4 ', '') AS gv,
-    CASE WHEN e.cliente_id IS NULL AND LEN(c.cliente_id) = 8
-          AND c.unidad_negocio NOT LIKE 'DAs Sellout' AND c.unidad_negocio NOT LIKE 'Consumidor'
+  SELECT c.customer_short_code as cliente_id,
+    REPLACE(c.sales_region_name, 'PE Ger P4 ', '') AS gv,
+    CASE WHEN e.cliente_id IS NULL AND LEN(c.customer_short_code) = 8
+          AND c.business_unit NOT LIKE 'DAs Sellout' AND c.business_unit NOT LIKE 'Consumidor'
          THEN 'Cartera' ELSE 'Fuera de cartera' END AS en_cartera,
-    CASE WHEN YEAR(c.fecha_alta) >= 2026 THEN 'Nuevo 2026' WHEN YEAR(c.fecha_alta) = 2025 THEN 'Nuevo 2025' ELSE 'Antiguo' END AS cohorte,
-    CASE WHEN c.estado = '1' THEN 'Activo' ELSE 'Inactivo' END AS estado_actual,
-    CASE WHEN c.unidad_negocio_revenue_volumen_meta = 'High End' THEN 'DSD ON'
-         ELSE COALESCE(c.unidad_negocio_revenue_volumen_meta, 'Sin clasificar') END AS canal,
-    CASE WHEN LOWER(COALESCE(c.supervisor, '')) LIKE '%promotor gen%' THEN 1 ELSE 0 END AS generico
-  FROM slv_maz_dataexperience_peru_dm.dm_cliente c
-  LEFT JOIN excl e ON c.cliente_id = e.cliente_id
-  WHERE c.direccion = 'PE Dir Centro Orient'
+    CASE WHEN YEAR(c.customer_updated_at) >= 2026 THEN 'Nuevo 2026' WHEN YEAR(c.customer_updated_at) = 2025 THEN 'Nuevo 2025' ELSE 'Antiguo' END AS cohorte,
+    CASE WHEN c.customer_status = '1' THEN 'Activo' ELSE 'Inactivo' END AS estado_actual,
+    CASE WHEN c.business_unit_target_volume = 'High End' THEN 'DSD ON'
+         ELSE COALESCE(c.business_unit_target_volume, 'Sin clasificar') END AS canal,
+    CASE WHEN LOWER(COALESCE(c.sales_subregion_name, '')) LIKE '%promotor gen%' THEN 1 ELSE 0 END AS generico
+  FROM brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer c
+  LEFT JOIN excl e ON c.customer_short_code = e.cliente_id
+  WHERE c.sales_area_name = 'PE Dir Centro Orient'
 ),
 v AS (
-  SELECT v.cliente_id,
-    SUM(CASE WHEN v.mes LIKE '2023%' THEN v.hl ELSE 0 END) AS hl_23,
-    SUM(CASE WHEN v.mes LIKE '2024%' THEN v.hl ELSE 0 END) AS hl_24,
-    SUM(CASE WHEN v.mes LIKE '2025%' THEN v.hl ELSE 0 END) AS hl_25,
-    SUM(CASE WHEN v.mes LIKE '2026%' THEN v.hl ELSE 0 END) AS hl_26
-  FROM slv_maz_dataexperience_peru_dm.dm_venta v
-  WHERE v.mes IN ('202301','202302','202303','202304','202305','202306','202307','202308','202309','202310',
+  SELECT v.sold_to_customer_short_code as cliente_id,
+    SUM(CASE WHEN cast(v.__partition_column as string) LIKE '2023%' THEN v.sales_volume_official ELSE 0 END) AS hl_23,
+    SUM(CASE WHEN cast(v.__partition_column as string) LIKE '2024%' THEN v.sales_volume_official ELSE 0 END) AS hl_24,
+    SUM(CASE WHEN cast(v.__partition_column as string) LIKE '2025%' THEN v.sales_volume_official ELSE 0 END) AS hl_25,
+    SUM(CASE WHEN cast(v.__partition_column as string) LIKE '2026%' THEN v.sales_volume_official ELSE 0 END) AS hl_26
+  FROM brewdat_uc_delta_maz_prod.gld_maz_sales_sell_in.pe_invoice v
+    left join brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_product v_p on v_p.product_short_code = v.product_short_code
+  WHERE cast(v.__partition_column as string) IN ('202301','202302','202303','202304','202305','202306','202307','202308','202309','202310',
                   '202401','202402','202403','202404','202405','202406','202407','202408','202409','202410',
                   '202501','202502','202503','202504','202505','202506','202507','202508','202509','202510',
                   '202601','202602','202603','202604','202605','202606','202607','202608','202609','202610')
-    AND v.indicadores_comerciales = 1
-    AND v.estratificacion IN ('Cervezas', 'Licores', 'Ready To Drink')
-  GROUP BY v.cliente_id
+    AND v.invoice_commercial_flag = 1
+    AND v_p.product_line IN ('Cervezas', 'Licores', 'Ready To Drink')
+  GROUP BY v.sold_to_customer_short_code
 )
 SELECT c.gv, c.canal, c.en_cartera, c.cohorte, c.estado_actual, c.generico,
   CASE WHEN COALESCE(v.hl_25, 0) > 0 AND COALESCE(v.hl_26, 0) > 0 THEN 'Compro ambos anios'

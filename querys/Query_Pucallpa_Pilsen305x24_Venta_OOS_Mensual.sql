@@ -6,33 +6,33 @@
 -- No incluye la variante Fresh 305 RT 24X1 (material 23550, brand_pack 'P.Fresh 305 RB').
 
 -- [1] Venta
-select v.mes, c.centro_id,
-  sum(v.caja_fisica) as cf,
-  sum(v.hl) as hl
-from brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_venta v
-join brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_cliente c on v.cliente_id = c.cliente_id
-where v.mes between '202301' and '202611'
-  and v.fecha_venta <= date'2026-11-09'
-  and v.indicadores_comerciales = 1
-  and c.gerencia = 'PE Ger P4 Pucall Hco'
-  and c.centro_id in ('SJ90','SJ93','SJ97')
-  and v.material_id = '15421'
+select cast(v.__partition_column as string) as mes, c.distribution_center_code as centro_id,
+  sum(v.billed_sales_boxes_quantity) as cf,
+  sum(v.sales_volume_official) as hl
+from brewdat_uc_delta_maz_prod.gld_maz_sales_sell_in.pe_invoice v
+join brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer c on v.sold_to_customer_short_code = c.customer_short_code
+where cast(v.__partition_column as string) between '202301' and '202611'
+  and v.invoice_date <= date'2026-11-09'
+  and v.invoice_commercial_flag = 1
+  and c.sales_region_name = 'PE Ger P4 Pucall Hco'
+  and c.distribution_center_code in ('SJ90','SJ93','SJ97')
+  and v.product_short_code = '15421'
 group by 1, 2
 order by 1, 2
 limit 1000;
 
 -- [2] Stock out
-select v.mes, v.centro_id,
+select v.period as mes, v.distribution_center_code as centro_id,
   count(distinct v.out_of_stock_date) as dias,
-  sum(v.horas_oos_brand_pack) as horas_oos,
-  sum(v.horas_disponibles) as horas_disp,
-  sum(v.horas_prendidas_brand_pack) / nullif(sum(v.horas_disponibles), 0) as pct_uptime
-from delta.`/Volumes/brewdat_uc_mazana_dev/slv_maz_dataexperience_peru_data/workspace/growth/dev_onep_fact_critical_items_summary_24h_brand_pack_gold` v
-where v.mes between '202501' and '202611'
+  sum(v.out_of_stock_hours) as horas_oos,
+  sum(v.available_hours) as horas_disp,
+  sum(v.in_stock_hours) / nullif(sum(v.available_hours), 0) as pct_uptime
+from brewdat_uc_maz_prod.gld_maz_sales_bees.pe_stockout_brand_pack v
+where v.period between '202501' and '202611'
   and v.out_of_stock_date <= date'2026-11-09'
-  and v.activo_en_cd = 1
-  and v.centro_id in ('SJ90','SJ93','SJ97')
-  and v.brand_pack = 'P.Callao 305 RB'
+  and v.active_flag = 1
+  and v.distribution_center_code in ('SJ90','SJ93','SJ97')
+  and v.brand_pack_name = 'P.Callao 305 RB'
   and dayofweek(v.out_of_stock_date) <> 1
 group by 1, 2
 order by 1, 2

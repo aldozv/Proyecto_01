@@ -4,17 +4,17 @@
 -- (Distribuidores Autorizados que se abastecen del CD mas grande sin importar la gerencia de
 -- facturacion) u otra cosa. Reemplazar {{GERENCIA_IN_LIST}} y {{CD_SOSPECHOSO}}.
 SELECT
-  v.gerencia,
-  c.centro,
-  COALESCE(c.unidad_negocio_revenue_volumen_meta, 'Sin clasificar') AS canal_meta,
+  v.sales_region_name as gerencia,
+  c.distribution_center_name as centro,
+  COALESCE(c.business_unit_target_volume, 'Sin clasificar') AS canal_meta,
   COUNT(*) AS filas,
-  SUM(v.hl) AS hl
-FROM brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_venta v
-LEFT JOIN brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_cliente c
-  ON v.cliente_id = c.cliente_id
-WHERE v.mes = '{{MES_HASTA}}'
-  AND v.gerencia IN ({{GERENCIA_IN_LIST}})
-  AND c.centro = '{{CD_SOSPECHOSO}}'
-  AND v.indicadores_comerciales = 1
-GROUP BY v.gerencia, c.centro, COALESCE(c.unidad_negocio_revenue_volumen_meta, 'Sin clasificar')
-ORDER BY v.gerencia, hl DESC
+  SUM(v.sales_volume_official) AS hl
+FROM brewdat_uc_delta_maz_prod.gld_maz_sales_sell_in.pe_invoice v
+LEFT JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer c
+  ON v.sold_to_customer_short_code = c.customer_short_code
+WHERE cast(v.__partition_column as string) = '{{MES_HASTA}}'
+  AND v.sales_region_name IN ({{GERENCIA_IN_LIST}})
+  AND c.distribution_center_name = '{{CD_SOSPECHOSO}}'
+  AND v.invoice_commercial_flag = 1
+GROUP BY v.sales_region_name, c.distribution_center_name, COALESCE(c.business_unit_target_volume, 'Sin clasificar')
+ORDER BY v.sales_region_name, hl DESC

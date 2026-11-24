@@ -30,7 +30,7 @@ SELECT
     ptr_base_total_promo, 
     descuento_soles_total
 FROM slv_maz_dataexperience_peru_dm.dm_combo a
-left join slv_maz_dataexperience_peru_revenue.revenue_maestro_etiquetas b on b.abreviacion_sap = a.abreviacion_sap and b.proyecto = 'combos_promos'
+left join brewdat_uc_maz_dev.gld_maz_sales_promo_pe.revenue_maestro_etiquetas b on b.abreviacion_sap = a.abreviacion_sap and b.proyecto = 'combos_promos'
 WHERE 
     a.desde >= current_timestamp-interval'5 hours'-interval'2 month'
     and a.cliente_id in (select cliente_id from clientes)
@@ -57,7 +57,7 @@ SELECT
     a.periodo_promo
     
 FROM slv_maz_dataexperience_peru_dm.dm_promocion a
-left join slv_maz_dataexperience_peru_revenue.revenue_maestro_etiquetas b on b.abreviacion_sap = a.abreviacion_sap and b.proyecto = 'promos'
+left join brewdat_uc_maz_dev.gld_maz_sales_promo_pe.revenue_maestro_etiquetas b on b.abreviacion_sap = a.abreviacion_sap and b.proyecto = 'promos'
 WHERE 
     a.desde >= current_timestamp-interval'5 hours'-interval'2 month'
     and a.cliente_id in (select cliente_id from clientes)

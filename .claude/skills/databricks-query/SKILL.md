@@ -13,7 +13,12 @@ usando solo `curl` (no requiere Python, Node ni jq — ninguno esta instalado en
 Se leen automaticamente desde `.env` en la raiz del proyecto:
 
 - `DATABRICKS_SERVER_HOSTNAME` — host del workspace, ej. `adb-xxxx.azuredatabricks.net`
-- `DATABRICKS_TOKEN` — personal access token (`dapi...`)
+- `DATABRICKS_PROFILE` — (preferido, vigente desde 2026-11-24) perfil de la CLI de Databricks con login
+  OAuth del usuario (`databricks auth login --host https://<host> --profile nuevo`). El script pide el
+  token a la CLI en cada consulta (se renueva solo). Si el token expira del todo, el usuario debe
+  repetir el login. La CLI esta en `%LOCALAPPDATA%\Microsoft\WinGet\Packages\Databricks.DatabricksCLI_*`
+  (o definir `DATABRICKS_CLI` en `.env`).
+- `DATABRICKS_TOKEN` — (alternativa) personal access token (`dapi...`), solo si no hay `DATABRICKS_PROFILE`
 - `DATABRICKS_HTTP_PATH` — ej. `/sql/1.0/warehouses/<warehouse_id>` (el warehouse_id se extrae del final del path)
 - `DATABRICKS_CATALOG` — (opcional) catalogo por defecto
 

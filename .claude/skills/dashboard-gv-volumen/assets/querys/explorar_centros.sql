@@ -6,15 +6,15 @@
 --   'PE Ger P4 Tarapoto','PE Ger P4 Iquitos'
 -- Usa el mes mas reciente disponible nomas (no todo el rango) para que sea rapido.
 SELECT
-  v.gerencia,
-  c.centro,
+  v.sales_region_name as gerencia,
+  c.distribution_center_name as centro,
   COUNT(*) AS filas,
-  SUM(v.hl) AS hl
-FROM brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_venta v
-LEFT JOIN brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_cliente c
-  ON v.cliente_id = c.cliente_id
-WHERE v.mes = '{{MES_HASTA}}'
-  AND v.gerencia IN ({{GERENCIA_IN_LIST}})
-  AND v.indicadores_comerciales = 1
-GROUP BY v.gerencia, c.centro
-ORDER BY v.gerencia, hl DESC
+  SUM(v.sales_volume_official) AS hl
+FROM brewdat_uc_delta_maz_prod.gld_maz_sales_sell_in.pe_invoice v
+LEFT JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer c
+  ON v.sold_to_customer_short_code = c.customer_short_code
+WHERE cast(v.__partition_column as string) = '{{MES_HASTA}}'
+  AND v.sales_region_name IN ({{GERENCIA_IN_LIST}})
+  AND v.invoice_commercial_flag = 1
+GROUP BY v.sales_region_name, c.distribution_center_name
+ORDER BY v.sales_region_name, hl DESC

@@ -25,7 +25,7 @@ promo_map AS (
     GROUP BY promocion_id
 ),
 etiquetas AS (
-    SELECT abreviacion_sap, listado FROM slv_maz_dataexperience_peru_revenue.revenue_maestro_etiquetas
+    SELECT abreviacion_sap, listado FROM brewdat_uc_maz_dev.gld_maz_sales_promo_pe.revenue_maestro_etiquetas
     WHERE proyecto = 'promos'
 ),
 verano AS (

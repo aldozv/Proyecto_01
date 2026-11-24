@@ -26,8 +26,26 @@ if [ -f "$ENV_FILE" ]; then
 fi
 
 : "${DATABRICKS_SERVER_HOSTNAME:?falta DATABRICKS_SERVER_HOSTNAME en .env}"
-: "${DATABRICKS_TOKEN:?falta DATABRICKS_TOKEN en .env}"
 : "${DATABRICKS_HTTP_PATH:?falta DATABRICKS_HTTP_PATH en .env}"
+
+# Autenticacion: si hay DATABRICKS_PROFILE, el token sale de la CLI de Databricks
+# (login OAuth del usuario via `databricks auth login --profile <perfil>`); la CLI
+# lo renueva sola. Si no, se usa DATABRICKS_TOKEN (token personal dapi...) del .env.
+if [ -n "${DATABRICKS_PROFILE:-}" ]; then
+  DB_CLI="${DATABRICKS_CLI:-$(command -v databricks 2>/dev/null || true)}"
+  if [ -z "$DB_CLI" ]; then
+    DB_CLI="$(ls "$LOCALAPPDATA"/Microsoft/WinGet/Packages/Databricks.DatabricksCLI_*/databricks.exe 2>/dev/null | head -1 || true)"
+  fi
+  [ -n "$DB_CLI" ] || { echo "Error: no se encontro la CLI de Databricks (define DATABRICKS_CLI en .env)." >&2; exit 1; }
+  DATABRICKS_TOKEN="$("$DB_CLI" auth token --profile "$DATABRICKS_PROFILE" 2>/dev/null \
+    | grep -oE '"access_token"[[:space:]]*:[[:space:]]*"[^"]+"' | sed -E 's/.*"([^"]+)"$/\1/')"
+  if [ -z "$DATABRICKS_TOKEN" ]; then
+    echo "Error: no se pudo obtener token del perfil '$DATABRICKS_PROFILE'. El usuario debe correr:" >&2
+    echo "  databricks auth login --host https://$DATABRICKS_SERVER_HOSTNAME --profile $DATABRICKS_PROFILE" >&2
+    exit 1
+  fi
+fi
+: "${DATABRICKS_TOKEN:?falta DATABRICKS_TOKEN o DATABRICKS_PROFILE en .env}"
 
 WAREHOUSE_ID="${DATABRICKS_HTTP_PATH##*/}"
 HOST="https://${DATABRICKS_SERVER_HOSTNAME}"
@@ -70,11 +88,12 @@ if ! printf '%s' "$SQL" | grep -qiE '\blimit[[:space:]]+[0-9]'; then
 fi
 
 # 3) Tablas fact grandes conocidas requieren filtro de fecha explicito.
-BIG_TABLES='dm_venta'
+# pe_invoice (ALZ 4.0) se filtra por __partition_column (anomes) o invoice_date.
+BIG_TABLES='dm_venta|pe_invoice'
 if printf '%s' "$SQL" | grep -qiE "\\b($BIG_TABLES)\\b"; then
-  if ! printf '%s' "$SQL" | grep -qiE '\b(fecha_venta|anomes|\.mes\b)\b'; then
+  if ! printf '%s' "$SQL" | grep -qiE '\b(fecha_venta|anomes|\.mes\b|__partition_column|invoice_date)\b'; then
     if [ "$FORCE" -ne 1 ]; then
-      echo "BLOQUEADO: la consulta toca una tabla fact grande (dm_venta) sin filtro visible por fecha_venta/anomes/mes." >&2
+      echo "BLOQUEADO: la consulta toca una tabla fact grande (dm_venta/pe_invoice) sin filtro visible por fecha (fecha_venta/anomes/mes/__partition_column/invoice_date)." >&2
       echo "Sin filtro de fecha el warehouse puede escanear todo el historico. Agrega el filtro o vuelve a correr con --force si es intencional." >&2
       exit 1
     fi

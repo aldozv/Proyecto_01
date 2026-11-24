@@ -2,16 +2,17 @@
 -- Para cruzar a grosso modo con temperatura diaria por ciudad (analisis exploratorio,
 -- no oficial). Usa c.gerencia/c.direccion de dm_cliente por regla vigente del proyecto.
 SELECT
-  v.fecha_venta,
-  c.gerencia,
-  SUM(v.hl) AS hl
-FROM slv_maz_dataexperience_peru_dm.dm_venta v
-JOIN slv_maz_dataexperience_peru_dm.dm_cliente c
-  ON v.cliente_id = c.cliente_id
-WHERE v.mes = '202608'
-  AND v.indicadores_comerciales = 1
-  AND c.direccion = 'PE Dir Centro Orient'
-  AND c.gerencia <> 'PE Ger P4 DA Jun Puc'
-  AND v.estratificacion IN ('Cervezas', 'Licores', 'Ready To Drink')
-GROUP BY v.fecha_venta, c.gerencia
-ORDER BY v.fecha_venta, c.gerencia
+  v.invoice_date as fecha_venta,
+  c.sales_region_name as gerencia,
+  SUM(v.sales_volume_official) AS hl
+FROM brewdat_uc_delta_maz_prod.gld_maz_sales_sell_in.pe_invoice v
+    left join brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_product v_p on v_p.product_short_code = v.product_short_code
+JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer c
+  ON v.sold_to_customer_short_code = c.customer_short_code
+WHERE cast(v.__partition_column as string) = '202608'
+  AND v.invoice_commercial_flag = 1
+  AND c.sales_area_name = 'PE Dir Centro Orient'
+  AND c.sales_region_name <> 'PE Ger P4 DA Jun Puc'
+  AND v_p.product_line IN ('Cervezas', 'Licores', 'Ready To Drink')
+GROUP BY v.invoice_date, c.sales_region_name
+ORDER BY v.invoice_date, c.sales_region_name

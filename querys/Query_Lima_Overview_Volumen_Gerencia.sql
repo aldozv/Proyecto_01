@@ -1,11 +1,12 @@
 -- Overview Lima: volumen Beer+Rtds (HL) por gerencia (dm_cliente vigente) x mes, Ene-Nov 2023-2026. Corrido 2026-11-20.
-SELECT c.gerencia, SUBSTR(v.mes,1,4) AS anio, SUBSTR(v.mes,5,2) AS mes_num, SUM(v.hl) AS hl
-FROM brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_venta v
-INNER JOIN brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_cliente c ON v.cliente_id = c.cliente_id
-WHERE (v.mes BETWEEN '202301' AND '202311' OR v.mes BETWEEN '202401' AND '202411' OR v.mes BETWEEN '202501' AND '202511' OR v.mes BETWEEN '202601' AND '202611')
-  AND c.direccion = 'PE Dir Lima'
-  AND v.indicadores_comerciales = 1
-  AND v.estratificacion IN ('Cervezas','Licores','Ready To Drink')
+SELECT c.sales_region_name as gerencia, SUBSTR(cast(v.__partition_column as string),1,4) AS anio, SUBSTR(cast(v.__partition_column as string),5,2) AS mes_num, SUM(v.sales_volume_official) AS hl
+FROM brewdat_uc_delta_maz_prod.gld_maz_sales_sell_in.pe_invoice v
+    left join brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_product v_p on v_p.product_short_code = v.product_short_code
+INNER JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer c ON v.sold_to_customer_short_code = c.customer_short_code
+WHERE (cast(v.__partition_column as string) BETWEEN '202301' AND '202311' OR cast(v.__partition_column as string) BETWEEN '202401' AND '202411' OR cast(v.__partition_column as string) BETWEEN '202501' AND '202511' OR cast(v.__partition_column as string) BETWEEN '202601' AND '202611')
+  AND c.sales_area_name = 'PE Dir Lima'
+  AND v.invoice_commercial_flag = 1
+  AND v_p.product_line IN ('Cervezas','Licores','Ready To Drink')
 GROUP BY 1,2,3
 ORDER BY 1,2,3
 LIMIT 5000

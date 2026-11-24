@@ -17,7 +17,7 @@ from
   slv_maz_dataexperience_peru_dm.dm_venta a
     left join slv_maz_dataexperience_peru_dm.dm_cliente b
       on b.cliente_id = a.cliente_id
-    left join brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_revenue.revenue_material_agrupacion c
+    left join brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_revenue.revenue_material_agrupacion c
       on c.material_id = a.material_id
       and c.mes = date_format(current_date,'yyyyMM')
     LEFT JOIN slv_maz_dataexperience_peru_das.das_nombre_homologacion e

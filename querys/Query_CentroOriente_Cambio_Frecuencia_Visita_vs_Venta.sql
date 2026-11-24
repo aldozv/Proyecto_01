@@ -6,8 +6,8 @@ WITH excl AS (
   SELECT DISTINCT cliente_id FROM slv_maz_dataexperience_peru_dm.dm_hm_cliente
   WHERE mes >= '202212' AND (UPPER(COALESCE(supervisor, '')) LIKE '%PRUEBA%' OR COALESCE(subcanal, '') LIKE 'MTKP%')
   UNION
-  SELECT cliente_id FROM slv_maz_dataexperience_peru_dm.dm_cliente
-  WHERE UPPER(COALESCE(supervisor, '')) LIKE '%PRUEBA%' OR COALESCE(subcanal, '') LIKE 'MTKP%'
+  SELECT dm_cliente.customer_short_code as cliente_id FROM brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer dm_cliente
+  WHERE UPPER(COALESCE(dm_cliente.sales_subregion_name, '')) LIKE '%PRUEBA%' OR COALESCE(dm_cliente.subchannel_name, '') LIKE 'MTKP%'
 ),
 c AS (
   SELECT h.mes, h.cliente_id,
@@ -39,15 +39,16 @@ p AS (
   GROUP BY cliente_id
 ),
 v AS (
-  SELECT v.cliente_id,
-    SUM(CASE WHEN v.mes LIKE '2025%' THEN v.hl ELSE 0 END) AS hl_25,
-    SUM(CASE WHEN v.mes LIKE '2026%' THEN v.hl ELSE 0 END) AS hl_26
-  FROM slv_maz_dataexperience_peru_dm.dm_venta v
-  WHERE v.mes IN ('202501','202502','202503','202504','202505','202506','202507','202508','202509','202510',
+  SELECT v.sold_to_customer_short_code as cliente_id,
+    SUM(CASE WHEN cast(v.__partition_column as string) LIKE '2025%' THEN v.sales_volume_official ELSE 0 END) AS hl_25,
+    SUM(CASE WHEN cast(v.__partition_column as string) LIKE '2026%' THEN v.sales_volume_official ELSE 0 END) AS hl_26
+  FROM brewdat_uc_delta_maz_prod.gld_maz_sales_sell_in.pe_invoice v
+    left join brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_product v_p on v_p.product_short_code = v.product_short_code
+  WHERE cast(v.__partition_column as string) IN ('202501','202502','202503','202504','202505','202506','202507','202508','202509','202510',
                   '202601','202602','202603','202604','202605','202606','202607','202608','202609','202610')
-    AND v.indicadores_comerciales = 1
-    AND v.estratificacion IN ('Cervezas', 'Licores', 'Ready To Drink')
-  GROUP BY v.cliente_id
+    AND v.invoice_commercial_flag = 1
+    AND v_p.product_line IN ('Cervezas', 'Licores', 'Ready To Drink')
+  GROUP BY v.sold_to_customer_short_code
 )
 SELECT p.gv, p.canal, p.generico_oct26,
   COALESCE(p.frec_25, 'No en cartera') AS frec_oct25,

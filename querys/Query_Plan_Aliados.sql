@@ -125,7 +125,7 @@ LEFT JOIN slv_maz_dataexperience_peru_dm.dm_cliente c
 LEFT JOIN slv_maz_dataexperience_peru_revenue.revenue_maestro_sku d
   ON d.sku = a.material_id
 
-LEFT JOIN slv_maz_dataexperience_peru_revenue.rev_lider_aliado_estado_whls e
+LEFT JOIN brewdat_uc_maz_dev.gld_maz_sales_promo_pe.rev_lider_aliado_estado_whls e
   ON e.material_id = a.material_id
 
 WHERE a.mes >= '202501'
@@ -234,7 +234,7 @@ WHERE mes = '202608'
   /* SOLO CLIENTES ALIADOS */
   AND cliente_id IN (
     SELECT DISTINCT cliente_id
-    FROM slv_maz_dataexperience_peru_revenue.revenue_dev_aliados
+    FROM brewdat_uc_maz_dev.gld_maz_sales_promo_pe.revenue_dev_aliados
     WHERE mes = '202608'
   )
 )

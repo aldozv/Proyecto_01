@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Deep Dive Single Serve Lima</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+@page { size: 1280px 720px; margin: 0; }
+:root { --y: #FFF200; --k: #111111; --g: #6b6b6b; --l: #e6e6e6; --up: #0f7b3e; --dn: #c62828; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: #ffffff; color: var(--k); font-family: "Barlow", "Segoe UI", Arial, sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+@media screen { body { background: #d9d9d9; padding: 20px 0; } .slide { margin: 0 auto 20px; box-shadow: 0 2px 10px rgba(0,0,0,.18); } }
+.slide { width: 1280px; height: 720px; position: relative; overflow: hidden; page-break-after: always; break-after: page; background: #ffffff; padding: 34px 40px 34px; }
+.slide:last-child { page-break-after: auto; break-after: auto; }
+.ybar { position: absolute; left: 0; right: 0; top: 0; height: 14px; background: var(--y); }
+h1.hd { font-family: "Barlow Condensed", "Arial Narrow", sans-serif; font-weight: 800; font-size: 31px; line-height: 1.08; margin: 12px 0 18px; text-transform: uppercase; letter-spacing: .005em; }
+.foot { position: absolute; left: 40px; right: 40px; bottom: 12px; font-size: 10px; font-weight: 700; display: flex; justify-content: space-between; text-transform: uppercase; letter-spacing: .03em; }
+.foot .src { font-weight: 400; text-transform: none; color: #8a8a8a; letter-spacing: 0; }
+.up { color: var(--up); } .dn { color: var(--dn); } .mut { color: #8a8a8a; }
+.cols { display: grid; gap: 16px; }
+.col { border: 1px solid #dcdcdc; display: flex; flex-direction: column; min-width: 0; }
+.col > .ch { background: var(--y); font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 18px; padding: 7px 12px; text-transform: uppercase; }
+.col > .cb { padding: 12px 14px; flex: 1; min-height: 0; }
+.blk { background: var(--k); color: #fff; padding: 16px 20px; }
+.blk .n { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 54px; line-height: 1; color: var(--y); }
+.blk .n small { font-size: 22px; color: #fff; font-weight: 600; margin-left: 6px; }
+.blk .t { font-size: 15px; margin-top: 8px; line-height: 1.3; font-weight: 600; }
+.blk .t2 { font-size: 13px; margin-top: 4px; color: #cfcfcf; line-height: 1.35; }
+.blk .t2 b { color: #fff; }
+.bar { position: absolute; left: 40px; right: 40px; bottom: 40px; background: var(--k); color: #fff; padding: 12px 18px; font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 19px; text-transform: uppercase; letter-spacing: .01em; }
+.bar b { color: var(--y); margin-right: 12px; }
+ul.b { margin: 0; padding: 0; list-style: none; font-size: 14px; line-height: 1.4; }
+ul.b li { position: relative; padding-left: 18px; margin-bottom: 9px; }
+ul.b li:before { content: ""; position: absolute; left: 0; top: 5px; width: 10px; height: 10px; background: var(--y); }
+ul.b li.r:before { background: var(--dn); }
+ul.b li.k:before { background: var(--k); }
+table.t { width: 100%; border-collapse: collapse; font-size: 13.5px; font-variant-numeric: tabular-nums; }
+table.t th { background: var(--k); color: #fff; font-family: "Barlow Condensed", sans-serif; font-weight: 600; font-size: 15px; padding: 6px 8px; text-align: right; }
+table.t td { padding: 6px 8px; border-bottom: 1px solid #e3e3e3; text-align: right; }
+table.t td:first-child, table.t th:first-child { text-align: left; }
+table.t tr.tt td { background: var(--y); font-weight: 700; border-bottom: none; }
+.cap { font-size: 11px; color: #8a8a8a; margin-top: 8px; line-height: 1.3; }
+table.t.sm { font-size: 12.5px; }
+table.t.sm th { font-size: 13.5px; padding: 4px 7px; }
+table.t.sm td { padding: 3.5px 7px; }
+table.t th.gh { text-align: center; background: #333; font-size: 13px; letter-spacing: .03em; text-transform: uppercase; }
+table.t .bl { border-left: 2px solid #111; }
+table.t th.bl { border-left: 2px solid #fff; }
+table.t td.mut { color: #9a9a9a; }
+table.t.hm td { text-align: center; font-weight: 700; padding: 6px 4px; line-height: 1.1; }
+table.t.hm td:first-child { text-align: left; font-weight: 600; padding-left: 8px; }
+table.t.hm th { text-align: center; font-size: 13.5px; padding: 6px 4px; }
+table.t.hm th:first-child { text-align: left; }
+table.t.hm td small { display: block; margin: 2px 0 0; font-size: 10.5px; font-weight: 500; color: #555; }
+table.t.hm.bp { font-size: 12.5px; }
+table.t.hm.bp th { font-size: 12.5px; line-height: 1.1; }
+table.t.hm tr.tt td small { color: #111; }
+td.hm-up2 { background: #bfe3c9; color: #0b5e2f; }
+td.hm-up1 { background: #e8f4eb; color: #0f7b3e; }
+td.hm-dn1 { background: #fbe7e4; color: #b3261e; }
+td.hm-dn2 { background: #f2bdb6; color: #8e1c16; }
+td.hm-n { background: #eef3fb; color: #2a5ca8; }
+ul.b.tight { font-size: 13px; line-height: 1.32; }
+ul.b.tight li { margin-bottom: 6px; }
+table.t.mb { font-size: 12px; }
+table.t.mb th { font-size: 12.5px; padding: 4px 5px; }
+table.t.mb td { padding: 3.5px 5px; }
+table.t.mb.xs { font-size: 11.5px; }
+table.t.mb.xs th { font-size: 12px; padding: 3px 5px; }
+table.t.mb.xs td { padding: 2.5px 5px; }
+.note2 { font-size: 12.5px; line-height: 1.32; margin-top: 7px; }
+.note2 b { font-weight: 700; }
+table.t.hm.cmp td { padding: 3px 4px; }
+table.t.hm.cmp th { padding: 4px; }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 12.5px; color: #444; margin: 0 0 6px; }
+.legend i { display: inline-block; width: 18px; height: 0; border-top: 3px solid; vertical-align: 3px; margin-right: 6px; }
+.legend i.sq { width: 12px; height: 12px; border: none; vertical-align: -1px; }
+.box { position: relative; }
+/* portada */
+.cover { padding: 0; background: #fff; }
+.cover .panel { position: absolute; left: 48px; top: 120px; width: 600px; bottom: 0; background: var(--k); border-top-right-radius: 120px; color: #fff; padding: 70px 48px; }
+.cover .panel h2 { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 84px; line-height: .98; margin: 0 0 26px; text-transform: uppercase; }
+.cover .panel h2 span { color: var(--y); }
+.cover .panel p { font-size: 22px; font-weight: 300; margin: 6px 0; color: #e6e6e6; }
+.cover .brand { position: absolute; left: 48px; top: 40px; font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 30px; letter-spacing: .12em; }
+.cover .tag { position: absolute; right: 48px; top: 40px; background: var(--k); color: var(--y); font-family: "Barlow Condensed", sans-serif; font-weight: 700; font-size: 18px; padding: 8px 18px; border-radius: 0 0 0 24px; letter-spacing: .1em; }
+.cover .big { position: absolute; right: 70px; top: 190px; width: 470px; display: flex; flex-direction: column; gap: 22px; }
+.cover .big .k { border-left: 10px solid var(--y); padding: 4px 0 4px 20px; }
+.cover .big .k .v { font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 64px; line-height: 1; }
+.cover .big .k .l { font-size: 16px; color: #444; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<!-- 1 · PORTADA -->
+<section class="slide cover">
+  <div class="brand">BACKUS</div>
+  <div class="tag">DIRECCIÓN LIMA</div>
+  <div class="panel">
+    <h2>Deep Dive<br><span>Single Serve</span></h2>
+    <p>Single Serve, Cristal 473 y Budweiser 355 lata</p>
+    <p>Volumen, Brand Distribution, precio y promos</p>
+    <p>YTD 2026 a mes cerrado · Beer+Rtds</p>
+    <p style="margin-top:34px;font-size:16px;color:#9a9a9a">Corte 20.11.26</p>
+  </div>
+  <div class="big">
+    <div class="k"><div class="v up">+30.2%</div><div class="l">Volumen Single Serve Ene-Oct vs 2025 (+281.4 mil HL)</div></div>
+    <div class="k"><div class="v up">+19.2%</div><div class="l">Brand Distribution Single Serve Ene-Set vs 2025 (+280.4 mil)</div></div>
+    <div class="k"><div class="v up">+139.8%</div><div class="l">Cristal 473 en volumen (+24.4 mil HL) · Budweiser 355 lata +78.3% (+5.6 mil HL)</div></div>
+  </div>
+</section>
+
+<!-- 2 · RESUMEN -->
+<section class="slide">
+  <div class="ybar"></div>
+  <h1 class="hd">Single Serve explica el 73% del crecimiento de Lima, y sin bajar precio</h1>
+  <div class="cols" style="grid-template-columns: 340px 1fr; gap: 22px;">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="blk">
+        <div class="n">1,212.0<small>mil HL</small></div>
+        <div class="t">Single Serve Ene-Oct 2026</div>
+        <div class="t2">vs LY <b>+30.2% (+281.4)</b> · vs 2024 <b>+33.4%</b> · vs 2023 <b>+36.6%</b></div>
+      </div>
+      <div class="blk">
+        <div class="n">34.0%<small>mix</small></div>
+        <div class="t">Peso de Single Serve en Beer+Rtds</div>
+        <div class="t2">2025: <b>29.3%</b> · gana <b>+4.7 pp</b> en un año</div>
+      </div>
+      <div class="blk">
+        <div class="n">1,739.2<small>mil</small></div>
+        <div class="t">Brand Distribution Single Serve Ene-Set</div>
+        <div class="t2">vs LY <b>+19.2% (+280.4)</b>: más que todo el crecimiento de BD de Lima (+180.8)</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="ch">Highlights</div>
+      <div class="cb">
+        <ul class="b tight">
+          <li><b>Single Serve crece en Beer+Rtds +30.2% (+281.4 mil HL)</b>, el 73% de lo que crece Lima (+385.6 mil HL). El 92% de ese aumento son <b>latas</b>: Mike's 355, Pilsen 473 y 355, Cusqueña 473, Cristal 473 y el lanzamiento de Pilsen Fresh.</li>
+          <li><b>Crece por más volumen por cliente, no por más clientes</b>: los compradores de Single Serve bajan −3%, pero cada uno compra +35% (de 11.7 a 15.7 HL en el año).</li>
+          <li><b>Single Serve no depende del precio</b>: su NR/HL sube +2.4% y su MACO crece +S/ 96 MM. Fuera de Cristal 473, no hay relación entre descuento y volumen.</li>
+          <li class="r"><b>Cristal 473 triplica volumen con descuento</b>: desde Ene'26 el descuento pasó del 8% al 28% del GSI y el NR/HL cayó −35%. Vende +24.4 mil HL, pero <b>su MACO cae −S/ 0.7 MM</b> y la marca Cristal en total solo crece +1.2%.</li>
+          <li><b>Budweiser 355 lata crece +78.3% (+5.6 mil HL) en Key Accounts</b> (86% del volumen, sin promo). En DSD vende con 41% de descuento y MACO casi cero.</li>
+          <li><b>Lima Este lidera Single Serve</b> (+54.4%, +62.8 mil HL). Por canal, DSD OFF (+123.7) y Key Accounts (+107.0) explican el 82%.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="bar"><b>LECTURA</b>Single Serve crece sano por portafolio y ejecución; Cristal 473 crece comprando volumen con margen</div>
+  <div class="foot"><span class="src">Fuente: dm_venta y pe_portfolio_hm_brand_distribution (Databricks), corte 20.11.26. Single Serve = ms_ss 'SS' en revenue_maestro_sku.</span><span>2</span></div>
+</section>
+
+<!-- 3 · SS MENSUAL -->
+<section class="slide">
+  <div class="ybar"></div>
+  <h1 class="hd">Single Serve: los 10 meses de 2026 son los más altos de la serie 2023-2026</h1>
+  <div class="cols" style="grid-template-columns: 1fr 380px; gap: 22px;">
+    <div class="col">
+      <div class="ch">Volumen mensual Single Serve (mil HL)</div>
+      <div class="cb">
+        <div class="legend"><span><i style="border-color:#111"></i>2026</span><span><i style="border-color:#d4c600"></i>2025</span><span><i style="border-color:#9a9a9a"></i>2024</span><span><i style="border-color:#cfcfcf;border-top-style:dashed"></i>2023</span><span class="mut">% = variación vs 2025</span></div>
+        <div class="box" style="height:420px"><canvas id="cSS"></canvas></div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="ch">Qué se ve</div>
+      <div class="cb">
+        <ul class="b">
+          <li><b>Todos los meses crecen a doble dígito vs LY</b>; el más débil es Abr (+11.4%).</li>
+          <li><b>Jun-Jul crecen +40% y +56%</b>: en 2025 fueron los meses más bajos del año (80 mil HL). En 2026 se mantienen sobre 110 mil HL.</li>
+          <li><b>Single Serve ya no cae en invierno</b>: en 2025 bajó −23% entre Abr y Jul; en 2026 sube +7%.</li>
+          <li class="k">Mar 2026 (135.2 mil HL) es el Ene-Oct más alto de los 4 años; solo Dic'25 (173.5, campaña de fin de año) lo supera.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="src">Fuente: dm_venta (Databricks), indicadores_comerciales = 1, gerencia vigente del cliente (dm_cliente). Ene-Oct de cada año.</span><span>3</span></div>
+</section>
+
+<!-- 4 · POR QUE CRECE SS -->
+<section class="slide">
+  <div class="ybar"></div>
+  <h1 class="hd">Por qué crece: latas, Mike's y Pilsen Fresh, con más volumen por cliente</h1>
+  <div class="cols" style="grid-template-columns: 1fr 400px; gap: 22px;">
+    <div class="col">
+      <div class="ch">Brandpacks que más aportan · Δ volumen Ene-Oct vs 2025 (mil HL)</div>
+      <div class="cb">
+        <div class="box" style="height:440px"><canvas id="cBP"></canvas></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="col">
+        <div class="ch">Por envase (mil HL)</div>
+        <div class="cb">
+          <table class="t sm">
+            <thead><tr><th>Envase</th><th>2026</th><th>Δ vs LY</th><th>vs LY</th><th>vs 2023</th></tr></thead>
+            <tbody>
+              <tr><td>Lata (CAN)</td><td>924.8</td><td class="up">+257.6</td><td class="up">+38.6%</td><td class="up">+54.3%</td></tr>
+              <tr><td>No retornable (NRB)</td><td>172.4</td><td class="up">+25.4</td><td class="up">+17.3%</td><td class="up">+10.4%</td></tr>
+              <tr><td>Retornable (RB)</td><td>114.8</td><td class="dn">−1.6</td><td class="dn">−1.4%</td><td class="dn">−12.9%</td></tr>
+              <tr class="tt"><td>Single Serve</td><td>1,212.0</td><td>+281.4</td><td>+30.2%</td><td>+36.6%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="col">
+        <div class="ch">Compradores Single Serve Ene-Oct</div>
+        <div class="cb">
+          <table class="t sm">
+            <thead><tr><th></th><th>2025</th><th>2026</th><th>Var.</th></tr></thead>
+            <tbody>
+              <tr><td>Compradores (POC)</td><td>79,570</td><td>76,979</td><td class="dn">−3.3%</td></tr>
+              <tr><td>HL por comprador</td><td>11.7</td><td>15.7</td><td class="up">+34.6%</td></tr>
+              <tr><td>% de POC Beer+Rtds que compra SS</td><td>90.1%</td><td>90.9%</td><td class="up">+0.8 pp</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <ul class="b tight" style="margin-top:2px">
+        <li><b>Mike's 355 duplica (+126%) subiendo precio</b> (NR/HL +3%): es el mayor aporte individual.</li>
+        <li><b>Pilsen Fresh</b> es nuevo en 2026 y ya suma 26.9 mil HL en 4 formatos.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span class="src">Fuente: dm_venta + revenue_maestro_sku (pack). Compradores = clientes con HL &gt; 0 en el periodo. Marcas agrupadas (Mike's, Cusqueña, Corona, Pilsen Fresh).</span><span>4</span></div>
+</section>
+
+<!-- 5 · DONDE CRECE SS -->
+<section class="slide">
+  <div class="ybar"></div>
+  <h1 class="hd">Dónde crece: Lima Este por gerencia; DSD OFF y Key Accounts por canal</h1>
+  <div class="cols" style="grid-template-columns: 1fr 1fr; gap: 20px;">
+    <div class="col">
+      <div class="ch">Single Serve por gerencia · Ene-Oct (mil HL)</div>
+      <div class="cb">
+        <table class="t sm">
+          <thead><tr><th>Gerencia</th><th>2026</th><th>Δ LY</th><th>vs LY</th><th>vs 2024</th><th>vs 2023</th><th>Mix SS</th></tr></thead>
+          <tbody>
+            <tr><td>Lima Este</td><td>178.4</td><td class="up">+62.8</td><td class="up">+54.4%</td><td class="up">+43.1%</td><td class="up">+33.4%</td><td>38.1%</td></tr>
+            <tr><td>Lima Sur</td><td>180.9</td><td class="up">+46.9</td><td class="up">+35.0%</td><td class="up">+26.9%</td><td class="up">+26.9%</td><td>34.1%</td></tr>
+            <tr><td>Lima Centro</td><td>161.9</td><td class="up">+42.9</td><td class="up">+36.0%</td><td class="up">+24.3%</td><td class="up">+15.4%</td><td>32.3%</td></tr>
+            <tr><td>May. y Eventos</td><td>239.8</td><td class="up">+40.4</td><td class="up">+20.3%</td><td class="up">+63.8%</td><td class="up">+95.2%</td><td>28.1%</td></tr>
+            <tr><td>Lima Norte</td><td>122.5</td><td class="up">+35.6</td><td class="up">+41.0%</td><td class="up">+24.2%</td><td class="up">+27.0%</td><td>21.1%</td></tr>
+            <tr><td>Lima Oeste</td><td>143.6</td><td class="up">+33.3</td><td class="up">+30.2%</td><td class="up">+11.1%</td><td class="up">+11.5%</td><td>32.7%</td></tr>
+            <tr><td>Central KA</td><td>184.8</td><td class="up">+19.5</td><td class="up">+11.8%</td><td class="up">+35.3%</td><td class="up">+50.5%</td><td>97.6%</td></tr>
+            <tr class="tt"><td>Total Lima</td><td>1,212.0</td><td>+281.4</td><td>+30.2%</td><td>+33.4%</td><td>+36.6%</td><td>34.0%</td></tr>
+          </tbody>
+        </table>
+        <ul class="b tight" style="margin-top:12px">
+          <li><b>Lima Norte tiene el mix más bajo</b> (21.1% vs 34.0% de Lima): es la gerencia con más espacio para Single Serve.</li>
+          <li><b>Lima Oeste es la que menos crece vs 2023</b> (+11.5%).</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col">
+      <div class="ch">Single Serve por canal · Ene-Oct (mil HL)</div>
+      <div class="cb">
+        <table class="t sm">
+          <thead><tr><th>Canal</th><th>2026</th><th>Δ LY</th><th>vs LY</th><th>vs 2023</th><th>NR/HL</th><th>Dscto % GSI</th></tr></thead>
+          <tbody>
+            <tr><td>DSD OFF</td><td>381.5</td><td class="up">+123.7</td><td class="up">+48.0%</td><td class="up">+20.8%</td><td>521 <span class="dn">(−3%)</span></td><td>15.2% <span class="mut">(12.5%)</span></td></tr>
+            <tr><td>Key Accounts</td><td>523.8</td><td class="up">+107.0</td><td class="up">+25.7%</td><td class="up">+34.2%</td><td>693 <span class="up">(+5%)</span></td><td>3.2% <span class="mut">(3.6%)</span></td></tr>
+            <tr><td>Mayoristas</td><td>192.6</td><td class="up">+39.6</td><td class="up">+25.9%</td><td class="up">+138.5%</td><td>558 <span class="up">(+6%)</span></td><td>16.0% <span class="mut">(15.3%)</span></td></tr>
+            <tr><td>DSD ON</td><td>41.1</td><td class="up">+8.5</td><td class="up">+25.9%</td><td class="up">+26.9%</td><td>592 <span class="mut">(0%)</span></td><td>12.1% <span class="mut">(9.3%)</span></td></tr>
+            <tr><td>High End</td><td>25.6</td><td class="up">+1.9</td><td class="up">+8.0%</td><td>+0.0%</td><td>606 <span class="dn">(−4%)</span></td><td>15.4% <span class="mut">(10.3%)</span></td></tr>
+            <tr><td>Eventos</td><td>47.3</td><td class="up">+0.7</td><td class="up">+1.6%</td><td class="up">+10.6%</td><td>553 <span class="up">(+6%)</span></td><td>15.0% <span class="mut">(15.3%)</span></td></tr>
+            <tr><td>DAs</td><td>0.2</td><td>0.0</td><td class="dn">−4.0%</td><td class="up">+69.8%</td><td>552</td><td>14.0%</td></tr>
+            <tr class="tt"><td>Total Lima</td><td>1,212.0</td><td>+281.4</td><td>+30.2%</td><td>+36.6%</td><td>607 (+2%)</td><td>9.9% (8.8%)</td></tr>
+          </tbody>
+        </table>
+        <ul class="b tight" style="margin-top:12px">
+          <li><b>Key Accounts crece +25.7% subiendo precio</b> (+5% NR/HL) y casi sin promo.</li>
+          <li><b>DSD OFF es el único canal que crece con más descuento</b> (de 12.5% a 15.2% del GSI): ahí entra Cristal 473.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="src">Fuente: dm_venta. Canal = unidad_negocio_revenue_volumen_meta (dm_cliente). Entre paréntesis: variación de NR/HL vs LY y descuento 2025. Mix SS = SS / Beer+Rtds de la gerencia.</span><span>5</span></div>
+</section>
+
+<!-- 6 · BD SS -->
+<section class="slide">
+  <div class="ybar"></div>
+  <h1 class="hd">Brand Distribution: Single Serve suma +280 mil y compensa la caída del resto</h1>
+  <div class="cols" style="grid-template-columns: 1fr 470px; gap: 22px;">
+    <div class="col">
+      <div class="ch">Brand Distribution mensual Single Serve (mil)</div>
+      <div class="cb">
+        <div class="legend"><span><i style="border-color:#111"></i>2026</span><span><i style="border-color:#d4c600"></i>2025</span><span><i style="border-color:#9a9a9a"></i>2024</span><span><i style="border-color:#cfcfcf;border-top-style:dashed"></i>2023</span><span class="mut">% = variación vs 2025</span></div>
+        <div class="box" style="height:300px"><canvas id="cBD"></canvas></div>
+        <ul class="b tight" style="margin-top:10px">
+          <li><b>Single Serve +280.4 mil vs total Lima +180.8 mil</b>: el resto del portafolio (multipack) pierde −99.6 mil (−6.9%).</li>
+          <li class="r"><b>Ago-Set se desaceleran</b> (+16.6% y +10.1%) después de un Jun-Jul de +35% y +45%.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col">
+      <div class="ch">BD Single Serve por gerencia · Ene-Set (mil)</div>
+      <div class="cb">
+        <table class="t sm">
+          <thead><tr><th>Gerencia</th><th>2026</th><th>Δ LY</th><th>vs LY</th><th>vs 2024</th><th>vs 2023</th></tr></thead>
+          <tbody>
+            <tr><td>Lima Sur</td><td>352.7</td><td class="up">+72.2</td><td class="up">+25.7%</td><td class="up">+28.1%</td><td class="up">+26.8%</td></tr>
+            <tr><td>Lima Norte</td><td>369.4</td><td class="up">+56.8</td><td class="up">+18.2%</td><td class="up">+28.4%</td><td class="up">+22.8%</td></tr>
+            <tr><td>Lima Este</td><td>348.5</td><td class="up">+54.7</td><td class="up">+18.6%</td><td class="up">+24.8%</td><td class="up">+25.5%</td></tr>
+            <tr><td>Lima Centro</td><td>326.2</td><td class="up">+49.3</td><td class="up">+17.8%</td><td class="up">+19.2%</td><td class="up">+20.1%</td></tr>
+            <tr><td>Lima Oeste</td><td>319.0</td><td class="up">+44.9</td><td class="up">+16.4%</td><td class="up">+18.3%</td><td class="up">+16.5%</td></tr>
+            <tr><td>May. y Eventos</td><td>23.1</td><td class="up">+2.8</td><td class="up">+13.5%</td><td class="up">+5.0%</td><td class="up">+8.2%</td></tr>
+            <tr><td>Otros</td><td>0.3</td><td>−0.2</td><td></td><td></td><td></td></tr>
+            <tr class="tt"><td>Total Lima</td><td>1,739.2</td><td>+280.4</td><td>+19.2%</td><td>+23.5%</td><td>+22.2%</td></tr>
+          </tbody>
+        </table>
+        <div class="note2"><b>Lima Sur lidera en BD</b> (+25.7%, 26% del aporte), aunque en volumen es Lima Este. En BD, DSD OFF aporta +252.4 mil (90%) y DSD ON +27.5 mil (+26.9%).</div>
+        <div class="cap">Central KA no aparece en la tabla de BD (Sell In de Lima no incluye esa gerencia).</div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="src">Fuente: pe_portfolio_hm_brand_distribution, SELLIN, Beer+Rtds, gerencia de la tabla BD. Ene-Set (Oct'26 en carga parcial al 20.11).</span><span>6</span></div>
+</section>
+
+<!-- 7 · PRECIO Y PROMOS -->
+<section class="slide">
+  <div class="ybar"></div>
+  <h1 class="hd">Precio y promos: solo Cristal 473 responde al descuento</h1>
+  <div class="cols" style="grid-template-columns: 1fr 1fr; gap: 20px;">
+    <div class="col">
+      <div class="ch">Correlación precio vs volumen · DSD, gerencia × mes</div>
+      <div class="cb">
+        <table class="t">
+          <thead><tr><th>Grupo</th><th>Correlación volumen vs NR/HL</th><th>Elasticidad</th><th>Lectura</th></tr></thead>
+          <tbody>
+            <tr><td><b>Cristal 473</b></td><td class="dn"><b>−0.72</b></td><td><b>−2.3</b></td><td style="text-align:left">Muy sensible al precio</td></tr>
+            <tr><td>Budweiser 355 lata</td><td class="dn">−0.57</td><td>−1.1</td><td style="text-align:left">Sensible, muestra chica</td></tr>
+            <tr><td>Resto Single Serve</td><td>+0.17</td><td>n.s.</td><td style="text-align:left">Sin relación</td></tr>
+            <tr><td>Multipack</td><td>−0.01</td><td>n.s.</td><td style="text-align:left">Sin relación</td></tr>
+          </tbody>
+        </table>
+        <ul class="b tight" style="margin-top:14px">
+          <li><b>Elasticidad −2.3 en Cristal 473</b>: 10% menos de precio NR trae ~23% más volumen.</li>
+          <li><b>El resto de Single Serve crece sin relación con el precio</b>: lo mueven portafolio (latas, Mike's, Pilsen Fresh) y ejecución.</li>
+        </ul>
+        <div class="cap">170 observaciones (5 gerencias geográficas × 34 meses, Ene'24-Oct'26, DSD OFF + DSD ON); Bud 44 observaciones con volumen &gt; 20 HL. Elasticidad = pendiente log(HL) vs log(NR/HL). n.s. = no significativa.</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="ch">Precio y rentabilidad Ene-Oct · total Lima</div>
+      <div class="cb">
+        <table class="t sm">
+          <thead><tr><th></th><th class="gh" colspan="2">Single Serve</th><th class="gh bl" colspan="2">Cristal 473</th><th class="gh bl" colspan="2">Bud 355 lata</th></tr>
+          <tr><th></th><th>2025</th><th>2026</th><th class="bl">2025</th><th>2026</th><th class="bl">2025</th><th>2026</th></tr></thead>
+          <tbody>
+            <tr><td>Volumen (mil HL)</td><td>930.6</td><td>1,212.0</td><td class="bl">17.5</td><td>41.9</td><td class="bl">7.1</td><td>12.7</td></tr>
+            <tr><td>GSI/HL (S/)</td><td>908</td><td>940</td><td class="bl">781</td><td>781</td><td class="bl">943</td><td>926</td></tr>
+            <tr><td>Descuento % GSI</td><td>8.8%</td><td>9.9%</td><td class="bl">7.9%</td><td class="dn"><b>27.7%</b></td><td class="bl">3.0%</td><td>6.2%</td></tr>
+            <tr><td>· promoción</td><td>6.3%</td><td>5.9%</td><td class="bl">6.0%</td><td>22.3%</td><td class="bl">1.4%</td><td>5.6%</td></tr>
+            <tr><td>· canal</td><td>2.5%</td><td>4.0%</td><td class="bl">1.9%</td><td>5.5%</td><td class="bl">1.6%</td><td>0.7%</td></tr>
+            <tr><td>NR/HL (S/)</td><td>593</td><td class="up">607</td><td class="bl">468</td><td class="dn"><b>305</b></td><td class="bl">664</td><td class="dn">609</td></tr>
+            <tr><td>MACO/HL (S/)</td><td>331</td><td>333</td><td class="bl">249</td><td class="dn"><b>87</b></td><td class="bl">387</td><td class="dn">324</td></tr>
+            <tr class="tt"><td>MACO total (S/ MM)</td><td>307.9</td><td>404.1</td><td class="bl">4.35</td><td>3.66</td><td class="bl">2.77</td><td>4.13</td></tr>
+          </tbody>
+        </table>
+        <ul class="b tight" style="margin-top:12px">
+          <li><b>Single Serve gana +S/ 96 MM de MACO</b> con MACO/HL estable.</li>
+          <li class="r"><b>Cristal 473 vende 2.4 veces más y gana menos</b>: MACO −16% (−S/ 0.7 MM).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="src">Fuente: dm_venta. NR = GSI + Excise + Descuento (cuadre validado). Descuento = promoción + canal; el combo es parte de la promoción. MACO = NR + VIC + VLC.</span><span>7</span></div>
+</section>
+
+<!-- 8 · CRISTAL 473 POR QUE -->
+<section class="slide">
+  <div class="ybar"></div>
+  <h1 class="hd">Cristal 473: el salto de Ene'26 llega con una baja de precio de −45%</h1>
+  <div class="cols" style="grid-template-columns: 1fr 380px; gap: 22px;">
+    <div class="col">
+      <div class="ch">Cristal 473 · volumen mensual (HL, barras) y NR/HL (S/, línea)</div>
+      <div class="cb">
+        <div class="legend"><span><i class="sq" style="background:#FFF200;outline:1px solid #b5ab00"></i>Volumen HL</span><span><i style="border-color:#111"></i>NR/HL</span></div>
+        <div class="box" style="height:420px"><canvas id="cCR"></canvas></div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="ch">Qué se ve</div>
+      <div class="cb">
+        <ul class="b">
+          <li><b>2024-2025: ~1.7 mil HL al mes con NR/HL de S/ 410-480.</b></li>
+          <li><b>Ene'26: NR/HL baja a S/ 256 (−45%) y el volumen sube a 5.3 mil HL</b> (×3.4 vs Ene'25).</li>
+          <li>Desde Mar el precio sube a ~S/ 305-345 y el volumen se mantiene en <b>3.3-5.4 mil HL al mes</b>.</li>
+          <li><b>Compradores +50%</b> (de 25.5 mil a 38.3 mil POC) y cada uno compra +60% más.</li>
+          <li class="r">El descuento es sobre todo <b>promoción y combos</b> (22% del GSI, de eso 15% en combos) en DSD OFF y DSD ON.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="src">Fuente: dm_venta, Cristal (Peru) 473 CAN (ms_ss 'SS'). Ene'24-Oct'26.</span><span>8</span></div>
+</section>
+
+<!-- 9 · CRISTAL 473 DONDE -->
+<section class="slide">
+  <div class="ybar"></div>
+  <h1 class="hd">Cristal 473 crece en DSD de las 5 gerencias geográficas y cae en Mayoristas</h1>
+  <div class="cols" style="grid-template-columns: 1fr 1fr; gap: 20px;">
+    <div class="col">
+      <div class="ch">Cristal 473 por gerencia</div>
+      <div class="cb">
+        <table class="t sm">
+          <thead><tr><th>Gerencia</th><th>HL 2026</th><th>Δ LY</th><th>vs LY</th><th>vs 2023</th><th>BD vs LY</th><th>Penetr.*</th></tr></thead>
+          <tbody>
+            <tr><td>Lima Norte</td><td>11,176</td><td class="up">+6,947</td><td class="up">+164%</td><td class="up">+218%</td><td class="up">+26.0%</td><td>55%</td></tr>
+            <tr><td>Lima Este</td><td>9,783</td><td class="up">+6,589</td><td class="up">+206%</td><td class="up">+241%</td><td class="up">+35.9%</td><td>53%</td></tr>
+            <tr><td>Lima Sur</td><td>7,103</td><td class="up">+5,241</td><td class="up">+282%</td><td class="up">+408%</td><td class="up">+113.4%</td><td>51%</td></tr>
+            <tr><td>Lima Centro</td><td>7,407</td><td class="up">+5,015</td><td class="up">+210%</td><td class="up">+210%</td><td class="up">+44.4%</td><td>49%</td></tr>
+            <tr><td>Lima Oeste</td><td>4,182</td><td class="up">+3,002</td><td class="up">+254%</td><td class="up">+281%</td><td class="up">+90.0%</td><td class="dn">39%</td></tr>
+            <tr><td>Central KA</td><td>1,196</td><td class="up">+150</td><td class="up">+14%</td><td class="up">+33%</td><td>n.a.</td><td></td></tr>
+            <tr><td>May. y Eventos</td><td>1,093</td><td class="dn">−2,498</td><td class="dn">−70%</td><td class="dn">−47%</td><td class="dn">−34.6%</td><td>35%</td></tr>
+            <tr class="tt"><td>Total Lima</td><td>41,939</td><td>+24,446</td><td>+140%</td><td>+195%</td><td>+49.4%</td><td>50%</td></tr>
+          </tbody>
+        </table>
+        <div class="cap">* Penetración = POC que compraron Cristal 473 / POC que compraron Single Serve, Ene-Oct 2026. BD Ene-Set.</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="ch">Cristal 473 por canal</div>
+      <div class="cb">
+        <table class="t sm">
+          <thead><tr><th>Canal</th><th>HL 2026</th><th>Δ LY</th><th>vs LY</th><th>NR/HL</th><th>Dscto % GSI</th></tr></thead>
+          <tbody>
+            <tr><td>DSD OFF</td><td>34,918</td><td class="up">+23,953</td><td class="up">+218%</td><td class="dn">277 (458)</td><td class="dn">30.9%</td></tr>
+            <tr><td>Key Accounts</td><td>3,887</td><td class="up">+1,686</td><td class="up">+77%</td><td>550 (552)</td><td>2.4%</td></tr>
+            <tr><td>DSD ON</td><td>1,982</td><td class="up">+1,296</td><td class="up">+189%</td><td class="dn">277 (466)</td><td class="dn">31.2%</td></tr>
+            <tr><td>Mayoristas</td><td>939</td><td class="dn">−1,729</td><td class="dn">−65%</td><td>397 (446)</td><td>14.6%</td></tr>
+            <tr><td>Eventos</td><td>154</td><td class="dn">−771</td><td class="dn">−83%</td><td>425 (455)</td><td>10.1%</td></tr>
+            <tr><td>Otros</td><td>59</td><td>+12</td><td></td><td></td><td></td></tr>
+            <tr class="tt"><td>Total Lima</td><td>41,939</td><td>+24,446</td><td>+140%</td><td>305 (468)</td><td>27.7%</td></tr>
+          </tbody>
+        </table>
+        <ul class="b tight" style="margin-top:12px">
+          <li><b>Key Accounts crece +77% sin tocar precio</b>: hay demanda de Cristal 473 que no necesita descuento.</li>
+          <li class="r"><b>Conflicto de canal</b>: el NR/HL a la bodega en DSD (S/ 277) quedó 30% por debajo del de Mayoristas (S/ 397), y Mayoristas pierde −65%.</li>
+        </ul>
+        <div class="cap">Entre paréntesis: NR/HL 2025.</div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="src">Fuente: dm_venta y pe_portfolio_hm_brand_distribution (Databricks), Ene-Oct (BD Ene-Set).</span><span>9</span></div>
+</section>
+
+<!-- 10 · CRISTAL 473 COSTO -->
+<section class="slide">
+  <div class="ybar"></div>
+  <h1 class="hd">El costo de Cristal 473: menos MACO y posible canibalización de Cristal 650 y 1000</h1>
+  <div class="cols" style="grid-template-columns: 1fr 1fr; gap: 20px;">
+    <div class="col">
+      <div class="ch">Marca Cristal por formato · Ene-Oct (HL)</div>
+      <div class="cb">
+        <table class="t sm">
+          <thead><tr><th>Formato</th><th>2025</th><th>2026</th><th>Δ HL</th><th>MACO 25</th><th>MACO 26</th></tr></thead>
+          <tbody>
+            <tr><td>Cristal 650 RB</td><td>223,828</td><td>208,756</td><td class="dn">−15,072</td><td>77.28</td><td>76.22</td></tr>
+            <tr><td>Cristal 1000 RB</td><td>74,550</td><td>62,480</td><td class="dn">−12,070</td><td>17.96</td><td>16.73</td></tr>
+            <tr><td>Cristal 473 CAN</td><td>17,493</td><td>41,939</td><td class="up">+24,446</td><td>4.35</td><td>3.66</td></tr>
+            <tr><td>Cristal 355 CAN</td><td>7,032</td><td>13,941</td><td class="up">+6,910</td><td>1.98</td><td>3.74</td></tr>
+            <tr><td>Cristal 305 RB</td><td>3,108</td><td>2,890</td><td class="dn">−218</td><td>1.06</td><td>1.04</td></tr>
+            <tr class="tt"><td>Marca Cristal</td><td>326,011</td><td>330,006</td><td>+3,995</td><td>102.63</td><td>101.39</td></tr>
+          </tbody>
+        </table>
+        <ul class="b tight" style="margin-top:12px">
+          <li><b>La marca Cristal crece solo +1.2%</b> y su MACO baja −S/ 1.2 MM: el 473 gana volumen mientras 650 y 1000 pierden −27 mil HL.</li>
+          <li>En DSD OFF, 650 y 1000 pierden −15.9 mil HL, justo donde el 473 sube +24.0 mil. Falta confirmarlo a nivel cliente.</li>
+          <li class="k">Pilsen 630 crece +172 mil HL: parte de la caída de Cristal 650 puede ser por Pilsen, no por el 473.</li>
+        </ul>
+        <div class="cap">MACO en S/ MM.</div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="ch">Escenarios de descuento Cristal 473 · base Ene-Oct</div>
+      <div class="cb">
+        <table class="t sm">
+          <thead><tr><th>Descuento % GSI</th><th>NR/HL</th><th>Mil HL</th><th>Δ HL</th><th>MACO/HL</th><th>MACO S/ MM</th></tr></thead>
+          <tbody>
+            <tr><td>27.7% (actual)</td><td>305</td><td>41.9</td><td>—</td><td>87</td><td>3.66</td></tr>
+            <tr><td>22%</td><td>350</td><td>30.6</td><td class="dn">−11.3</td><td>132</td><td class="up">4.04 (+0.38)</td></tr>
+            <tr style="background:#fffbcc"><td><b>18% (máximo MACO)</b></td><td><b>381</b></td><td><b>25.1</b></td><td class="dn">−16.8</td><td><b>163</b></td><td class="up"><b>4.10 (+0.44)</b></td></tr>
+            <tr><td>8% (nivel 2025)</td><td>459</td><td>16.3</td><td class="dn">−25.6</td><td>241</td><td class="up">3.93 (+0.27)</td></tr>
+          </tbody>
+        </table>
+        <ul class="b tight" style="margin-top:12px">
+          <li><b>El descuento actual está pasado del punto que maximiza el MACO</b>: con 18% del GSI, Cristal 473 ganaría +S/ 0.44 MM, pero perdería ~17 mil HL.</li>
+          <li><b>Es una decisión de volumen vs margen</b>: el 473 aporta el 6% del crecimiento de Lima.</li>
+          <li>Si hay canibalización de 650/1000 (MACO/HL ~S/ 270-365), reducir el descuento rinde más de lo que muestra la tabla.</li>
+        </ul>
+        <div class="cap">Modelo de elasticidad constante (−2.3), costo variable S/ 218/HL (NR − MACO) y excise S/ 259/HL de 2026. El modelo da 15.6 mil HL al precio de 2025 vs 17.5 mil reales. Referencial.</div>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="src">Fuente: dm_venta, Lima, Ene-Oct 2025 vs 2026. MACO = NR + VIC + VLC.</span><span>10</span></div>
+</section>
+
+<!-- 11 · BUDWEISER -->
+<section class="slide">
+  <div class="ybar"></div>
+  <h1 class="hd">Budweiser 355 lata: crece en Key Accounts sin promo; en DSD vende sin margen</h1>
+  <div class="cols" style="grid-template-columns: 1fr 1fr; gap: 20px;">
+    <div class="col">
+      <div class="ch">Budweiser 355 lata por canal · Ene-Oct</div>
+      <div class="cb">
+        <table class="t sm">
+          <thead><tr><th>Canal</th><th>HL 2026</th><th>Δ LY</th><th>vs LY</th><th>Dscto % GSI</th><th>MACO/HL</th></tr></thead>
+          <tbody>
+            <tr><td>Key Accounts</td><td>10,962</td><td class="up">+4,527</td><td class="up">+70%</td><td>0.8%</td><td>373</td></tr>
+            <tr><td>DSD OFF</td><td>1,576</td><td class="up">+958</td><td class="up">+155%</td><td class="dn">41.0%</td><td class="dn">~0</td></tr>
+            <tr><td>Mayoristas</td><td>96</td><td class="up">+32</td><td class="up">+51%</td><td>12.5%</td><td>296</td></tr>
+            <tr><td>DSD ON</td><td>89</td><td class="up">+72</td><td class="up">+409%</td><td class="dn">39.1%</td><td class="dn">51</td></tr>
+            <tr><td>Otros</td><td>13</td><td>+3</td><td></td><td></td><td></td></tr>
+            <tr class="tt"><td>Total Lima</td><td>12,736</td><td>+5,592</td><td>+78%</td><td>6.2%</td><td>324</td></tr>
+          </tbody>
+        </table>
+        <ul class="b tight" style="margin-top:12px">
+          <li><b>Key Accounts es el 86% del volumen</b> y crece +70% con precio pleno: es el canal natural de la marca.</li>
+          <li class="r"><b>En DSD se vende con 40% de descuento y MACO casi cero</b>: el crecimiento ahí no deja margen.</li>
+          <li>Compradores: <b>de 2.9 mil a 5.6 mil POC (+93%)</b>, pero solo el 6% de los compradores de Single Serve en DSD.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col">
+      <div class="ch">Volumen y BD mensual 2026</div>
+      <div class="cb">
+        <div class="legend"><span><i class="sq" style="background:#FFF200;outline:1px solid #b5ab00"></i>Volumen HL 2026</span><span><i style="border-color:#111"></i>Brand Distribution 2026</span></div>
+        <div class="box" style="height:250px"><canvas id="cBud"></canvas></div>
+        <ul class="b tight" style="margin-top:10px">
+          <li class="r"><b>Ene-Abr'26 casi sin Brand Distribution</b> (8-154 por mes vs 190-680 en 2025) y Ene/Mar con 9 y 113 HL: parece un <b>quiebre de abastecimiento</b>. Hay que validarlo con el reporte de quiebres.</li>
+          <li><b>Desde May se recupera</b> (884-1,487 de BD al mes, el doble de 2025).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="src">Fuente: dm_venta y pe_portfolio_hm_brand_distribution, Budweiser 355 CAN (2 SKUs). BD sin Key Accounts (Sell In de Lima).</span><span>11</span></div>
+</section>
+
+<!-- 12 · OPORTUNIDADES -->
+<section class="slide">
+  <div class="ybar"></div>
+  <h1 class="hd">Oportunidades cuantificadas</h1>
+  <table class="t">
+    <thead><tr><th>#</th><th style="text-align:left">Palanca</th><th style="text-align:left">Dónde</th><th>Tamaño</th><th style="text-align:left">Acción propuesta</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td style="text-align:left"><b>Ajustar el descuento de Cristal 473</b></td><td style="text-align:left">DSD OFF y DSD ON, 5 gerencias</td><td>+S/ 0.4 MM MACO<br><span class="dn">−11 a −17 mil HL</span></td><td style="text-align:left">Bajar de 28% a 18-22% del GSI, o dejar el descuento profundo solo para POCs que entran por primera vez</td></tr>
+      <tr><td>2</td><td style="text-align:left"><b>Ordenar la escalera de precio por canal de Cristal 473</b></td><td style="text-align:left">May. y Eventos</td><td>−2.5 mil HL perdidos</td><td style="text-align:left">NR/HL en DSD (S/ 277) por debajo de Mayoristas (S/ 397): revisar el precio a mayorista o el tope de la promo en DSD</td></tr>
+      <tr><td>3</td><td style="text-align:left"><b>Penetración de Cristal 473</b></td><td style="text-align:left">Lima Oeste (39%) y Centro (49%)</td><td>38.8 mil POC compran SS sin Cristal 473</td><td style="text-align:left">Llevar Oeste al 55% de Norte: ~2,300 POC más, sin profundizar el descuento</td></tr>
+      <tr><td>4</td><td style="text-align:left"><b>Budweiser 355 lata: abastecimiento</b></td><td style="text-align:left">DSD, Ene-Abr</td><td>~3.8 mil HL</td><td style="text-align:left">Volumen perdido vs el ritmo May-Oct si fue quiebre: validar con OOS y asegurar stock</td></tr>
+      <tr><td>5</td><td style="text-align:left"><b>Budweiser 355 lata: promo sin margen</b></td><td style="text-align:left">DSD OFF y DSD ON</td><td>1.7 mil HL a MACO ~0</td><td style="text-align:left">Bajar el descuento del 40% y crecer en Key Accounts y High End, donde la marca vende a precio pleno</td></tr>
+      <tr><td>6</td><td style="text-align:left"><b>POCs sin Single Serve</b></td><td style="text-align:left">Lima Norte (2,428 POC)</td><td>7.7 mil POC · 51.5 mil HL Beer+Rtds</td><td style="text-align:left">Activar latas (Pilsen 473 y 355, Mike's) en POCs que hoy solo compran multipack</td></tr>
+      <tr><td>7</td><td style="text-align:left"><b>Mix de Single Serve en Lima Norte</b></td><td style="text-align:left">Lima Norte</td><td>Mix 21.1% vs 34.0% Lima</td><td style="text-align:left">Cada punto de mix en Norte son ~5.8 mil HL de Single Serve</td></tr>
+    </tbody>
+  </table>
+  <div class="bar"><b>PRIORIDAD</b>Proteger el margen de Cristal 473 y Bud lata sin frenar el crecimiento sano del resto de Single Serve</div>
+  <div class="foot"><span class="src">Tamaños sobre base Ene-Oct 2026. Penetración = compradores del SKU / compradores de Single Serve.</span><span>12</span></div>
+</section>
+
+<!-- 13 · METODOLOGIA -->
+<section class="slide">
+  <div class="ybar"></div>
+  <h1 class="hd">Anexo: definiciones y fuentes</h1>
+  <div class="cols" style="grid-template-columns: 1fr 1fr; gap: 20px;">
+    <div class="col">
+      <div class="ch">Definiciones</div>
+      <div class="cb">
+        <ul class="b tight">
+          <li><b>Single Serve</b>: SKUs con <code>ms_ss = 'SS'</code> en revenue_maestro_sku (latas, botellas personales RB/NRB, RTDs). Cubre el 100% del volumen de Lima.</li>
+          <li><b>Cristal 473</b>: Cristal (Peru) 473 CAN, 1 SKU. <b>Budweiser 355 lata</b>: Budweiser 355 CAN, 2 SKUs.</li>
+          <li><b>Base de volumen</b>: Beer+Rtds (Cervezas + Licores + Ready To Drink), indicadores_comerciales = 1.</li>
+          <li><b>Periodo</b>: volumen Ene-Oct; Brand Distribution Ene-Set (Oct'26 en carga parcial al 20.11).</li>
+          <li><b>Gerencia y canal</b>: vigentes del cliente en dm_cliente. Brand Distribution usa la gerencia de su tabla, solo Sell In.</li>
+          <li><b>Precio</b>: NR/HL = NR / HL; descuento = promoción + canal (el combo es parte de la promoción); MACO = NR + VIC + VLC.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col">
+      <div class="ch">Fuentes y validaciones</div>
+      <div class="cb">
+        <ul class="b tight">
+          <li>Volumen total Beer+Rtds Ene-Oct 2026 = 3,560.6 mil HL (+385.6 vs LY), igual al Overview Lima.</li>
+          <li>Brand Distribution total Ene-Set 2026 = 3,087.8 mil (+180.8 vs LY), igual al Overview Lima.</li>
+          <li>Cuadre NR = GSI + Excise + Descuento exacto en 2025-2026.</li>
+          <li>Queries en <code>querys/Query_Lima_SS_*.sql</code> (cubo mensual con precio, brandpack, compradores, BD y canibalización de Cristal).</li>
+          <li class="r">La elasticidad sale de pocas observaciones y no mide canibalización. Usar los escenarios como referencia, no como pronóstico.</li>
+          <li class="r">El quiebre de Bud lata en Ene-Abr es una hipótesis: falta validarlo con datos de stock.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span class="src">Corte 20.11.26.</span><span>13</span></div>
+</section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const M = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Set','Oct','Nov','Dic'];
+const SS = {2023:[82.9,96.6,101.9,96.6,89.0,88.8,86.7,82.2,82.5,80.3],2024:[101.2,108.9,110.5,88.3,88.3,72.6,86.1,79.5,76.5,96.5],2025:[100.3,103.8,103.4,102.9,95.0,80.4,79.0,80.5,85.5,99.8],2026:[123.9,119.2,135.2,114.6,123.8,113.0,123.1,107.3,122.3,129.7]};
+const BD = {2023:[163.6,168.3,167.1,163.4,145.2,152.6,157.5,152.3,153.5],2024:[160.6,161.7,162.0,154.4,143.5,144.7,171.7,151.9,157.5],2025:[161.7,172.5,174.6,163.9,162.6,152.6,143.0,158.1,169.7],2026:[194.2,180.0,196.0,187.5,196.7,205.7,207.8,184.3,186.9]};
+Chart.defaults.font.family = '"Barlow", "Segoe UI", Arial, sans-serif';
+Chart.defaults.font.size = 12; Chart.defaults.color = '#444'; Chart.defaults.animation = false;
+const sty = {
+  2026:{borderColor:'#111111',borderWidth:3.2,pointRadius:3,pointBackgroundColor:'#111111'},
+  2025:{borderColor:'#d4c600',borderWidth:2.2,pointRadius:0},
+  2024:{borderColor:'#9a9a9a',borderWidth:1.8,pointRadius:0},
+  2023:{borderColor:'#cfcfcf',borderWidth:1.8,pointRadius:0,borderDash:[5,4]}
+};
+const endLabel = { id:'endLabel', afterDatasetsDraw(c){
+  const ds = c.data.datasets[0], meta = c.getDatasetMeta(0), ctx = c.ctx, ly = c.data.datasets[1].data;
+  ctx.save(); ctx.font = '600 11px Barlow, Arial'; ctx.textAlign = 'center';
+  meta.data.forEach((p,i) => { const v = (ds.data[i]/ly[i]-1)*100; ctx.fillStyle = v>=0?'#0f7b3e':'#c62828'; ctx.fillText((v>=0?'+':'−')+Math.abs(v).toFixed(1)+'%', p.x, p.y-10); });
+  ctx.restore(); } };
+function lines(id, data, n) {
+  new Chart(document.getElementById(id), { type:'line',
+    data:{ labels:M.slice(0,n), datasets:[2026,2025,2024,2023].map(y => Object.assign({label:String(y), data:data[y], tension:0, fill:false}, sty[y])) },
+    options:{ maintainAspectRatio:false, plugins:{legend:{display:false}, tooltip:{enabled:false}}, layout:{padding:{top:16,right:28,left:6}},
+      scales:{ x:{grid:{display:false}}, y:{grid:{color:'#eeeeee'}} } }, plugins:[endLabel] });
+}
+lines('cSS', SS, 10);
+lines('cBD', BD, 9);
+
+// Brandpacks: delta mil HL
+const bpL = ["Mike's 355 CAN","Pilsen Callao 473 CAN","Pilsen Fresh (4 formatos)","Pilsen Callao 355 CAN","Cusqueña 473 CAN","Cristal 473 CAN","Golden 473 CAN","Cusqueña 310 NRB","Cristal 355 CAN","Corona 210 NRB","Budweiser 355 CAN","Flying Fish 355 CAN","Corona 355 CAN","Pilsen Callao 269 CAN","Cusqueña 310 RB"];
+const bpV = [74.8,71.6,26.9,26.3,24.8,24.4,8.8,7.5,6.9,6.6,5.6,5.5,-5.6,-6.7,-7.6];
+new Chart(document.getElementById('cBP'), { type:'bar',
+  data:{ labels:bpL, datasets:[{ data:bpV, backgroundColor:bpL.map((l,i)=> bpV[i]<0?'#c62828':(/Cristal 473|Budweiser/.test(l)?'#111111':'#FFF200')), borderColor:'#b5ab00', borderWidth:bpL.map((l,i)=> bpV[i]<0||/Cristal 473|Budweiser/.test(l)?0:1), barThickness:20 }] },
+  options:{ indexAxis:'y', maintainAspectRatio:false, plugins:{legend:{display:false}, tooltip:{enabled:false}}, layout:{padding:{right:50,left:4}},
+    scales:{ x:{display:false}, y:{grid:{display:false}, ticks:{font:{size:12.5,weight:'600'}}} } },
+  plugins:[{ id:'v', afterDatasetsDraw(c){ const ctx=c.ctx; ctx.save(); ctx.font='700 12px Barlow, Arial'; ctx.textBaseline='middle';
+    c.getDatasetMeta(0).data.forEach((b,i)=>{ const v=bpV[i]; ctx.fillStyle=v<0?'#c62828':'#111'; ctx.textAlign=v<0?'right':'left'; ctx.fillText((v>0?'+':'−')+Math.abs(v).toFixed(1), v<0?b.x-6:b.x+6, b.y); }); ctx.restore(); } }]
+});
+
+// Cristal 473: barras HL + linea NR/HL, Ene'24-Oct'26
+const crHL = [1628,1671,1798,1506,1459,1953,1382,1516,1459,1840,2097,2324, 1548,1932,1912,1882,1727,1923,1566,1688,1608,1707,1868,2522, 5279,4064,3340,3749,3651,3839,4235,3917,5414,4451];
+const crNR = [440,438,424,430,410,422,415,407,408,389,417,489, 461,475,475,474,472,463,465,478,450,462,468,470, 256,270,344,305,340,316,318,312,311,304];
+const crLab = []; [24,25,26].forEach(y => M.forEach(m => crLab.push(m+"'"+y))); crLab.length = 34;
+new Chart(document.getElementById('cCR'), {
+  data:{ labels:crLab, datasets:[
+    { type:'line', data:crNR, yAxisID:'y2', borderColor:'#111', borderWidth:2.6, pointRadius:2, pointBackgroundColor:'#111', tension:0, order:0 },
+    { type:'bar', data:crHL, yAxisID:'y', backgroundColor:crHL.map((v,i)=> i>=24?'#FFF200':'#f3eda0'), borderColor:'#b5ab00', borderWidth:1, order:1 } ] },
+  options:{ maintainAspectRatio:false, plugins:{legend:{display:false}, tooltip:{enabled:false}}, layout:{padding:{top:10}},
+    scales:{ x:{grid:{display:false}, ticks:{font:{size:10}, maxRotation:90, minRotation:90}},
+      y:{position:'left', beginAtZero:true, grid:{color:'#eeeeee'}, title:{display:true,text:'HL'}},
+      y2:{position:'right', min:200, max:550, grid:{display:false}, title:{display:true,text:'NR/HL (S/)'}} } }
+});
+
+// Bud 355 lata 2026: HL y BD
+const budHL = [9,1539,113,1131,1513,1827,2101,1208,1376,1920];
+const budBD = [24,14,8,154,884,1316,945,834,1138,null];
+new Chart(document.getElementById('cBud'), {
+  data:{ labels:M.slice(0,10), datasets:[
+    { type:'line', data:budBD, borderColor:'#111', borderWidth:2.6, pointRadius:3, pointBackgroundColor:'#111', tension:0, order:0, spanGaps:false },
+    { type:'bar', data:budHL, backgroundColor:'#FFF200', borderColor:'#b5ab00', borderWidth:1, order:1 } ] },
+  options:{ maintainAspectRatio:false, plugins:{legend:{display:false}, tooltip:{enabled:false}},
+    scales:{ x:{grid:{display:false}}, y:{beginAtZero:true, grid:{color:'#eeeeee'}} } }
+});
+</script>
+</body>
+</html>

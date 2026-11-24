@@ -2,8 +2,8 @@
 -- Control de regresion a la media: si los POCs grandes tambien caian en 2024-2025, la caida de 2026 no es solo un hecho nuevo.
 WITH cy AS (
   SELECT v.cliente_id, c.bees, CAST(SUBSTR(v.mes,1,4) AS INT) AS anio, SUM(v.hl) AS hl
-  FROM brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_venta v
-  INNER JOIN brewdat_uc_mazana_dev.slv_maz_dataexperience_peru_dm.dm_cliente c ON v.cliente_id = c.cliente_id
+  FROM brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_dm.dm_venta v
+  INNER JOIN brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_dm.dm_cliente c ON v.cliente_id = c.cliente_id
   WHERE v.mes BETWEEN '202401' AND '202610' AND CAST(SUBSTR(v.mes,5,2) AS INT) <= 10
     AND c.gerencia = 'PE Ger P4 Pucall Hco' AND c.centro = 'CD Pucallpa' AND v.indicadores_comerciales = 1
     AND c.unidad_negocio_revenue_volumen_meta = 'DSD OFF'
