@@ -1,7 +1,7 @@
 -- Deep dive GV Pucallpa v3 (23.11.26): HL y Brand Distribution (SELLIN recalculado) por periodo x CD x supervisor x canal
 -- x categoria (Beer/Rtds/Nabs) x brand_pack x marca x marca GPA x pack x agrupador (SKU) x SKU.
 -- Reemplaza a Query_Pucallpa_DeepDive_Detalle_Canal_Producto_Mensual.sql (agrega Nabs, agrupador y SKU).
--- Periodos: meses Ene'25-Nov'26. 202611 = facturado 1-22 Nov + plan de entrega del 23-Nov; MTD2511 = facturado 1-23 Nov'25.
+-- Periodos: meses Ene'25-Nov'26. 202611 = facturado 1-24 Nov + plan de entrega del 25-Nov; MTD2511 = facturado 1-25 Nov'25.
 --   PLAN2611 = solo el plan del 23-Nov (referencia para la tarjeta).
 -- Beer = Cervezas+Licores; Rtds = Ready To Drink; Nabs = Gaseosas+Agua+Maltas sin San Mateo. BD solo Beer+Rtds (Nabs = 0).
 -- GV/CD/supervisor/canal de dm_cliente (foto vigente). Sin SJ01. Marca/GPA/pack/agrupador de revenue_maestro_sku; SKU = codigo (sin ceros a la izquierda) + ' - ' + nombre de dm_material.
@@ -9,16 +9,16 @@ with v as (
   select cast(dm_venta.__partition_column as string) as mes, dm_venta.invoice_date as fecha_venta, dm_venta.sold_to_customer_short_code as cliente_id, dm_venta.product_short_code as material_id, dm_venta.sales_volume_official as hl, dm_venta_p.product_line as estratificacion, dm_venta.invoice_commercial_flag as indicadores_comerciales, 0 as es_plan
   from brewdat_uc_delta_maz_prod.gld_maz_sales_sell_in.pe_invoice dm_venta
     left join brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_product dm_venta_p on dm_venta_p.product_short_code = dm_venta.product_short_code
-  where cast(dm_venta.__partition_column as string) between '202501' and '202611' and dm_venta.invoice_date <= '2026-11-22'
+  where cast(dm_venta.__partition_column as string) between '202501' and '202611' and dm_venta.invoice_date <= '2026-11-24'
   union all
   select '202611', a.planned_delivery_date as FechaPlan, a.customer_short_code as CodCliente, a.product_short_code as SKU, a.planned_volume_hl as HLPlaneado,
     case d.categoria when 'Ready to drink' then 'Ready To Drink' else d.categoria end, 1, 1
   from brewdat_uc_maz_prod.gld_maz_sales_order.pe_planned_order a
   join brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_revenue.revenue_maestro_sku d on d.sku = a.product_short_code
-  where a.planned_delivery_date = '2026-11-23' and a.customer_short_code > 10000000
+  where a.planned_delivery_date = '2026-11-25' and a.customer_short_code > 10000000
     and d.categoria in ('Cervezas','Licores','Ready to drink','Gaseosas','Agua','Maltas')
 ), base as (
-  select case when v.fecha_venta between '2025-11-01' and '2025-11-23' then 1 else 0 end as is_mtd25,
+  select case when v.fecha_venta between '2025-11-01' and '2025-11-25' then 1 else 0 end as is_mtd25,
     v.es_plan, v.mes,
     case c.distribution_center_code when 'SJ97' then 'Pucallpa' when 'SJ90' then 'Huánuco' when 'SJ93' then 'Tingo María' else 'Otros CD' end as cd,
     case when c.sales_subregion_name like 'Promotor generico%' then 'Promotores genéricos'

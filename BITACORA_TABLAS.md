@@ -723,6 +723,16 @@ BK31 fuera; octubre corta en d-1). Fuentes HTML de los dashboards en la raiz del
 
 ## Catalogo `brewdat_uc_maz_prod` — Replica SAP PR3 (fuente del KPI Stock SAP)
 
+> **Workspace nuevo (validado 2026-11-24):** las `copecac_*` ya no estan en `brewdat_uc_maz_prod`; viven en
+> **`brewdat_uc_delta_maz_prod`** (`slv_maz_supply_sap_pr3.copecac_mchb`, `slv_maz_sales_sap_pr3.copecac_vbbe`,
+> `slv_maz_masterdata_sap_pr3.copecac_marm/mara/makt`). Acceso: `mchb` y `vbbe` si; **`slv_maz_masterdata_sap_pr3`
+> sin permiso (USE SCHEMA)** -> conversion a cajas/HL, nombre y categoria desde `pe_product`
+> (`base_uom_quantity` = umrez, `base_uom_volume` = volum en cm3, `product_name`, `product_line`); cuadra (Pilsen 630:
+> cajas x 0.0756 HL). **`copecac_resb` no existe** en el workspace nuevo (reservas = 0). **Frescura:** `mchb` se carga
+> varias veces al dia (ultima ~20:00 Lima el 24-nov), ya no solo foto de la manana. **Almacenes por CD:** xx01 =
+> producto terminado (analogo de IQ01): `HN01`/`HN24` (SJ90), `TI01`/`TI24` (SJ93), `UL01`/`UL24` (SJ97); tambien hay
+> xx40/xx41/xx98 (pendiente confirmar con logistica cuales cuenta SAP). Query: `querys/Query_Stocks_SAP_GV_Pucallpa.sql`.
+
 **Que es:** catalogo distinto a `brewdat_uc_mazana_dev` (venta/cliente) y a
 `brewdat_uc_maz_scus_weu_sales_dev_ds` (portfolio material) — aca vive la **replica cruda de
 tablas SAP** (prefijo `copecac_*`, via CDC/Change Data Capture desde SAP PR3). Query base
