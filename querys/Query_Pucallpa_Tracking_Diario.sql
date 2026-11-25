@@ -1,6 +1,8 @@
 -- Tracking diario GV Pucallpa, modelo ALZ 4.0 con nombres de campo nativos (sin alias antiguos).
--- FACT: pe_invoice | PLAN: pe_planned_order | cliente: pe_customer | material: pe_product.
--- PV D+1 (dm_preventa_flash_actual_fe), PV FUT (dm_preventa) y revenue_maestro_sku siguen en el modelo anterior.
+-- FACT: pe_invoice | PLAN: pe_planned_order | PV D+1: pe_flash_order | PV FUT: pe_order
+-- cliente: pe_customer | material: pe_product. Solo revenue_maestro_sku sigue en el modelo anterior.
+-- pe_flash_order guarda una foto por hora acumulada: se usa solo la ultima foto tipo FE (por fecha de entrega).
+-- pe_order corta ~05:05 Lima: lo creado despues aparece en PV FUT recien al dia siguiente.
 -- Columnas de salida iguales a Query_Pucallpa_Tracking_Diario.sql.
 
 /*VENTA FACTURADA MTD*/
@@ -175,28 +177,32 @@ d.`Agrupador (Sku)`,
 c.product_name as nombre_sku,
 d.ms_ss,
 d.kpi_premium as premium,
-a.FechaCreado as fecha_creacion,
-a.FechaEntrega as fecha_entrega,
-sum(a.VolumenHl) as HL,
-sum(a.VolumenHl)*13.4408602150538 as CE,
-CAST(ROUND(SUM(a.VolumenHl*100000/NULLIF(c.base_uom_volume*c.base_uom_quantity,0)),0) AS BIGINT) as CF,
+a.order_creation_date as fecha_creacion,
+a.requested_delivery_date as fecha_entrega,
+sum(a.order_requested_quantity_hl) as HL,
+sum(a.order_requested_quantity_hl)*13.4408602150538 as CE,
+CAST(ROUND(SUM(a.order_requested_quantity_hl*100000/NULLIF(c.base_uom_volume*c.base_uom_quantity,0)),0) AS BIGINT) as CF,
 DATEADD(hour, -5, CURRENT_TIMESTAMP()) as hora_corte,
 'PV D+1' as TIPO,
-a.pedido
+a.order_number as pedido
 
-FROM brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_dm.dm_preventa_flash_actual_fe a
-LEFT JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer b on b.customer_short_code = a.codcliente
-LEFT JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_product c on c.product_short_code = a.codmaterial
-LEFT JOIN brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_revenue.revenue_maestro_sku d on d.sku = a.codmaterial
+FROM brewdat_uc_maz_prod.gld_maz_sales_order.pe_flash_order a
+LEFT JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer b on b.customer_short_code = a.customer_short_code
+LEFT JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_product c on c.product_short_code = a.product_short_code
+LEFT JOIN brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_revenue.revenue_maestro_sku d on d.sku = a.product_short_code
 
 WHERE b.sales_area_name in ('PE Dir Centro Orient')
 AND b.sales_region_name IN ('PE Ger P4 Pucall Hco')
 AND d.categoria IN ('Cervezas', 'Licores','Ready to drink','Gaseosas','Agua','Maltas')
 --AND d.categoria IN ('Cervezas', 'Licores','Ready to drink')
 AND b.customer_short_code > 10000000
-AND a.Anulado = 0
+AND a.cancelled_flag = false
+--Ultima foto horaria tipo FE (por fecha de entrega). Sumar varias fotos multiplica el volumen
+AND a.order_flash_type = 'FE'
+AND a.snapshot_date >= DATE_SUB(CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE), 1)
+AND a.snapshot_timestamp = (SELECT MAX(s.snapshot_timestamp) FROM brewdat_uc_maz_prod.gld_maz_sales_order.pe_flash_order s WHERE s.order_flash_type = 'FE' AND s.snapshot_date >= DATE_SUB(CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE), 1))
 --Solo la siguiente fecha de reparto de la GV (el sabado es el lunes). Las posteriores van en PV FUT
-AND a.FechaEntrega = (SELECT MIN(f.FechaEntrega) FROM brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_dm.dm_preventa_flash_actual_fe f JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer g ON g.customer_short_code = f.codcliente WHERE g.sales_region_name = 'PE Ger P4 Pucall Hco' AND f.FechaEntrega > CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE))
+AND a.requested_delivery_date = (SELECT MIN(f.requested_delivery_date) FROM brewdat_uc_maz_prod.gld_maz_sales_order.pe_flash_order f JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer g ON g.customer_short_code = f.customer_short_code WHERE g.sales_region_name = 'PE Ger P4 Pucall Hco' AND f.order_flash_type = 'FE' AND f.snapshot_date >= DATE_SUB(CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE), 1) AND f.snapshot_timestamp = (SELECT MAX(s.snapshot_timestamp) FROM brewdat_uc_maz_prod.gld_maz_sales_order.pe_flash_order s WHERE s.order_flash_type = 'FE' AND s.snapshot_date >= DATE_SUB(CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE), 1)) AND f.requested_delivery_date > CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE))
 GROUP BY ALL
 )
 UNION ALL
@@ -241,31 +247,33 @@ d.`Agrupador (Sku)`,
 c.product_name as nombre_sku,
 d.ms_ss,
 d.kpi_premium as premium,
-a.Fecha_Preventa as fecha_creacion,
-a.Fecha_Preferente_Entrega as fecha_entrega,
-sum(a.hl) as HL,
-sum(a.hl)*13.4408602150538 as CE,
-CAST(ROUND(SUM(a.hl*100000/NULLIF(c.base_uom_volume*c.base_uom_quantity,0)),0) AS BIGINT) as CF,
+a.order_creation_date as fecha_creacion,
+a.requested_delivery_date as fecha_entrega,
+sum(a.order_requested_quantity_hl) as HL,
+sum(a.order_requested_quantity_hl)*13.4408602150538 as CE,
+CAST(ROUND(SUM(a.order_requested_quantity_hl*100000/NULLIF(c.base_uom_volume*c.base_uom_quantity,0)),0) AS BIGINT) as CF,
 DATEADD(hour, -5, CURRENT_TIMESTAMP()) as hora_corte,
 'PV FUT' as TIPO,
-a.numero_preventa
+a.order_number as numero_preventa
 
-FROM brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_dm.dm_preventa a
-LEFT JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer b on b.customer_short_code = a.cliente_id
-LEFT JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_product c on c.product_short_code = a.material_id
-LEFT JOIN brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_revenue.revenue_maestro_sku d on d.sku = a.material_id
+FROM brewdat_uc_maz_prod.gld_maz_sales_order.pe_order a
+LEFT JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer b on b.customer_short_code = a.customer_short_code
+LEFT JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_product c on c.product_short_code = a.product_short_code
+LEFT JOIN brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_revenue.revenue_maestro_sku d on d.sku = a.product_short_code
 
 WHERE b.sales_area_name in ('PE Dir Centro Orient')
 AND b.sales_region_name IN ('PE Ger P4 Pucall Hco')
 AND d.categoria IN ('Cervezas', 'Licores','Ready to drink','Gaseosas','Agua','Maltas')
 --AND d.categoria IN ('Cervezas', 'Licores','Ready to drink')
-AND a.fecha_preferente_entrega > CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE)
+--Particion: mes anterior y en curso (cubre preventas creadas a fin del mes pasado)
+AND a.period >= DATE_FORMAT(ADD_MONTHS(CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE), -1), "yyyyMM")
+AND a.requested_delivery_date > CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE)
 --Hasta el ultimo dia del mes en curso, a hora de Lima
-AND a.fecha_preferente_entrega <= LAST_DAY(CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE))
+AND a.requested_delivery_date <= LAST_DAY(CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE))
 --Excluye solo la fecha que trae PV D+1. IS DISTINCT FROM evita que PV FUT quede vacio si esa fecha es nula
-AND a.fecha_preferente_entrega IS DISTINCT FROM (SELECT MIN(f.FechaEntrega) FROM brewdat_uc_delta_maz_mazana_dev.slv_maz_dataexperience_peru_dm.dm_preventa_flash_actual_fe f JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer g ON g.customer_short_code = f.codcliente WHERE g.sales_region_name = 'PE Ger P4 Pucall Hco' AND f.FechaEntrega > CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE))
-AND a.flujo = 1
+AND a.requested_delivery_date IS DISTINCT FROM (SELECT MIN(f.requested_delivery_date) FROM brewdat_uc_maz_prod.gld_maz_sales_order.pe_flash_order f JOIN brewdat_uc_delta_maz_prod.gld_maz_masterdata_sales.pe_customer g ON g.customer_short_code = f.customer_short_code WHERE g.sales_region_name = 'PE Ger P4 Pucall Hco' AND f.order_flash_type = 'FE' AND f.snapshot_date >= DATE_SUB(CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE), 1) AND f.snapshot_timestamp = (SELECT MAX(s.snapshot_timestamp) FROM brewdat_uc_maz_prod.gld_maz_sales_order.pe_flash_order s WHERE s.order_flash_type = 'FE' AND s.snapshot_date >= DATE_SUB(CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE), 1)) AND f.requested_delivery_date > CAST(DATEADD(hour, -5, CURRENT_TIMESTAMP()) AS DATE))
+AND a.order_flow_type = 1
 AND b.customer_short_code > 10000000
-AND a.motivo_anulacion IS NULL
+AND a.order_reject_name IS NULL
 GROUP BY ALL
 )

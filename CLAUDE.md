@@ -61,7 +61,10 @@ cada nombre antiguo, ver `referencias/compat_alz40/` (solo como diccionario, no 
 Ejemplos: `hl` = `sales_volume_official`, `mes` = `cast(__partition_column as string)`, `estratificacion` =
 `pe_product.product_line`, `gerencia` = `sales_region_name`, `cliente_id` = `sold_to_customer_short_code` (venta) /
 `customer_short_code` (cliente), `caja_equivalente` = `sales_volume_official * 13.44086022`.
-**Ojo:** `pe_invoice` solo tiene historia desde **Mar'21** — para 2020 o Ene-Feb'21 usar el modelo viejo.
+**Ojo:** `pe_invoice` solo tiene historia real desde **Mar'21** — para 2020 o Ene-Feb'21 usar el modelo viejo.
+Hay filas sueltas desde Ene'19 (`min(invoice_date)` = 2019-01-03), pero son residuales: todo Peru suma ~14 mil HL
+en 2019 y ~29 mil HL en 2020, contra ~1,331 mil HL solo en Mar'21 (validado 2026-11-25). No usar esas filas
+como historia.
 
 El detalle completo (campos por tabla, llaves de join, filtros de negocio, particionado, pendientes
 por confirmar) vive en [`BITACORA_TABLAS.md`](BITACORA_TABLAS.md) — consultarlo antes de escribir
@@ -351,9 +354,9 @@ Definiciones validadas por el usuario (2026-08-27):
   etapa/tipo de documento.
 - **Tracking diario de la GV Pucallpa** (`querys/Query_Pucallpa_Tracking_Diario.sql`, query propio
   del usuario, recibido 2026-11-04): une 4 tipos por fecha de entrega. `FACT` = facturado MTD
-  (`dm_venta`); `PLAN` = entrega de hoy (`revenue_h_pv_planeada`); `PV D+1` = entrega de manana, que
-  es la preventa de hoy (`dm_preventa_flash_actual_fe`); `PV FUT` = entregas posteriores
-  hasta el ultimo dia del mes en curso (`dm_preventa`). `PV D+1` no se limita al mes: la preventa
+  (`pe_invoice`); `PLAN` = entrega de hoy (`pe_planned_order`); `PV D+1` = entrega de manana, que
+  es la preventa de hoy (`pe_flash_order`, ultima foto horaria tipo `FE`); `PV FUT` = entregas posteriores
+  hasta el ultimo dia del mes en curso (`pe_order`, corte ~05:05 Lima). Migrado a ALZ 4.0 el 2026-11-25. `PV D+1` no se limita al mes: la preventa
   del ultimo dia cuenta como venta del mes siguiente (confirmado por el usuario, 2026-11-04). Usar este query como fuente para preguntas de avance diario de la GV. El mes de
   `FACT` se calcula solo, a hora de Lima. **No incluye Marketplace ni SKU sin categoria en
   `revenue_maestro_sku`** (regla del usuario, 2026-11-04): el filtro `revenue_maestro_sku.categoria

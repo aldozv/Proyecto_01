@@ -1021,6 +1021,38 @@ Pucallpa (`TIPO` = `FACT`, `PLAN`, `PV D+1`, `PV FUT`). Esquemas tomados de `DES
   solo mostro volumen en una fecha ya pasada (03.11).
 - `hl_planeado` vino nulo en todas las filas revisadas (entregas 03-06.11, Pucallpa).
 
+### Preventa en ALZ 4.0: `pe_flash_order` y `pe_order` (comparado 2026-11-25, GV Pucallpa)
+
+Destinos segun el diccionario (`Mapeo_ALZ40_Tablas.csv`), los dos en `brewdat_uc_maz_prod.gld_maz_sales_order`,
+con acceso confirmado. No se migraron el 24-nov solo por alcance, no por falta de equivalente.
+- **`pe_flash_order`** (reemplaza a `dm_preventa_flash_actual_fe`, y tambien a `_fc` y `_fe`): **guarda una foto por
+  hora, acumulada** (`snapshot_date`, `cutoff_hour`, `snapshot_timestamp`) y `order_flash_type` = `FE` (por fecha de
+  entrega: solo trae la siguiente fecha de reparto) o `FC` (por fecha de creacion). **Filtrar siempre
+  `order_flash_type = 'FE'` y la ultima `snapshot_timestamp`**: sumar todas las fotos multiplica el volumen.
+  Campos: `FechaEntrega` = `requested_delivery_date`, `VolumenHl` = `order_requested_quantity_hl`, `Pedido` =
+  `order_number`, `CodCliente` = `customer_short_code`, `CodMaterial` = `product_short_code`, `Anulado` =
+  `cancelled_flag` (boolean). `snapshot_timestamp` viene marcado `Z` pero es hora de Lima (coincide con `cutoff_hour`).
+  El 25-nov faltaron las fotos de las 08, 11, 12 y 13 h.
+- **`pe_order`** (reemplaza a `dm_preventa`): particion `period` (string yyyymm). `fecha_preferente_entrega` =
+  `requested_delivery_date`, `hl` = `order_requested_quantity_hl`, `flujo` = `order_flow_type`, `motivo_anulacion` =
+  `order_reject_name`, `numero_preventa` = `order_number`. **Corte ~05:05 Lima** (carga ~05:50).
+- **PV D+1, entrega 26.11:** el viejo daba 2,229.2 HL y el nuevo 2,875.1 HL. La diferencia es de hora: **el viejo
+  estaba congelado en las 08:08** (ultimo pedido creado) y el nuevo llegaba a las 17:07. Con el mismo corte, 698
+  pedidos cuadran exacto (1,900.7 HL); 41 pedidos (238.6 HL) los anularon despues y el viejo no lo vio, y 3 pedidos
+  (91.6 HL) ya no estan en la foto nueva.
+- **PV FUT, entregas 26-30.11:** 1,296 pedidos cuadran exacto (4,910.1 HL). 74 pedidos (156.1 HL) solo estan en el
+  viejo: son pedidos creados el 25.11 entre las 05:00 y las 08:59, despues del corte de `pe_order`; 71 siguen activos en
+  `pe_flash_order`. No es dato faltante, es hora de corte.
+- **Implicancia para el tracking:** `PV D+1` puede pasar a `pe_flash_order` (mas al dia que la vieja). `PV FUT` con
+  `pe_order` llega solo hasta las ~05:05 del dia; lo creado despues esta en `pe_flash_order` tipo `FC`.
+- **Migrado (2026-11-25):** `querys/Query_Pucallpa_Tracking_Diario.sql` ya lee `PV D+1` de `pe_flash_order` (ultima
+  `snapshot_timestamp` tipo `FE`, `cancelled_flag = false`) y `PV FUT` de `pe_order` (`period` >= mes anterior,
+  `order_flow_type = 1`, `order_reject_name is null`). Corrida vieja vs nueva a las ~18:30: FACT (36,282.3 HL) y PLAN
+  (2,263.9 HL) identicos; PV FUT 27-30.11 = 2,798.6 HL vs 2,836.0 (diferencia = pedidos creados despues de las 05:05);
+  PV D+1 26.11 = 2,529.4 vs 2,229.2 (la vieja seguia en las 08:08). La foto de las 18:27 bajo vs la de las 17:29
+  (2,875.1) por anulaciones reales: "Anulacion de pedidos Televenta" en la GV paso de 32.7 a 1,180.9 HL.
+  Queda en el modelo viejo solo `revenue_maestro_sku`.
+
 ### Observaciones al combinar los 4 tipos (corrida del 2026-11-04, Pucallpa)
 
 - **CE de NABS no es comparable:** `dm_venta.caja_equivalente` da ~17.58 CE/HL en NABS, mientras
